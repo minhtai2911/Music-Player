@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/colorPrimary"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
@@ -18,17 +18,68 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"/>
     </androidx.viewpager.widget.ViewPager>
+    <LinearLayout
+        android:background="@drawable/bgr_status"
+        android:orientation="horizontal"
+        android:id="@+id/linearLayoutPlayBackStatus"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <ImageView
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:layout_margin="10dp"
+            android:id="@+id/img_status"
+            android:src="@drawable/imgitem"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/song_status"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/arimo_bold"
+            android:maxWidth="250dp"
+            android:maxLines="1"
+            android:text="Unknown"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:id="@+id/imgLove"
+            android:src="@drawable/iconlove"
+            android:layout_marginRight="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:id="@+id/imgPlay"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/nutpause"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+    </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:background="@drawable/bgr_maintab"
-        app:tabIndicatorColor="#C3C3C3"
+        android:background="@color/colorPrimaryDark"
+        app:tabIndicatorColor="#ffffff"
         app:tabIndicatorHeight="1dp"
         app:tabMode="fixed"
         app:tabSelectedTextColor="#FFFFFF"
-        app:tabTextColor="#000">
+        app:tabTextColor="#ffffff">
     </com.google.android.material.tabs.TabLayout>
 </LinearLayout>
