@@ -1,11 +1,8 @@
-package com.example.musicplayer;
+package com.example.musicplayer.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.musicplayer.R;
+import com.example.musicplayer.activity.MainActivity;
+import com.example.musicplayer.model.SongModel;
+import com.example.musicplayer.activity.PlayingActivity;
 
-import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {

@@ -6,34 +6,21 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     >
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:background="@drawable/bgr_appbar"
-        android:id="@+id/appbarlayouttimkiem"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
-        android:layout_marginTop="18dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_height="55dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_search"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:gravity="center_horizontal"
-            app:titleTextColor="#FFF"
-            app:title="What do you want to play?"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            app:collapseIcon="?attr/actionModeCloseDrawable" />
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="wrap_content"
+        android:background="@drawable/bgr_searchview"
+        android:layout_margin="10dp"
+        app:iconifiedByDefault="false"
+        app:queryHint = "What do you want to play?"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_search"
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/appbarlayouttimkiem"
+        android:layout_below="@+id/searchView"
         android:layout_marginTop="20dp" />
 
     <TextView
@@ -42,8 +29,7 @@
         android:gravity="center"
         android:text="No results found for your search"
         android:textSize="27sp"
-        android:id="@+id/txtview_search_null"
+        android:id="@+id/search_null"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 </RelativeLayout>
