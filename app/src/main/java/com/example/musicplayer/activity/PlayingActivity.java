@@ -2,6 +2,7 @@ package com.example.musicplayer.activity;
 
 import static com.example.musicplayer.activity.MainActivity.songList;
 
+import android.content.res.Resources;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.media.MediaMetadataRetriever;
@@ -9,6 +10,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -19,6 +21,8 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.musicplayer.R;
 import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.tool.GetDominantColor;
@@ -30,7 +34,7 @@ import java.util.Random;
 
 
 public class PlayingActivity extends AppCompatActivity {
-    TextView artist_name, duration_played, duration_total;
+    TextView artist_name, duration_played, duration_total, title;
     ImageView cover_img, nextBtn, prevBtn, backBtn, shuffleBtn, repeatBtn, playPauseBtn;
     SeekBar seekBar;
     public static int position = -1;
@@ -50,6 +54,12 @@ public class PlayingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_playing);
         initViews();
         getIntentMethod();
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -137,6 +147,7 @@ public class PlayingActivity extends AppCompatActivity {
         seekBar.setMax(mediaPlayer.getDuration()/1000);
         metaData(uri);
         song_name.setText(listSongs.get(position).getTitle());
+        title.setText(listSongs.get(position).getTitle());
         artist_name.setText(listSongs.get(position).getArtist());
     }
 
@@ -178,11 +189,14 @@ public class PlayingActivity extends AppCompatActivity {
         seekBar.setMax(mediaPlayer.getDuration() / 1000);
         metaData(uri);
         song_name.setText(listSongs.get(position).getTitle());
+        title.setText(listSongs.get(position).getTitle());
         artist_name.setText(listSongs.get(position).getArtist());
     }
 
     private void initViews() {
+        backBtn = findViewById(R.id.backBtn);
         song_name = findViewById(R.id.song_name);
+        title = findViewById(R.id.toolbar_title);
         artist_name = findViewById(R.id.artist_name);
         duration_played = findViewById(R.id.duration_played);
         duration_total = findViewById(R.id.duration_total);
@@ -202,7 +216,7 @@ public class PlayingActivity extends AppCompatActivity {
         byte[] img = retriever.getEmbeddedPicture();
         img_status = img;
         if (img != null) {
-            Glide.with(this).asBitmap().load(img).into(cover_img);
+            Glide.with(this).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
         }
         else {
             Glide.with(this).asBitmap().load(R.drawable.imgitem).into(cover_img);
@@ -282,6 +296,7 @@ public class PlayingActivity extends AppCompatActivity {
         seekBar.setMax(mediaPlayer.getDuration()/1000);
         metaData(uri);
         song_name.setText(listSongs.get(position).getTitle());
+        title.setText(listSongs.get(position).getTitle());
         artist_name.setText(listSongs.get(position).getArtist());
     }
 
@@ -343,6 +358,7 @@ public class PlayingActivity extends AppCompatActivity {
         seekBar.setMax(mediaPlayer.getDuration()/1000);
         metaData(uri);
         song_name.setText(listSongs.get(position).getTitle());
+        title.setText(listSongs.get(position).getTitle());
         artist_name.setText(listSongs.get(position).getArtist());
     }
 
