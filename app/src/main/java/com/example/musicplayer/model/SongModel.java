@@ -1,4 +1,4 @@
-package com.example.musicplayer;
+package com.example.musicplayer.model;
 
 public class SongModel {
     private String path;

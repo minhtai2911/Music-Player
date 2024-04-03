@@ -1,4 +1,4 @@
-package com.example.musicplayer;
+package com.example.musicplayer.activity;
 
 import android.Manifest;
 import android.content.Context;
@@ -21,6 +21,13 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.musicplayer.AlbumFragment;
+import com.example.musicplayer.HomeFragment;
+import com.example.musicplayer.MainViewPagerAdapter;
+import com.example.musicplayer.R;
+import com.example.musicplayer.SearchFragment;
+import com.example.musicplayer.model.ListLibraryModel;
+import com.example.musicplayer.model.SongModel;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -28,6 +35,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
     public static ArrayList<SongModel> songList;
+    public static ArrayList<ListLibraryModel> libraryList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

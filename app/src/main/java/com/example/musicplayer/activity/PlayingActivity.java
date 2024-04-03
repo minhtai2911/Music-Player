@@ -1,6 +1,6 @@
-package com.example.musicplayer;
+package com.example.musicplayer.activity;
 
-import static com.example.musicplayer.MainActivity.songList;
+import static com.example.musicplayer.activity.MainActivity.songList;
 
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
@@ -21,6 +21,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.example.musicplayer.R;
+import com.example.musicplayer.model.SongModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;

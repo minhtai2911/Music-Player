@@ -1,11 +1,9 @@
 package com.example.musicplayer.adapter;
 
+
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,32 +18,32 @@ import com.example.musicplayer.R;
 import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.model.SongModel;
 
-import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 
-public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
+public class DanhsachbaihatAdapter extends RecyclerView.Adapter<DanhsachbaihatAdapter.ViewHolder>{
     Context context;
     ArrayList<SongModel> arrayListSong;
     View view;
 
-    public SongAdapter(Context context, ArrayList<SongModel> arrayListSong) {
+
+    public DanhsachbaihatAdapter(Context context, ArrayList<SongModel> arrayListSong) {
         this.context = context;
         this.arrayListSong = arrayListSong;
     }
 
     @NonNull
     @Override
-    public SongAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DanhsachbaihatAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        view = inflater.inflate(R.layout.item_song, parent, false);
-        return new SongAdapter.ViewHolder(view);
+        view = inflater.inflate(R.layout.dong_danh_sach_bai_hat, parent, false);
+        return new DanhsachbaihatAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SongAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull DanhsachbaihatAdapter.ViewHolder holder, final int position) {
         SongModel song = arrayListSong.get(position);
         holder.txtSong.setText(song.getTitle());
+        holder.txtCasi.setText(song.getArtist());
         byte[] img = getImg(song.getPath());
         if (img != null) {
             Glide.with(context).asBitmap().load(img).into(holder.imgSong);
@@ -70,11 +68,13 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgSong;
         TextView txtSong;
+        TextView txtCasi;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgSong = itemView.findViewById(R.id.imgSong);
-            txtSong = itemView.findViewById(R.id.txtSong);
+            imgSong = itemView.findViewById(R.id.imageViewhinhbaihat);
+            txtSong = itemView.findViewById(R.id.textViewtenbaihat);
+            txtCasi = itemView.findViewById(R.id.textViewtencasi);
         }
     }
     private byte[] getImg(String uri) {

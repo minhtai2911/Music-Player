@@ -24,7 +24,7 @@
             android:layout_height="wrap_content">
         </fragment>
         <fragment
-            android:name="com.example.musicplayer.SongFragment"
+            android:name="com.example.musicplayer.fragment.SongFragment"
             android:id="@+id/fragmentMusic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

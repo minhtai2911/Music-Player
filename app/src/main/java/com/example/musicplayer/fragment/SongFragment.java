@@ -1,6 +1,6 @@
-package com.example.musicplayer;
+package com.example.musicplayer.fragment;
 
-import static com.example.musicplayer.MainActivity.songList;
+import static com.example.musicplayer.activity.MainActivity.songList;
 
 import android.os.Bundle;
 
@@ -14,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.musicplayer.R;
+import com.example.musicplayer.adapter.SongAdapter;
 
 public class SongFragment extends Fragment {
     RecyclerView recyclerView;

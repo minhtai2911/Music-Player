@@ -142,7 +142,7 @@
             android:layout_toStartOf="@+id/prevBtn"
             android:background="@null"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/iconsuffle" />
+            app:srcCompat="@drawable/iconshuffle" />
 
         <ImageView
             android:id="@+id/prevBtn"

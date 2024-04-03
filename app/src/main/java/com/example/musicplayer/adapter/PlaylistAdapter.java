@@ -2,10 +2,8 @@ package com.example.musicplayer.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
-import android.provider.MediaStore;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,36 +15,35 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.activity.DanhsachbaihatActivity;
 import com.example.musicplayer.activity.PlayingActivity;
+import com.example.musicplayer.model.ListLibraryModel;
 import com.example.musicplayer.model.SongModel;
 
-import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 
-public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
+public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder> {
     Context context;
-    ArrayList<SongModel> arrayListSong;
+    ArrayList<ListLibraryModel> arrayListPlaylist;
     View view;
 
-    public SongAdapter(Context context, ArrayList<SongModel> arrayListSong) {
+    public PlaylistAdapter(Context context, ArrayList<ListLibraryModel> arrayListPlaylist) {
         this.context = context;
-        this.arrayListSong = arrayListSong;
+        this.arrayListPlaylist = arrayListPlaylist;
     }
 
     @NonNull
     @Override
-    public SongAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PlaylistAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         view = inflater.inflate(R.layout.item_song, parent, false);
-        return new SongAdapter.ViewHolder(view);
+        return new PlaylistAdapter.ViewHolder(view);
     }
-
     @Override
-    public void onBindViewHolder(@NonNull SongAdapter.ViewHolder holder, final int position) {
-        SongModel song = arrayListSong.get(position);
-        holder.txtSong.setText(song.getTitle());
-        byte[] img = getImg(song.getPath());
+    public void onBindViewHolder(@NonNull PlaylistAdapter.ViewHolder holder, final int position) {
+        ListLibraryModel playlist = arrayListPlaylist.get(position);
+        holder.txtSong.setText(playlist.getTenThuVienPlayList());
+        byte[] img = getImg(playlist.getHinhThuVienPlaylist());
         if (img != null) {
             Glide.with(context).asBitmap().load(img).into(holder.imgSong);
         }
@@ -56,8 +53,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, PlayingActivity.class);
-                intent.putExtra("position",position);
+                Intent intent = new Intent(context, DanhsachbaihatActivity.class);
+                intent.putExtra("idthuvienplaylist", (Parcelable) arrayListPlaylist.get(position));
                 context.startActivity(intent);
             }
         });
@@ -65,7 +62,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return arrayListSong != null ? arrayListSong.size() : 0;
+        return arrayListPlaylist != null ? arrayListPlaylist.size() : 0;
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgSong;
