@@ -1,6 +1,7 @@
 package com.example.musicplayer.model;
 
-public class SongModel {
+public class
+ SongModel {
     private String path;
     private String title;
     private String artist;
