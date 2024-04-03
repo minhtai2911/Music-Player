@@ -12,43 +12,45 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#1B1B1B">
+
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
                 android:fontFamily="@font/arimo_bold"
                 android:text="Give your playlist a name"
                 android:textColor="@color/design_default_color_background"
                 android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.472"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <EditText
                 android:id="@+id/edtTenthuvien"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="0dp"
                 android:ems="10"
                 android:fontFamily="@font/arimo_bold"
-                android:hint="Your playlist..."
-                android:textSize="35dp"
                 android:gravity="center"
+                android:hint="Your playlist..."
                 android:inputType="textPersonName"
                 android:textColor="@color/design_default_color_background"
                 android:textColorHint="@color/cardview_light_background"
+                android:textSize="35dp"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.148"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
             <LinearLayout
-                android:gravity="center"
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -65,7 +67,7 @@
                     android:text="Cancel"
                     android:textSize="24dp"
 
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <Button
                     android:id="@+id/btninsertthuvienplaylist"
@@ -78,7 +80,7 @@
                     android:text="Create"
                     android:textSize="24dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

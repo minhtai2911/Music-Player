@@ -31,7 +31,7 @@ public class AlbumFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_album, container, false);
         recyclerView = view.findViewById(R.id.recyclerview_album);
         title = view.findViewById(R.id.txtAlbums);
-        if (!(libraryList.isEmpty())) {
+        if (libraryList == null || !(libraryList.isEmpty())) {
             playlistAdapter = new PlaylistAdapter(getActivity(), libraryList);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
