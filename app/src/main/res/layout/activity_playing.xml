@@ -8,40 +8,57 @@
     android:id="@+id/mContainer"
     android:background="@drawable/bgr_primary"
     android:orientation="vertical"
-    tools:context=".PlayingActivity">
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_playing"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:elevation="0dp"
-        android:gravity="center_horizontal"
-        android:minHeight="?attr/actionBarSize"
-        android:textAlignment="center"
-        android:theme="?attr/actionBarTheme"/>
+    tools:context=".activity.PlayingActivity">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeLayout_dominant">
 
-    <ImageView
-        android:id="@+id/imageGradient"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <LinearLayout
+            android:id="@+id/toolbar_playing"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="46dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/backBtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/iconback" />
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="30dp"
+                android:maxLines="1"
+                android:paddingTop="5dp"
+                android:maxWidth="180dp"
+                android:layout_centerHorizontal="true"
+                android:text="title"/>
+            </RelativeLayout>
+        </LinearLayout>
 
-    <ImageView
+        <ImageView
         android:id="@+id/cover_img"
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:layout_below="@+id/toolbar_playing"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="56dp" />
-
+        android:layout_marginTop="30dp" />
+    </RelativeLayout>
     <RelativeLayout
         android:id="@+id/rl_in4music"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/cover_img"
+        android:layout_below="@id/relativeLayout_dominant"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="16dp">
 
         <TextView
@@ -85,12 +102,13 @@
     <SeekBar
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/rl_in4music"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="72dp"
         android:layout_marginEnd="16dp"
         android:progressTint="#FFFFFF"
+        android:progressBackgroundTint="#FFFFFF"
         android:thumb="@drawable/thumb" />
 
     <RelativeLayout
@@ -128,9 +146,8 @@
         android:layout_below="@id/rltime"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -186,4 +203,5 @@
             android:scaleType="fitXY"
             app:srcCompat="@drawable/iconrepeat" />
     </RelativeLayout>
+
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.example.musicplayer;
+package com.example.musicplayer.fragment;
 
 import static com.example.musicplayer.activity.MainActivity.libraryList;
 import static com.example.musicplayer.activity.MainActivity.songList;
@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.example.musicplayer.adapter.PlaylistAdapter;
 import com.example.musicplayer.adapter.SongAdapter;
+
+import com.example.musicplayer.R;
 
 public class AlbumFragment extends Fragment {
     RecyclerView recyclerView;
