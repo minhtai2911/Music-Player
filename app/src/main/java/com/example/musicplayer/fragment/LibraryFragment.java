@@ -30,7 +30,7 @@ public class LibraryFragment extends Fragment implements InsertLibraryFragment.E
 //    CircleImageView imguser;
     ProgressDialog progressDialog;
     View view;
-    ListLibraryModel thuVienPlayList = null
+    ListLibraryModel thuVienPlayList = null;
     private String tenThuVien;
     private MainActivity hm;
     public LibraryFragment() {
