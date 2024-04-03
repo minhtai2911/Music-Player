@@ -1,6 +1,7 @@
 package com.example.musicplayer.fragment;
 
 import static com.bumptech.glide.Glide.init;
+import static com.example.musicplayer.activity.MainActivity.libraryList;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -21,6 +22,8 @@ import com.example.musicplayer.adapter.ViewPagerThuVien;
 import com.example.musicplayer.model.ListLibraryModel;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LibraryFragment extends Fragment implements InsertLibraryFragment.ExampleDialogListenerthuvien{
@@ -31,6 +34,7 @@ public class LibraryFragment extends Fragment implements InsertLibraryFragment.E
     ProgressDialog progressDialog;
     View view;
     ListLibraryModel thuVienPlayList = null;
+    ListLibraryModel tempThuvien;
     private String tenThuVien;
     private MainActivity hm;
     public LibraryFragment() {
@@ -76,8 +80,7 @@ public class LibraryFragment extends Fragment implements InsertLibraryFragment.E
     public void apply(String tenthuvien) {
         HashMap<String, String> params = new HashMap<>();
         tenThuVien = tenthuvien;
-        params.put("tenthuvien", tenThuVien);
-        insertthuvien(params);
+        insertthuvien(tenThuVien);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -88,16 +91,22 @@ public class LibraryFragment extends Fragment implements InsertLibraryFragment.E
 
     private void GetData() {
         progressDialog.dismiss();
+        ListLibraryModel thisLibrary = new ListLibraryModel();
+        thisLibrary = libraryList.get(libraryList.size()-1);
         Intent intent = new Intent(getActivity(), DanhsachbaihatActivity.class);
-        intent.putExtra("idthuvienplaylist", thuVienPlayList.getTenThuVienPlayList());
+        intent.putExtra("idthuvienplaylist", (Serializable) thisLibrary);
         startActivity(intent);
     }
 
-    private void insertthuvien(HashMap<String, String> params) {
+    private void insertthuvien(String tenThuVien) {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Please wait");
         progressDialog.setMessage("Creating...");
         progressDialog.setCancelable(false);
         progressDialog.show();
+        tempThuvien = new ListLibraryModel();
+        tempThuvien.setTenThuVienPlayList(tenThuVien);
+        tempThuvien.setListSong(null);
+        libraryList.add(tempThuvien);
     }
 }

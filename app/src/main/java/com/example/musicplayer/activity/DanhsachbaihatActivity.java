@@ -1,5 +1,7 @@
 package com.example.musicplayer.activity;
 
+import static com.example.musicplayer.activity.MainActivity.libraryList;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -81,6 +83,14 @@ public class DanhsachbaihatActivity extends AppCompatActivity {
 //        Picasso.get().load(hinh).into(imgdanhsachcakhuc);
 //    }
     private void GetDataPlaylist(String name) {
+        ArrayList<SongModel> mangbaihat = new ArrayList<SongModel>();
+        for(int i = 0; i<libraryList.size();i++)
+        {
+            if(name.equals(libraryList.get(i).getTenThuVienPlayList()))
+            {
+               mangbaihat = libraryList.get(i).getListSong();
+            }
+        }
         danhsachbaihatAdapter = new DanhsachbaihatAdapter(DanhsachbaihatActivity.this, mangbaihat);
         recyclerViewdanhsachbaihat.setLayoutManager(new LinearLayoutManager(DanhsachbaihatActivity.this));
         recyclerViewdanhsachbaihat.setAdapter(danhsachbaihatAdapter);
