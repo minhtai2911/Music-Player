@@ -33,6 +33,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.adapter.MainViewPagerAdapter;
 import com.example.musicplayer.R;
+import com.example.musicplayer.model.ListLibraryModel;
 import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.fragment.AlbumFragment;
 import com.example.musicplayer.fragment.HomeFragment;
@@ -45,6 +46,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
     public static ArrayList<SongModel> songList;
+    public static ArrayList<ListLibraryModel> listLibrary;
     private LinearLayout playBackStatus;
     private ImageView imgLove, playPause;
     @Override
