@@ -2,6 +2,7 @@ package com.example.musicplayer.fragment;
 
 import static com.bumptech.glide.Glide.init;
 import static com.example.musicplayer.activity.MainActivity.libraryList;
+import static com.example.musicplayer.activity.MainActivity.songList;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -78,7 +79,6 @@ public class LibraryFragment extends Fragment implements InsertLibraryFragment.E
 
     @Override
     public void apply(String tenthuvien) {
-        HashMap<String, String> params = new HashMap<>();
         tenThuVien = tenthuvien;
         insertthuvien(tenThuVien);
         new Handler().postDelayed(new Runnable() {
@@ -91,10 +91,8 @@ public class LibraryFragment extends Fragment implements InsertLibraryFragment.E
 
     private void GetData() {
         progressDialog.dismiss();
-        ListLibraryModel thisLibrary = new ListLibraryModel();
-        thisLibrary = libraryList.get(libraryList.size()-1);
         Intent intent = new Intent(getActivity(), DanhsachbaihatActivity.class);
-        intent.putExtra("idthuvienplaylist", (Serializable) thisLibrary);
+        intent.putExtra("idthuvienplaylist", libraryList.get(libraryList.size()-1).getTenThuVienPlayList());
         startActivity(intent);
     }
 
@@ -106,7 +104,6 @@ public class LibraryFragment extends Fragment implements InsertLibraryFragment.E
         progressDialog.show();
         tempThuvien = new ListLibraryModel();
         tempThuvien.setTenThuVienPlayList(tenThuVien);
-        tempThuvien.setListSong(null);
         libraryList.add(tempThuvien);
     }
 }

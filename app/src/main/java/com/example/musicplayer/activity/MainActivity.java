@@ -47,7 +47,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
     public static ArrayList<SongModel> songList;
-    public static ArrayList<ListLibraryModel> libraryList;
+    public static ArrayList<ListLibraryModel> libraryList = new ArrayList<>();
     private LinearLayout playBackStatus;
     private ImageView imgLove, playPause;
     @Override

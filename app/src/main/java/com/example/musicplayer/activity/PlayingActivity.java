@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -168,10 +169,12 @@ public class PlayingActivity extends AppCompatActivity {
 
     private void getIntentMethod() {
         position = getIntent().getIntExtra("position",-1);
+        Log.d(String.valueOf(position), "giatriposition: ");
         Boolean playBackStatus = getIntent().getBooleanExtra("playBackStatus", false);
         listSongs = songList;
         if (!playBackStatus) {
             if (listSongs != null) {
+                Log.d(listSongs.get(position).getTitle(), "getIntentMethod: ");
                 uri = Uri.parse(listSongs.get(position).getPath());
             }
             if (mediaPlayer != null) {

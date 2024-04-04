@@ -35,7 +35,7 @@ public class Fragment_ThuVien_Playlist extends Fragment {
         view = inflater.inflate(R.layout.fragment_listlibrary_playlist, container, false);
         recyclerViewThuVienPlayList = view.findViewById(R.id.recyclerviewthuvienplaylist);
         tenThuVienPlayList = view.findViewById(R.id.textviewthuvienplaylist);
-        if(libraryList == null || !(libraryList.isEmpty()))
+        if(libraryList != null)
         {
             thuVienPlayListAdapter = new LibraryPlaylistAdapter(getActivity(), libraryList);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());

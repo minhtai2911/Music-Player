@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,13 +42,21 @@ public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylist
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ListLibraryModel thuVienPlayList = mangthuvienplaylist.get(position);
         holder.txttenthuvienplaylist.setText(thuVienPlayList.getTenThuVienPlayList());
-        holder.txtsoluongnhac.setText(thuVienPlayList.getListSong().size()+" songs");
+        Log.d(String.valueOf(thuVienPlayList.getListSong()), "onBindViewHolder: ");
+        Log.d(String.valueOf(thuVienPlayList.getListSong().size()), "Size: ");
+        if(thuVienPlayList.getListSong().size()>0){
+            Log.d(String.valueOf(thuVienPlayList.getListSong()), "chay vao if: ");
+            holder.txtsoluongnhac.setText(thuVienPlayList.getListSong().size()+" songs");
+        }else {
+            Log.d(String.valueOf(thuVienPlayList.getListSong()), "chay vao else: ");
+            holder.txtsoluongnhac.setText("0 songs");
+        }
 //        Picasso.get().load(thuVienPlayList.getHinhThuVienPlaylist()).into(holder.imgthuvienplaylist);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, DanhsachbaihatActivity.class);
-                intent.putExtra("idthuvienplaylist", (Parcelable) mangthuvienplaylist.get(position));
+                intent.putExtra("idthuvienplaylist", mangthuvienplaylist.get(position).getTenThuVienPlayList());
                 context.startActivity(intent);
             }
         });

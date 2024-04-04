@@ -5,6 +5,7 @@ import static com.example.musicplayer.activity.MainActivity.libraryList;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -52,17 +53,17 @@ public class DanhsachbaihatActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(playlist.getTenThuVienPlayList());
         }
         floatActionButtonClick();
-//        btnThemnhac.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = getIntent();
-//                if(intent.hasExtra("idthuvienplaylist")){
-//                    intent = new Intent(DanhsachbaihatActivity.this, InsertNhacThuVienActivity.class);
-//                    intent.putExtra("id", id);
-//                    startActivity(intent);
-//                }
-//            }
-//        });
+        btnThemnhac.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = getIntent();
+                if(intent.hasExtra("idthuvienplaylist")){
+                    intent = new Intent(DanhsachbaihatActivity.this, InsertNhacThuVienActivity.class);
+                    intent.putExtra("thisLibrary", playlist.getTenThuVienPlayList());
+                    startActivity(intent);
+                }
+            }
+        });
 
 //        swipeRefreshLayout = findViewById(R.id.swipedanhsachbaihat);
 //        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -83,17 +84,18 @@ public class DanhsachbaihatActivity extends AppCompatActivity {
 //        Picasso.get().load(hinh).into(imgdanhsachcakhuc);
 //    }
     private void GetDataPlaylist(String name) {
-        ArrayList<SongModel> mangbaihat = new ArrayList<SongModel>();
         for(int i = 0; i<libraryList.size();i++)
         {
             if(name.equals(libraryList.get(i).getTenThuVienPlayList()))
             {
-               mangbaihat = libraryList.get(i).getListSong();
+                if(!libraryList.get(i).getListSong().isEmpty())
+                {
+                    danhsachbaihatAdapter = new DanhsachbaihatAdapter(DanhsachbaihatActivity.this, libraryList.get(i).getListSong());
+                    recyclerViewdanhsachbaihat.setLayoutManager(new LinearLayoutManager(DanhsachbaihatActivity.this));
+                    recyclerViewdanhsachbaihat.setAdapter(danhsachbaihatAdapter);
+                }
             }
         }
-        danhsachbaihatAdapter = new DanhsachbaihatAdapter(DanhsachbaihatActivity.this, mangbaihat);
-        recyclerViewdanhsachbaihat.setLayoutManager(new LinearLayoutManager(DanhsachbaihatActivity.this));
-        recyclerViewdanhsachbaihat.setAdapter(danhsachbaihatAdapter);
     }
     private void AnhXa() {
         toolbar = findViewById(R.id.toolbardanhsachbaihat);
@@ -118,7 +120,14 @@ public class DanhsachbaihatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null){
             if (intent.hasExtra("idthuvienplaylist")){
-                playlist = (ListLibraryModel) intent.getSerializableExtra("idthuvienplaylist");
+                String getTenThuVien = intent.getStringExtra("idthuvienplaylist");
+                for(int i = 0;i<libraryList.size();i++)
+                {
+                    if(getTenThuVien.equals(libraryList.get(i).getTenThuVienPlayList()))
+                    {
+                        playlist = libraryList.get(i);
+                    }
+                }
             }
         }
     }

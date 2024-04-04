@@ -1,7 +1,9 @@
 package com.example.musicplayer.model;
 
+import java.io.Serializable;
+
 public class
- SongModel {
+ SongModel implements Serializable {
     private String path;
     private String title;
     private String artist;
@@ -26,9 +28,7 @@ public class
         return artist;
     }
 
-    public String getDuration() {
-        return duration;
-    }
+    public String getDuration() { return duration; }
 
     public void setPath(String path) {
         this.path = path;
