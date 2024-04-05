@@ -17,13 +17,13 @@ import com.example.musicplayer.R;
 import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.model.SongModel;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder>{
     Context context;
-    ArrayList<SongModel> songList;
+    HashMap<Integer,SongModel> songList;
 
-    public SearchAdapter(Context context, ArrayList<SongModel> songList) {
+    public SearchAdapter(Context context, HashMap<Integer,SongModel> songList) {
         this.context = context;
         this.songList = songList;
     }
@@ -37,8 +37,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        SongModel song = songList.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        int search = (int) songList.keySet().toArray()[position];
+        SongModel song = songList.get(search);
+        if (song == null) return;
         holder.song_name.setText(song.getTitle());
         holder.artist_name.setText(song.getArtist());
         byte[] img = getImg(song.getPath());
@@ -52,7 +54,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PlayingActivity.class);
-                intent.putExtra("position", position);
+                intent.putExtra("position", search);
                 context.startActivity(intent);
             }
         });
