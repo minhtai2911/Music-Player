@@ -48,6 +48,7 @@
         android:background="#FF001417"
         android:elevation="6dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerviewdanhsachbaihat"
             android:layout_width="match_parent"

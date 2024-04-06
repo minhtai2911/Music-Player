@@ -46,13 +46,16 @@ public class DanhsachbaihatAdapter extends RecyclerView.Adapter<DanhsachbaihatAd
         Log.d(String.valueOf(arrayListSong), "Song: ");
         holder.txtSong.setText(song.getTitle());
         holder.txtCasi.setText(song.getArtist());
-//        byte[] img = getImg(song.getPath());
-//        if (img != null) {
-//            Glide.with(context).asBitmap().load(img).into(holder.imgSong);
-//        }
-//        else {
-//            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgSong);
-//        }
+        String songPath = arrayListSong.get(position).getPath();
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(songPath);
+        byte[] img = retriever.getEmbeddedPicture();
+        if (img != null) {
+            Glide.with(context).asBitmap().load(img).into(holder.imgSong);
+        }
+        else {
+            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgSong);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

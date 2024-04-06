@@ -3,7 +3,7 @@ package com.example.musicplayer.model;
 import java.io.Serializable;
 
 public class
- SongModel implements Serializable {
+ SongModel  {
     private String path;
     private String title;
     private String artist;

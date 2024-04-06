@@ -3,6 +3,7 @@ package com.example.musicplayer.adapter;
 import static com.example.musicplayer.activity.MainActivity.libraryList;
 
 import android.content.Context;
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
 import com.example.musicplayer.model.ListLibraryModel;
 import com.example.musicplayer.model.SongModel;
@@ -45,12 +48,31 @@ public class InsertNhacThuVienAdapter extends RecyclerView.Adapter<InsertNhacThu
         holder.tenbaihat.setText(baiHat.getTitle());
         holder.temcasi.setText(baiHat.getArtist());
 //        Picasso.get(/*context*/).load(baiHat.getHinhBaiHat()).into(holder.imgtimkiem);
+        String songPath = mangbaihat.get(position).getPath();
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(songPath);
+        byte[] img = retriever.getEmbeddedPicture();
+        if (img != null) {
+            Glide.with(context).asBitmap().load(img).into(holder.imgtimkiem);
+        }
+        else {
+            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgtimkiem);
+        }
         holder.imginsertnhac.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InsertDataBaiHatThuVien(thisLibrary, baiHat.getTitle(),baiHat.getArtist(),
                         baiHat.getDuration(), baiHat.getPath());
-//                UpdateHinhThuVien(idthuvien, mangbaihat.get(position).getHinhBaiHat());
+                String songPath = mangbaihat.get(position).getPath();
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                retriever.setDataSource(songPath);
+                byte[] img = retriever.getEmbeddedPicture();
+                if (img != null) {
+                    Glide.with(context).asBitmap().load(img).into(holder.imgtimkiem);
+                }
+                else {
+                    Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgtimkiem);
+                }
             }
         });
 
@@ -67,10 +89,6 @@ public class InsertNhacThuVienAdapter extends RecyclerView.Adapter<InsertNhacThu
         }
         Toast.makeText(context, "Đã thêm", Toast.LENGTH_SHORT).show();
     }
-
-//    public void UpdateHinhThuVien(int idtv, String hbh) {
-//
-//    }
 
     @Override
     public int getItemCount() {

@@ -3,7 +3,10 @@ package com.example.musicplayer.activity;
 import static com.example.musicplayer.activity.MainActivity.libraryList;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,15 +18,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
 import com.example.musicplayer.adapter.DanhsachbaihatAdapter;
 import com.example.musicplayer.model.LibraryModel;
 import com.example.musicplayer.model.ListLibraryModel;
 import com.example.musicplayer.model.SongModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DanhsachbaihatActivity extends AppCompatActivity {
     androidx.appcompat.widget.Toolbar toolbar;
@@ -48,6 +51,12 @@ public class DanhsachbaihatActivity extends AppCompatActivity {
         DataIntent();
         overridePendingTransition(R.anim.anim_intent_in, R.anim.anim_intent_out);
         if (playlist != null && !playlist.equals("")){
+            Log.d(String.valueOf(playlist.getListSong().size()), "PlaylistSize: ");
+            if(playlist.getListSong().size() > 0)
+            {
+                Log.d(String.valueOf(playlist), "onCreate: ");
+                GetHinhPlaylist(playlist.getListSong());
+            }
             GetDataPlaylist(playlist.getTenThuVienPlayList());
             txtcollapsing.setText(playlist.getTenThuVienPlayList());
             getSupportActionBar().setTitle(playlist.getTenThuVienPlayList());
@@ -80,7 +89,22 @@ public class DanhsachbaihatActivity extends AppCompatActivity {
 
     }
 
-//    private void setValueInView(String hinh) {
+    private void GetHinhPlaylist(ArrayList<SongModel> tenThuVienPlayList) {
+        SongModel lastSongAdd = tenThuVienPlayList.get(tenThuVienPlayList.size()-1);
+        String songPath = lastSongAdd.getPath();
+        playlist.setHinhThuVienPlaylist(songPath);
+        Log.d(songPath, "GetHinhPlaylist: ");
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(songPath);
+        byte[] img = retriever.getEmbeddedPicture();
+        if(img != null)
+        {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(img, 0, img.length);
+            imgdanhsachcakhuc.setImageBitmap(bitmap);
+        }
+    }
+
+    //    private void setValueInView(String hinh) {
 //        Picasso.get().load(hinh).into(imgdanhsachcakhuc);
 //    }
     private void GetDataPlaylist(String name) {

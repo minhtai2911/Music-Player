@@ -3,6 +3,7 @@ package com.example.musicplayer.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,9 +13,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
 import com.example.musicplayer.activity.DanhsachbaihatActivity;
 import com.example.musicplayer.model.ListLibraryModel;
+import com.example.musicplayer.model.SongModel;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,6 +54,20 @@ public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylist
         }else {
             Log.d(String.valueOf(thuVienPlayList.getListSong()), "chay vao else: ");
             holder.txtsoluongnhac.setText("0 songs");
+        }
+        if(thuVienPlayList.getListSong().size()>0)
+        {
+            SongModel lastSongAdd = thuVienPlayList.getListSong().get(thuVienPlayList.getListSong().size()-1);
+            String songPath = lastSongAdd.getPath();
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(songPath);
+            byte[] img = retriever.getEmbeddedPicture();
+            if (img != null) {
+                Glide.with(context).asBitmap().load(img).into(holder.imgthuvienplaylist);
+            }
+            else {
+                Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgthuvienplaylist);
+            }
         }
 //        Picasso.get().load(thuVienPlayList.getHinhThuVienPlaylist()).into(holder.imgthuvienplaylist);
         view.setOnClickListener(new View.OnClickListener() {

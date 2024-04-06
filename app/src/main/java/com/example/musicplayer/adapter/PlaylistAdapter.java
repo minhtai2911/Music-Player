@@ -49,13 +49,22 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     public void onBindViewHolder(@NonNull PlaylistAdapter.ViewHolder holder, final int position) {
         ListLibraryModel playlist = arrayListPlaylist.get(position);
         holder.txtSong.setText(playlist.getTenThuVienPlayList());
-//        byte[] img = getImg(playlist.getHinhThuVienPlaylist());
-//        if (img != null) {
-//            Glide.with(context).asBitmap().load(img).into(holder.imgSong);
-//        }
-//        else {
-//            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgSong);
-//        }
+        if(playlist.getListSong().size()>0)
+        {
+            SongModel lastSongAdd = playlist.getListSong().get(playlist.getListSong().size()-1);
+            String songPath = lastSongAdd.getPath();
+            Log.d(playlist.getTenThuVienPlayList(), "TenThuVienPlayList: ");
+            Log.d(playlist.getHinhThuVienPlaylist(), "HinhThuVienPlayList: ");
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(songPath);
+            byte[] img = retriever.getEmbeddedPicture();
+            if (img != null) {
+                Glide.with(context).asBitmap().load(img).into(holder.imgSong);
+            }
+            else {
+                Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgSong);
+            }
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
