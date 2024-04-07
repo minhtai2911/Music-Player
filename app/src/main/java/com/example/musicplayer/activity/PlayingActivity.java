@@ -10,7 +10,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -104,8 +103,14 @@ public class PlayingActivity extends AppCompatActivity {
                 shuffleBoolean = !shuffleBoolean;
                 if (shuffleBoolean) {
                     shuffleBtn.setImageResource(R.drawable.iconshuffled);
+                    nextBtn.setImageResource(R.drawable.iconnext);
+                    prevBtn.setImageResource(R.drawable.iconprevious);
                 }
                 else {
+                    if (position == listSongs.size() - 1) nextBtn.setImageResource(R.drawable.iconnextnull);
+                    else nextBtn.setImageResource(R.drawable.iconnext);
+                    if (position == 0) prevBtn.setImageResource(R.drawable.iconpreviousnull);
+                    else prevBtn.setImageResource(R.drawable.iconprevious);
                     shuffleBtn.setImageResource(R.drawable.iconshuffle);
                 }
             }
@@ -127,6 +132,10 @@ public class PlayingActivity extends AppCompatActivity {
                     repeatBtn.setImageResource(R.drawable.iconrepeated);
                 }
                 if (repeat == 2) {
+                    if (position == listSongs.size() - 1) nextBtn.setImageResource(R.drawable.iconnextnull);
+                    else nextBtn.setImageResource(R.drawable.iconnext);
+                    if (position == 0) prevBtn.setImageResource(R.drawable.iconpreviousnull);
+                    else prevBtn.setImageResource(R.drawable.iconprevious);
                     repeatBtn.setImageResource(R.drawable.iconrepeat_one);
                 }
             }
@@ -169,12 +178,10 @@ public class PlayingActivity extends AppCompatActivity {
 
     private void getIntentMethod() {
         position = getIntent().getIntExtra("position",-1);
-        Log.d(String.valueOf(position), "giatriposition: ");
-        Boolean playBackStatus = getIntent().getBooleanExtra("playBackStatus", false);
+        boolean playBackStatus = getIntent().getBooleanExtra("playBackStatus", false);
         listSongs = songList;
         if (!playBackStatus) {
             if (listSongs != null) {
-                Log.d(listSongs.get(position).getTitle(), "getIntentMethod: ");
                 uri = Uri.parse(listSongs.get(position).getPath());
             }
             if (mediaPlayer != null) {
@@ -224,9 +231,9 @@ public class PlayingActivity extends AppCompatActivity {
         else {
             Glide.with(this).asBitmap().load(R.drawable.imgitem).into(cover_img);
         }
-        if ((position == listSongs.size() - 1) && repeat != 1) nextBtn.setImageResource(R.drawable.iconnextnull);
+        if ((position == listSongs.size() - 1) && repeat != 1 && !shuffleBoolean) nextBtn.setImageResource(R.drawable.iconnextnull);
         else nextBtn.setImageResource(R.drawable.iconnext);
-        if (position == 0 && repeat != 1) prevBtn.setImageResource(R.drawable.iconpreviousnull);
+        if (position == 0 && repeat != 1 && !shuffleBoolean) prevBtn.setImageResource(R.drawable.iconpreviousnull);
         else prevBtn.setImageResource(R.drawable.iconprevious);
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
@@ -268,11 +275,11 @@ public class PlayingActivity extends AppCompatActivity {
             repeat = 1;
             return;
         }
-        if (!shuffleBoolean && repeat != 1) {
+        if (repeat != 1 && !shuffleBoolean) {
             if (position == 0) return;
             position -= 1;
         }
-        if (!shuffleBoolean && repeat == 1) {
+        if (repeat == 1) {
             if (position == 0) position = listSongs.size();
             position -= 1;
         }
@@ -326,11 +333,11 @@ public class PlayingActivity extends AppCompatActivity {
             repeat = 1;
             return;
         }
-        if (!shuffleBoolean && repeat != 1) {
+        if (repeat != 1 && !shuffleBoolean) {
             if (position == listSongs.size()-1) return;
             position += 1;
         }
-        if (!shuffleBoolean && repeat == 1) {
+        if (repeat == 1) {
             position = (position + 1) % listSongs.size();
         }
         if (shuffleBoolean) {
@@ -368,9 +375,6 @@ public class PlayingActivity extends AppCompatActivity {
     private int getRandom(int size) {
         Random random = new Random();
         return random.nextInt(size);
-    }
-    private void getRandom(ArrayList<SongModel> songList) {
-        Collections.shuffle(songList);
     }
 
     private void playThreadBtn() {

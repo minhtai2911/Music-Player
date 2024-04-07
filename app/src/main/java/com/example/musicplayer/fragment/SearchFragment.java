@@ -25,6 +25,7 @@ import com.example.musicplayer.adapter.SearchAdapter;
 import com.example.musicplayer.model.SongModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SearchFragment extends Fragment {
     View view;
@@ -32,12 +33,14 @@ public class SearchFragment extends Fragment {
     RecyclerView recyclerView;
     TextView textViewNull;
     SearchAdapter searchAdapter;
-    ArrayList<SongModel> listSongs;
+    HashMap<Integer,SongModel> listSongs = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        listSongs = songList;
+        for (int i = 0;i < songList.size();i++) {
+            listSongs.put(i, songList.get(i));
+        }
         view = inflater.inflate(R.layout.fragment_search, container, false);
         recyclerView = view.findViewById(R.id.recyclerview_search);
         textViewNull = view.findViewById(R.id.search_null);
@@ -62,22 +65,21 @@ public class SearchFragment extends Fragment {
     }
 
     private void search(String song) {
-        ArrayList<SongModel> filteredSongs = new ArrayList<>();
-
-        for (SongModel songModel : listSongs) {
-            String title = songModel.getTitle().toLowerCase();
-            String artist = songModel.getArtist().toLowerCase();
+        listSongs = new HashMap<>();
+        for (int i = 0; i<songList.size(); i++) {
+            String title = songList.get(i).getTitle().toLowerCase();
+            String artist = songList.get(i).getArtist().toLowerCase();
 
             if (title.contains(song.toLowerCase()) || artist.contains(song.toLowerCase())) {
-                filteredSongs.add(songModel);
+                listSongs.put(i,songList.get(i));
             }
         }
 
-        if (filteredSongs.isEmpty()) {
+        if (listSongs.isEmpty()) {
             textViewNull.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         } else {
-            searchAdapter = new SearchAdapter(getActivity(), filteredSongs);
+            searchAdapter = new SearchAdapter(getActivity(), listSongs);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setAdapter(searchAdapter);

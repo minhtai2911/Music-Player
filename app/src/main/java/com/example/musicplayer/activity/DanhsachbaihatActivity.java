@@ -156,6 +156,7 @@ public class DanhsachbaihatActivity extends AppCompatActivity {
         }
     }
     private void floatActionButtonClick(){
+        mangbaihat = playlist.getListSong();
         floatingActionButton.setEnabled(true);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override

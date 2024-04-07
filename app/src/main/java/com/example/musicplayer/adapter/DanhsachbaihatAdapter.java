@@ -4,6 +4,7 @@ package com.example.musicplayer.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaMetadataRetriever;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.activity.PlayNhacActivity;
 import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.model.SongModel;
 
@@ -60,8 +62,8 @@ public class DanhsachbaihatAdapter extends RecyclerView.Adapter<DanhsachbaihatAd
             @Override
             public void onClick(View v) {
                 Log.d(song.getTitle(), "onClick: ");
-                Intent intent = new Intent(context, PlayingActivity.class);
-                intent.putExtra("position",position);
+                Intent intent = new Intent(context, PlayNhacActivity.class);
+                intent.putExtra("cakhuc", (Parcelable) arrayListSong.get(position));
                 context.startActivity(intent);
             }
         });

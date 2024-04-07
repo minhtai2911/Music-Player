@@ -1,9 +1,12 @@
 package com.example.musicplayer.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 public class
- SongModel  {
+ SongModel implements Parcelable {
     private String path;
     private String title;
     private String artist;
@@ -15,6 +18,38 @@ public class
         this.artist = artist;
         this.duration = duration;
     }
+
+    protected SongModel(Parcel in) {
+        path = in.readString();
+        title = in.readString();
+        artist = in.readString();
+        duration = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(path);
+        dest.writeString(title);
+        dest.writeString(artist);
+        dest.writeString(duration);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<SongModel> CREATOR = new Creator<SongModel>() {
+        @Override
+        public SongModel createFromParcel(Parcel in) {
+            return new SongModel(in);
+        }
+
+        @Override
+        public SongModel[] newArray(int size) {
+            return new SongModel[size];
+        }
+    };
 
     public String getPath() {
         return path;
