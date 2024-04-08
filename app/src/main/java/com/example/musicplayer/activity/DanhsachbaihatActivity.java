@@ -15,7 +15,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +29,8 @@ import com.example.musicplayer.model.ListLibraryModel;
 import com.example.musicplayer.model.SongModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class DanhsachbaihatActivity extends AppCompatActivity {
     androidx.appcompat.widget.Toolbar toolbar;
@@ -117,6 +121,8 @@ public class DanhsachbaihatActivity extends AppCompatActivity {
                     danhsachbaihatAdapter = new DanhsachbaihatAdapter(DanhsachbaihatActivity.this, libraryList.get(i).getListSong(), libraryList.get(i).getTenThuVienPlayList());
                     recyclerViewdanhsachbaihat.setLayoutManager(new LinearLayoutManager(DanhsachbaihatActivity.this));
                     recyclerViewdanhsachbaihat.setAdapter(danhsachbaihatAdapter);
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+                    itemTouchHelper.attachToRecyclerView(recyclerViewdanhsachbaihat);
                 }
             }
         }
@@ -155,6 +161,31 @@ public class DanhsachbaihatActivity extends AppCompatActivity {
             }
         }
     }
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP |
+            ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            int fromPosition = viewHolder.getAdapterPosition();
+            int toPosition = target.getAdapterPosition();
+            for(int i = 0; i<libraryList.size();i++)
+            {
+                if(playlist.getTenThuVienPlayList().equals(libraryList.get(i).getTenThuVienPlayList()))
+                {
+                    if(!libraryList.get(i).getListSong().isEmpty())
+                    {
+                        Collections.swap(libraryList.get(i).getListSong(),fromPosition,toPosition);
+                        recyclerView.getAdapter().notifyItemMoved(fromPosition,toPosition);
+                    }
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
+    };
     private void floatActionButtonClick(){
         mangbaihat = playlist.getListSong();
         floatingActionButton.setEnabled(true);
