@@ -114,7 +114,7 @@ public class DanhsachbaihatActivity extends AppCompatActivity {
             {
                 if(!libraryList.get(i).getListSong().isEmpty())
                 {
-                    danhsachbaihatAdapter = new DanhsachbaihatAdapter(DanhsachbaihatActivity.this, libraryList.get(i).getListSong());
+                    danhsachbaihatAdapter = new DanhsachbaihatAdapter(DanhsachbaihatActivity.this, libraryList.get(i).getListSong(), libraryList.get(i).getTenThuVienPlayList());
                     recyclerViewdanhsachbaihat.setLayoutManager(new LinearLayoutManager(DanhsachbaihatActivity.this));
                     recyclerViewdanhsachbaihat.setAdapter(danhsachbaihatAdapter);
                 }

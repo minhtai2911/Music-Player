@@ -1,5 +1,7 @@
 package com.example.musicplayer.adapter;
 
+import static com.example.musicplayer.activity.MainActivity.libraryList;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -94,7 +96,7 @@ public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylist
                 pos.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        deletethuvien(thuVienPlayList.getTenThuVienPlayList());
+                        deletethuvien(thuVienPlayList);
                         alertDialog.dismiss();
                     }
                 });
@@ -109,8 +111,8 @@ public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylist
         });
 
     }
-    private void deletethuvien(String tenthuvien) {
-
+    private void deletethuvien(ListLibraryModel tenthuvien) {
+        libraryList.remove(tenthuvien);
     }
 
     @Override

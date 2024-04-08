@@ -206,6 +206,7 @@ public class PlayNhacActivity extends AppCompatActivity {
             if(intent.hasExtra("cakhuc"))
             {
                 SongModel baihat = intent.getParcelableExtra("cakhuc");
+                position = 0;
                 listSongs.add(baihat);
             }
             if(intent.hasExtra("cacbaihat"))
@@ -367,8 +368,12 @@ public class PlayNhacActivity extends AppCompatActivity {
             return;
         }
         if (repeat != 1 && !shuffleBoolean) {
-            if (position == listSongs.size()-1) return;
-            position += 1;
+            if (position == listSongs.size()-1){
+                position = 0;
+            }
+            else{
+                position += 1;
+            }
         }
         if (repeat == 1) {
             position = (position + 1) % listSongs.size();

@@ -1,6 +1,9 @@
 package com.example.musicplayer.adapter;
 
 
+import static com.example.musicplayer.activity.MainActivity.libraryList;
+
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaMetadataRetriever;
@@ -9,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
 import com.example.musicplayer.activity.PlayNhacActivity;
 import com.example.musicplayer.activity.PlayingActivity;
+import com.example.musicplayer.model.ListLibraryModel;
 import com.example.musicplayer.model.SongModel;
 
 import java.util.ArrayList;
@@ -27,11 +32,12 @@ public class DanhsachbaihatAdapter extends RecyclerView.Adapter<DanhsachbaihatAd
     Context context;
     ArrayList<SongModel> arrayListSong;
     View view;
+    String TenThuVienPlayList;
 
-
-    public DanhsachbaihatAdapter(Context context, ArrayList<SongModel> arrayListSong) {
+    public DanhsachbaihatAdapter(Context context, ArrayList<SongModel> arrayListSong, String TenThuVienPlayList) {
         this.context = context;
         this.arrayListSong = arrayListSong;
+        this.TenThuVienPlayList = TenThuVienPlayList;
     }
 
     @NonNull
@@ -67,8 +73,45 @@ public class DanhsachbaihatAdapter extends RecyclerView.Adapter<DanhsachbaihatAd
                 context.startActivity(intent);
             }
         });
-    }
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
 
+                AlertDialog alertDialog = new AlertDialog.Builder(context)
+                        .setTitle("Xóa nhạc khỏi thư viện")
+                        .setMessage("Bạn có muốn xóa bài "+song.getTitle()+" ?")
+                        .setPositiveButton("Xóa", null)
+                        .setNegativeButton("Hủy", null)
+                        .show();
+
+                Button pos = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button neg = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                pos.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deletethuvien(song, TenThuVienPlayList);
+                        alertDialog.dismiss();
+                    }
+                });
+                neg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+                return false;
+            }
+        });
+    }
+    private void deletethuvien(SongModel nameDeleteSong, String TenThuVienPlayList) {
+        for (int i = 0; i<libraryList.size();i++)
+        {
+            if(TenThuVienPlayList.equals(libraryList.get(i).getTenThuVienPlayList()))
+            {
+                libraryList.get(i).getListSong().remove(nameDeleteSong);
+            }
+        }
+    }
     @Override
     public int getItemCount() {
         return arrayListSong != null ? arrayListSong.size() : 0;
