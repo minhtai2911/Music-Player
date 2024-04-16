@@ -60,7 +60,10 @@ public class QueuePlayingActivity extends AppCompatActivity {
         DataIntent();
         GetDataPlaylist();
         overridePendingTransition(R.anim.anim_intent_in, R.anim.anim_intent_out);
-        searchAdapter = new SearchAdapter(QueuePlayingActivity.this, listSongs, queuePlayingAdapter);
+        searchAdapter = new SearchAdapter(this, listSongs, queuePlayingAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerViewSearch.setLayoutManager(linearLayoutManager);
+        recyclerViewSearch.setAdapter(searchAdapter);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

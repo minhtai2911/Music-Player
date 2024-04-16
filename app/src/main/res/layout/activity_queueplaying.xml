@@ -28,17 +28,17 @@
         app:expandedTitleGravity="center|bottom"
         app:expandedTitleMarginBottom="33dp"
         app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nested"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FF001417"
-        android:layout_below="@+id/recyclerview_queuePlaying"
-        android:elevation="6dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+<!--    <androidx.core.widget.NestedScrollView-->
+<!--        android:id="@+id/nested"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="#FF001417"-->
+<!--        android:layout_below="@+id/recyclerview_queuePlaying"-->
+<!--        android:elevation="6dp"-->
+<!--        app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
             <TextView
                 android:visibility="visible"
                 android:textColor="#FFF"
@@ -48,6 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:layout_below="@+id/recyclerview_queuePlaying"
                 />
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchView"
@@ -77,6 +78,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/searchView"/>
-        </RelativeLayout>
-</androidx.core.widget.NestedScrollView>
+<!--        </RelativeLayout>-->
+<!--</androidx.core.widget.NestedScrollView>-->
 </RelativeLayout>
