@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
     public static ArrayList<SongModel> songList;
     public static ArrayList<ListLibraryModel> libraryList = new ArrayList<>();
+    public static ArrayList<SongModel> queuePlaying = new ArrayList<>();
+    public static int prevPosition = -1;
     private LinearLayout playBackStatus;
     private ImageView imgLove, playPause;
     @Override
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (songList != null && !songList.isEmpty() && position > -1) {
+                    Log.d("onClick Main: ", String.valueOf(position));
                     int currentSongIndex = position;
                     Intent intent = new Intent(MainActivity.this, PlayingActivity.class);
                     intent.putExtra("playBackStatus", true);

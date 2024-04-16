@@ -45,7 +45,7 @@ public class SearchFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerview_search);
         textViewNull = view.findViewById(R.id.search_null);
         searchView = view.findViewById(R.id.searchView);
-        searchAdapter = new SearchAdapter(getActivity(), listSongs);
+        searchAdapter = new SearchAdapter(getActivity(), listSongs, null);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(searchAdapter);
@@ -79,7 +79,7 @@ public class SearchFragment extends Fragment {
             textViewNull.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         } else {
-            searchAdapter = new SearchAdapter(getActivity(), listSongs);
+            searchAdapter = new SearchAdapter(getActivity(), listSongs, null);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setAdapter(searchAdapter);

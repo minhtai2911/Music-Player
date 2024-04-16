@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    >
+    <TextView
+        android:visibility="visible"
+        android:textColor="#FFF"
+        android:text="Playing queue:"
+        android:textSize="20sp"
+        android:id="@+id/queueTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="0dp"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:fitsSystemWindows="false"
+        android:id="@+id/recyclerview_queuePlaying"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/queueTitle"
+        app:expandedTitleGravity="center|bottom"
+        app:expandedTitleMarginBottom="33dp"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FF001417"
+        android:layout_below="@+id/recyclerview_queuePlaying"
+        android:elevation="6dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:visibility="visible"
+                android:textColor="#FFF"
+                android:text="Add more song to your playing queue:"
+                android:textSize="20sp"
+                android:id="@+id/searchtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                />
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bgr_searchview"
+                android:layout_margin="10dp"
+                app:iconifiedByDefault="false"
+                app:queryHint = "What do you want to play?"
+                android:layout_below="@+id/searchtitle"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_search"
+                android:background="@color/colorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="1000dp"
+                android:layout_below="@+id/searchView"
+                android:layout_marginTop="20dp" />
+            <TextView
+                android:visibility="gone"
+                android:textColor="#FFF"
+                android:gravity="center"
+                android:text="No results found for your search"
+                android:textSize="27sp"
+                android:id="@+id/search_null"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/searchView"/>
+        </RelativeLayout>
+</androidx.core.widget.NestedScrollView>
+</RelativeLayout>
