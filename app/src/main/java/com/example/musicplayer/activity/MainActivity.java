@@ -1,7 +1,7 @@
 package com.example.musicplayer.activity;
 
 import static com.example.musicplayer.activity.PlayingActivity.img_status;
-import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
+import static com.example.musicplayer.activity.PlayingActivity.musicService;
 import static com.example.musicplayer.activity.PlayingActivity.position;
 import static com.example.musicplayer.activity.PlayingActivity.song_name;
 
@@ -70,13 +70,13 @@ public class MainActivity extends AppCompatActivity {
         playPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mediaPlayer.isPlaying()) {
+                if (musicService.isPlaying()) {
                     playPause.setImageResource(R.drawable.nutpause);
-                    mediaPlayer.pause();
+                    musicService.pause();
                 }
                 else {
                     playPause.setImageResource(R.drawable.nutplay);
-                    mediaPlayer.start();
+                    musicService.start();
                 }
             }
         });
@@ -120,9 +120,9 @@ public class MainActivity extends AppCompatActivity {
         ImageView img = findViewById(R.id.img_status);
         if (img_status != null)
             Glide.with(this).asBitmap().load(img_status).into(img);
-        if (mediaPlayer != null) {
+        if (musicService != null) {
             playPause = findViewById(R.id.imgPlay);
-            if (mediaPlayer.isPlaying()) playPause.setImageResource(R.drawable.nutplay);
+            if (musicService.isPlaying()) playPause.setImageResource(R.drawable.nutplay);
             else playPause.setImageResource(R.drawable.nutpause);
         }
     }
