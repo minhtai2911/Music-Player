@@ -1,6 +1,8 @@
 package com.example.musicplayer.fragment;
 
 import static com.bumptech.glide.Glide.init;
+import static com.example.musicplayer.activity.MainActivity.libraryList;
+import static com.example.musicplayer.activity.MainActivity.songList;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -15,22 +17,25 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.musicplayer.R;
-//import com.example.musicplayer.activity.DanhsachbaihatActivity;
+import com.example.musicplayer.activity.DanhsachbaihatActivity;
 import com.example.musicplayer.activity.MainActivity;
 import com.example.musicplayer.adapter.ViewPagerThuVien;
 import com.example.musicplayer.model.ListLibraryModel;
 import com.google.android.material.tabs.TabLayout;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LibraryFragment extends Fragment implements InsertLibraryFragment.ExampleDialogListenerthuvien{
     TabLayout tabLayout;
     ViewPager viewPager;
     ImageView imgAddThuVien;
-    //    CircleImageView imguser;
+//    CircleImageView imguser;
     ProgressDialog progressDialog;
     View view;
     ListLibraryModel thuVienPlayList = null;
+    ListLibraryModel tempThuvien;
     private String tenThuVien;
     private MainActivity hm;
     public LibraryFragment() {
@@ -63,7 +68,7 @@ public class LibraryFragment extends Fragment implements InsertLibraryFragment.E
         viewPager.setAdapter(viewPagerThuVien);
         tabLayout.setupWithViewPager(viewPager);
     }
-//
+
     private void AnhXa() {
         hm = (MainActivity) getActivity();
         tabLayout = view.findViewById(R.id.tabLayouttv);
@@ -71,13 +76,11 @@ public class LibraryFragment extends Fragment implements InsertLibraryFragment.E
         imgAddThuVien = view.findViewById(R.id.idaddthuvien);
 //        imguser = view.findViewById(R.id.imageviewuserthuvien);
     }
-//
-//    @Override
+
+    @Override
     public void apply(String tenthuvien) {
-        HashMap<String, String> params = new HashMap<>();
         tenThuVien = tenthuvien;
-        params.put("tenthuvien", tenThuVien);
-        insertthuvien(params);
+        insertthuvien(tenThuVien);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -88,16 +91,19 @@ public class LibraryFragment extends Fragment implements InsertLibraryFragment.E
 
     private void GetData() {
         progressDialog.dismiss();
-//        Intent intent = new Intent(getActivity(), DanhsachbaihatActivity.class);
-//        intent.putExtra("idthuvienplaylist", thuVienPlayList.getTenThuVienPlayList());
-//        startActivity(intent);
+        Intent intent = new Intent(getActivity(), DanhsachbaihatActivity.class);
+        intent.putExtra("idthuvienplaylist", libraryList.get(libraryList.size()-1).getTenThuVienPlayList());
+        startActivity(intent);
     }
 
-    private void insertthuvien(HashMap<String, String> params) {
+    private void insertthuvien(String tenThuVien) {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Please wait");
         progressDialog.setMessage("Creating...");
         progressDialog.setCancelable(false);
         progressDialog.show();
+        tempThuvien = new ListLibraryModel();
+        tempThuvien.setTenThuVienPlayList(tenThuVien);
+        libraryList.add(tempThuvien);
     }
 }

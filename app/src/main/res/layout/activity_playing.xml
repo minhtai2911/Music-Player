@@ -89,7 +89,7 @@
             android:textSize="20sp" />
 
         <ImageView
-            android:id="@+id/img_love"
+            android:id="@+id/img_queue"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignParentEnd="true"

@@ -1,9 +1,13 @@
 package com.example.musicplayer.adapter;
 
+import static com.example.musicplayer.activity.MainActivity.libraryList;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +15,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
-//import com.example.musicplayer.activity.DanhsachbaihatActivity;
+import com.example.musicplayer.activity.DanhsachbaihatActivity;
 import com.example.musicplayer.model.ListLibraryModel;
+import com.example.musicplayer.model.SongModel;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,16 +48,38 @@ public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylist
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ListLibraryModel thuVienPlayList = mangthuvienplaylist.get(position);
         holder.txttenthuvienplaylist.setText(thuVienPlayList.getTenThuVienPlayList());
-        holder.txtsoluongnhac.setText(thuVienPlayList.getListSong().size()+" songs");
+        Log.d(String.valueOf(thuVienPlayList.getListSong()), "onBindViewHolder: ");
+        Log.d(String.valueOf(thuVienPlayList.getListSong().size()), "Size: ");
+        if(thuVienPlayList.getListSong().size()>0){
+            Log.d(String.valueOf(thuVienPlayList.getListSong()), "chay vao if: ");
+            holder.txtsoluongnhac.setText(thuVienPlayList.getListSong().size()+" songs");
+        }else {
+            Log.d(String.valueOf(thuVienPlayList.getListSong()), "chay vao else: ");
+            holder.txtsoluongnhac.setText("0 songs");
+        }
+        if(thuVienPlayList.getListSong().size()>0)
+        {
+            SongModel lastSongAdd = thuVienPlayList.getListSong().get(thuVienPlayList.getListSong().size()-1);
+            String songPath = lastSongAdd.getPath();
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(songPath);
+            byte[] img = retriever.getEmbeddedPicture();
+            if (img != null) {
+                Glide.with(context).asBitmap().load(img).into(holder.imgthuvienplaylist);
+            }
+            else {
+                Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgthuvienplaylist);
+            }
+        }
 //        Picasso.get().load(thuVienPlayList.getHinhThuVienPlaylist()).into(holder.imgthuvienplaylist);
-//        view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(context, DanhsachbaihatActivity.class);
-//                intent.putExtra("idthuvienplaylist", (Parcelable) mangthuvienplaylist.get(position));
-//                context.startActivity(intent);
-//            }
-//        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DanhsachbaihatActivity.class);
+                intent.putExtra("idthuvienplaylist", mangthuvienplaylist.get(position).getTenThuVienPlayList());
+                context.startActivity(intent);
+            }
+        });
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -67,7 +96,7 @@ public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylist
                 pos.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        deletethuvien(thuVienPlayList.getTenThuVienPlayList());
+                        deletethuvien(thuVienPlayList);
                         alertDialog.dismiss();
                     }
                 });
@@ -82,8 +111,8 @@ public class LibraryPlaylistAdapter extends RecyclerView.Adapter<LibraryPlaylist
         });
 
     }
-    private void deletethuvien(String tenthuvien) {
-
+    private void deletethuvien(ListLibraryModel tenthuvien) {
+        libraryList.remove(tenthuvien);
     }
 
     @Override

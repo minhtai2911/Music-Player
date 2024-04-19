@@ -1,18 +1,14 @@
 package com.example.musicplayer.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ListLibraryModel {
-    private int idThuVienPlayList;
+public class ListLibraryModel implements Serializable {
     private String tenThuVienPlayList;
     private String hinhThuVienPlaylist;
     private ArrayList<SongModel> listSong;
-    private String userName;
-    public int getIDThuVienPlayList() {
-        return idThuVienPlayList;
-    }
-    public void setIDThuVienPlayList(int idThuVienPlayList) {
-        this.idThuVienPlayList = idThuVienPlayList;
+    public ListLibraryModel() {
+        this.listSong = new ArrayList<>();
     }
     public String getTenThuVienPlayList() {
         return tenThuVienPlayList;
@@ -26,18 +22,10 @@ public class ListLibraryModel {
     public void setHinhThuVienPlaylist(String hinhThuVienPlaylist) {
         this.hinhThuVienPlaylist = hinhThuVienPlaylist;
     }
-    public String getUserName() {
-        return userName;
-    }
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public ArrayList<SongModel> getListSong() {
         return listSong;
     }
-
-    public void setListSong(ArrayList<SongModel> listSong) {
-        this.listSong = listSong;
+    public void setListSong(SongModel thisSong) {
+        listSong.add(thisSong);
     }
 }

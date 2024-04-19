@@ -1,9 +1,12 @@
 package com.example.musicplayer.adapter;
 
+import static com.example.musicplayer.activity.MainActivity.libraryList;
+
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
-//import com.example.musicplayer.activity.DanhsachbaihatActivity;
+import com.example.musicplayer.activity.DanhsachbaihatActivity;
 import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.model.ListLibraryModel;
 import com.example.musicplayer.model.SongModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHolder> {
@@ -30,6 +34,8 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     public PlaylistAdapter(Context context, ArrayList<ListLibraryModel> arrayListPlaylist) {
         this.context = context;
         this.arrayListPlaylist = arrayListPlaylist;
+        Log.d("Danh sach bai hat goc: ", String.valueOf(libraryList));
+        Log.d("Danh sach bai hat: ", String.valueOf(arrayListPlaylist));
     }
 
     @NonNull
@@ -43,21 +49,30 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     public void onBindViewHolder(@NonNull PlaylistAdapter.ViewHolder holder, final int position) {
         ListLibraryModel playlist = arrayListPlaylist.get(position);
         holder.txtSong.setText(playlist.getTenThuVienPlayList());
-        byte[] img = getImg(playlist.getHinhThuVienPlaylist());
-        if (img != null) {
-            Glide.with(context).asBitmap().load(img).into(holder.imgSong);
+        if(playlist.getListSong().size()>0)
+        {
+            SongModel lastSongAdd = playlist.getListSong().get(playlist.getListSong().size()-1);
+            String songPath = lastSongAdd.getPath();
+            Log.d(playlist.getTenThuVienPlayList(), "TenThuVienPlayList: ");
+            Log.d(playlist.getHinhThuVienPlaylist(), "HinhThuVienPlayList: ");
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(songPath);
+            byte[] img = retriever.getEmbeddedPicture();
+            if (img != null) {
+                Glide.with(context).asBitmap().load(img).into(holder.imgSong);
+            }
+            else {
+                Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgSong);
+            }
         }
-        else {
-            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgSong);
-        }
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(context, DanhsachbaihatActivity.class);
-//                intent.putExtra("idthuvienplaylist", (Parcelable) arrayListPlaylist.get(position));
-//                context.startActivity(intent);
-//            }
-//        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DanhsachbaihatActivity.class);
+                intent.putExtra("idthuvienplaylist",arrayListPlaylist.get(position).getTenThuVienPlayList());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -74,9 +89,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
             txtSong = itemView.findViewById(R.id.txtSong);
         }
     }
-    private byte[] getImg(String uri) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(uri);
-        return retriever.getEmbeddedPicture();
-    }
+//    private byte[] getImg(String uri) {
+//        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+//        retriever.setDataSource(uri);
+//        return retriever.getEmbeddedPicture();
+//    }
 }
