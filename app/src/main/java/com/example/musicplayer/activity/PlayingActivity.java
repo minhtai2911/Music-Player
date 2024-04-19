@@ -4,6 +4,10 @@ import static com.example.musicplayer.activity.MainActivity.prevPosition;
 import static com.example.musicplayer.activity.MainActivity.queuePlaying;
 import static com.example.musicplayer.activity.MainActivity.songList;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
@@ -15,6 +19,9 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
@@ -49,7 +56,8 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     ImageView cover_img, nextBtn, prevBtn, backBtn, shuffleBtn, repeatBtn, playPauseBtn, img_queue;
     SeekBar seekBar;
     public static int position = -1;
-    static ArrayList<SongModel> listSongs = new ArrayList<>();
+    public static int currentPostion = -1;
+    public static ArrayList<SongModel> listSongs = new ArrayList<>();
     static Uri uri;
 
     public static MusicService musicService;
@@ -237,19 +245,16 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
 
                 uri = Uri.parse(listSongs.get(position).getPath());
             }
-            if (mediaPlayer != null) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-                mediaPlayer.start();
-            } else {
-                mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-                mediaPlayer.start();
+            if (musicService != null) {
+                musicService.stop();
+                musicService.release();
+                musicService.createMediaPlayer(position);
+                musicService.start();
             }
         }
-        if (mediaPlayer.isPlaying()) playPauseBtn.setImageResource(R.drawable.nutplay);
+
         else playPauseBtn.setImageResource(R.drawable.nutpause);
-        seekBar.setMax(mediaPlayer.getDuration() / 1000);
+
         metaData(uri);
         song_name.setText(listSongs.get(position).getTitle());
         title.setText(listSongs.get(position).getTitle());
@@ -336,7 +341,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         prevThread.start();
     }
 
-    private void prevBtnClicked() {
+    public void prevBtnClicked() {
         listSongs = songList;
         if (repeat == 2) {
             repeatBtn.setImageResource(R.drawable.iconrepeated);
@@ -362,11 +367,11 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         showNotification(R.drawable.ic_pause);
         playPauseBtn.setImageResource(R.drawable.nutplay);
         uri = Uri.parse(listSongs.get(position).getPath());
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
-            mediaPlayer.start();
+        if (musicService != null) {
+            musicService.stop();
+            musicService.release();
+            musicService.createMediaPlayer(position);
+            musicService.start();
         }
         else {
             musicService.createMediaPlayer(position);
@@ -395,7 +400,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         nextThread.start();
     }
 
-    private void nextBtnClicked() {
+    public void nextBtnClicked() {
         listSongs = songList;
         if (repeat == 2) {
             repeatBtn.setImageResource(R.drawable.iconrepeated);
@@ -505,8 +510,13 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         MusicService.MyBinder myBinder = (MusicService.MyBinder) iBinder;
         musicService = myBinder.getService();
+        Log.e("Check service", "onServiceConnected: "+musicService);
+        Log.e("Check Position", "onServiceConnected: " + position);
         musicService.setCallBack(PlayingActivity.this);
-        Toast.makeText(musicService, "Connected" + musicService, Toast.LENGTH_SHORT).show();
+        musicService.createMediaPlayer(position);
+        musicService.start();
+        if (musicService.isPlaying()) playPauseBtn.setImageResource(R.drawable.nutplay);
+        seekBar.setMax(musicService.getDuration() / 1000);
         if (musicService.isPlaying()) {
             showNotification(R.drawable.ic_pause);
             playPauseBtn.setImageResource(R.drawable.nutplay);
@@ -516,6 +526,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             playPauseBtn.setImageResource(R.drawable.nutpause);
 
         }
+
         seekBar.setMax(musicService.getDuration() / 1000);
         metaData(uri);
     }
@@ -568,4 +579,5 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         retriever.setDataSource(uri);
         return retriever.getEmbeddedPicture();
     }
+
 }
