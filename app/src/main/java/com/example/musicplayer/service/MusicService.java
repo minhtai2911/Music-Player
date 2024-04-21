@@ -112,9 +112,11 @@ public class MusicService extends Service {
     public int getCurrentPosition(){
         return mediaPlayer.getCurrentPosition();
     }
-    public void createMediaPlayer(int position){
+    public void createMediaPlayer(int positionInner){
+        position = positionInner;
         uri = Uri.parse(tempListSongs.get(position).getPath());
         mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
+
     }
     public void setCallBack(ActionPlaying actionPlaying){
         this.actionPlaying = actionPlaying;
