@@ -250,10 +250,11 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
                 musicService.release();
                 musicService.createMediaPlayer(position);
                 musicService.start();
+
             }
         }
-
         else playPauseBtn.setImageResource(R.drawable.nutpause);
+
 
         metaData(uri);
         song_name.setText(listSongs.get(position).getTitle());
@@ -311,12 +312,12 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         playThreadBtn();
         nextThreadBtn();
         prevThreadBtn();
-        getIntentMethod();
-        Log.d("ON RESUME!!!!", String.valueOf(position));
-        for(int i = 0; i<listSongs.size();i++)
-        {
-            Log.d("ON RESUME LISTSONG!!!!", listSongs.get(i).getTitle());
-        }
+//        getIntentMethod();
+//        Log.d("ON RESUME!!!!", String.valueOf(position));
+//        for(int i = 0; i<listSongs.size();i++)
+//        {
+//            Log.d("ON RESUME LISTSONG!!!!", listSongs.get(i).getTitle());
+//        }
         super.onResume();
     }
     @Override
@@ -517,17 +518,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         musicService.start();
         if (musicService.isPlaying()) playPauseBtn.setImageResource(R.drawable.nutplay);
         seekBar.setMax(musicService.getDuration() / 1000);
-        if (musicService.isPlaying()) {
-            showNotification(R.drawable.ic_pause);
-            playPauseBtn.setImageResource(R.drawable.nutplay);
-        }
-        else {
-            showNotification(R.drawable.ic_play);
-            playPauseBtn.setImageResource(R.drawable.nutpause);
-
-        }
-
-        seekBar.setMax(musicService.getDuration() / 1000);
+        showNotification(R.drawable.ic_pause);
         metaData(uri);
     }
 
