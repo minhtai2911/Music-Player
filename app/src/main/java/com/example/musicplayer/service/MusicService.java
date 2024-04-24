@@ -2,7 +2,7 @@ package com.example.musicplayer.service;
 
 import static com.example.musicplayer.activity.MainActivity.songList;
 import static com.example.musicplayer.activity.PlayingActivity.listSongs;
-import static com.example.musicplayer.activity.PlayingActivity.position;
+import static com.example.musicplayer.activity.PlayingActivity.mediaSessionCompat;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -15,8 +15,11 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -35,14 +38,14 @@ public class MusicService extends Service {
     MyBinder myBinder = new MyBinder();
     ActionPlaying actionPlaying;
     MediaPlayer mediaPlayer;
-    MediaSessionCompat mediaSessionCompat;
+
     ArrayList<SongModel> tempListSongs = new ArrayList<>();
     Uri uri;
     int position = -1;
     @Override
     public void onCreate() {
+
         super.onCreate();
-        mediaSessionCompat = new MediaSessionCompat(getBaseContext(), "My Audio");
         tempListSongs = listSongs;
 
     }
@@ -134,7 +137,8 @@ public class MusicService extends Service {
         mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
 
     }
-    public void showNotification(int playPauseBtn) {
+    public void showNotification(int playPauseBtn, float playbackSpeed) {
+        Log.e("Check position in noti", "showNotification: " + position + " "+listSongs.size() );
         Intent intent = new Intent(this, PlayingActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
@@ -148,7 +152,7 @@ public class MusicService extends Service {
         PendingIntent nextPending = PendingIntent.getBroadcast(this, 0, nextIntent, PendingIntent.FLAG_IMMUTABLE);
 
         byte[] picture = null;
-        picture = getImg(tempListSongs.get(position).getPath());
+        picture = getImg(tempListSongs.get(PlayingActivity.position).getPath());
         Bitmap thumb = null;
         if(picture != null){
             thumb = BitmapFactory.decodeByteArray(picture, 0, picture.length);
@@ -160,18 +164,26 @@ public class MusicService extends Service {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSmallIcon(playPauseBtn)
                 .setLargeIcon(thumb)
-                .setContentTitle(tempListSongs.get(position).getTitle())
-                .setContentText(tempListSongs.get(position).getArtist())
+                .setContentTitle(tempListSongs.get(PlayingActivity.position).getTitle())
+                .setContentText(tempListSongs.get(PlayingActivity.position).getArtist())
                 .addAction(R.drawable.iconprevious, "Previous", prevPending)
                 .addAction(playPauseBtn, "Pause", pausePending)
                 .addAction(R.drawable.iconnext, "Next", nextPending)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setMediaSession(mediaSessionCompat.getSessionToken()))
+                        .setMediaSession(mediaSessionCompat.getSessionToken()).setShowActionsInCompactView(0,1,2))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true)
                 .build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notification);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            mediaSessionCompat.setMetadata(new MediaMetadataCompat.Builder()
+                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, Long.parseLong(String.valueOf(mediaPlayer.getDuration())))
+                    .build());
+            mediaSessionCompat.setPlaybackState(new PlaybackStateCompat.Builder()
+                    .setState(PlaybackStateCompat.STATE_PLAYING, Long.parseLong(String.valueOf(mediaPlayer.getCurrentPosition())), playbackSpeed)
+                    .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+                    .build());
+        }
+        startForeground(2,notification);
     }
     private byte[] getImg(String uri) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();

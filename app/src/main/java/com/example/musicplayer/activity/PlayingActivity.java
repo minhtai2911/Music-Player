@@ -59,7 +59,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     public static int currentPostion = -1;
     public static ArrayList<SongModel> listSongs = new ArrayList<>();
     static Uri uri;
-
+    public static MediaSessionCompat mediaSessionCompat;
     public static MusicService musicService;
     private Handler handler = new Handler();
     private Thread playThread, nextThread, prevThread;
@@ -73,6 +73,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_playing);
+        mediaSessionCompat = new MediaSessionCompat(getBaseContext(), "My Audio");
         initViews();
         getIntentMethod();
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -239,7 +240,12 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         Log.d("songNamePosition: ", songName);
         boolean playBackStatus = getIntent().getBooleanExtra("playBackStatus", false);
         listSongs = songList;
+        Intent intent = new Intent(this, MusicService.class);
+        intent.putExtra("servicePosition", position);
+        startService(intent);
+        Log.e("Check music service", "Music service: "+musicService);
         if (!playBackStatus) {
+
             if (listSongs != null) {
 
                 uri = Uri.parse(listSongs.get(position).getPath());
@@ -251,16 +257,11 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
                 musicService.start();
             }
         }
-
         else playPauseBtn.setImageResource(R.drawable.nutpause);
-        Intent intent = new Intent(this, MusicService.class);
-        intent.putExtra("servicePosition", position);
-        startService(intent);
         metaData(uri);
         song_name.setText(listSongs.get(position).getTitle());
         title.setText(listSongs.get(position).getTitle());
         artist_name.setText(listSongs.get(position).getArtist());
-
     }
 
     private void initViews() {
@@ -313,6 +314,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         playThreadBtn();
         nextThreadBtn();
         prevThreadBtn();
+        Log.e("Check between", "onResume: "+position );
         getIntentMethod();
         Log.d("ON RESUME!!!!", String.valueOf(position));
         for(int i = 0; i<listSongs.size();i++)
@@ -344,7 +346,6 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     }
 
     public void prevBtnClicked() {
-        musicService.showNotification(R.drawable.ic_pause);
         listSongs = songList;
         if (repeat == 2) {
             repeatBtn.setImageResource(R.drawable.iconrepeated);
@@ -367,7 +368,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             }
             position = positionRandom;
         }
-
+        musicService.showNotification(R.drawable.ic_pause,1f);
         playPauseBtn.setImageResource(R.drawable.nutplay);
         uri = Uri.parse(listSongs.get(position).getPath());
         if (musicService != null) {
@@ -426,7 +427,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             position = positionRandom;
         }
         if (listSongs.size() > position) {
-            musicService.showNotification(R.drawable.ic_pause);
+            musicService.showNotification(R.drawable.ic_pause,1f);
             playPauseBtn.setImageResource(R.drawable.nutplay);
             uri = Uri.parse(listSongs.get(position).getPath());
             prevPosition = position;
@@ -474,7 +475,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     @Override
     public void playPauseBtnClicked() {
         if (musicService.isPlaying()) {
-            musicService.showNotification(R.drawable.ic_play);
+            musicService.showNotification(R.drawable.ic_play,0f);
             playPauseBtn.setImageResource(R.drawable.nutpause);
             musicService.pause();
             seekBar.setMax(musicService.getDuration()/1000);
@@ -491,7 +492,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             });
         }
         else {
-            musicService.showNotification(R.drawable.ic_pause);
+            musicService.showNotification(R.drawable.ic_pause,1f);
             playPauseBtn.setImageResource(R.drawable.nutplay);
             musicService.start();
             seekBar.setMax(musicService.getDuration()/1000);
@@ -514,20 +515,15 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         MusicService.MyBinder myBinder = (MusicService.MyBinder) iBinder;
         musicService = myBinder.getService();
         musicService.setCallBack(PlayingActivity.this);
-        musicService.showNotification(R.drawable.ic_pause);
+        musicService.showNotification(R.drawable.ic_pause,1f);
+
+
         Log.e("Check service", "onServiceConnected: "+musicService);
         Log.e("Check Position", "onServiceConnected: " + position);
+        metaData(uri);
         if (musicService.isPlaying()) playPauseBtn.setImageResource(R.drawable.nutplay);
         seekBar.setMax(musicService.getDuration() / 1000);
-        if (musicService.isPlaying()) {
-            musicService.showNotification(R.drawable.ic_pause);
-            playPauseBtn.setImageResource(R.drawable.nutplay);
-        }
-        else {
-            musicService.showNotification(R.drawable.ic_play);
-            playPauseBtn.setImageResource(R.drawable.nutpause);
-        }
-        metaData(uri);
+
     }
 
     @Override
