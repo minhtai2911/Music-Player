@@ -1,21 +1,24 @@
 package com.example.musicplayer.activity;
 
-import static com.example.musicplayer.activity.PlayingActivity.img_status;
 import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
-import static com.example.musicplayer.activity.PlayingActivity.position;
-import static com.example.musicplayer.activity.PlayingActivity.song_name;
 
 import android.Manifest;
-import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +35,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.musicplayer.adapter.MainViewPagerAdapter;
 import com.example.musicplayer.R;
 import com.example.musicplayer.fragment.LibraryFragment;
@@ -53,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     public static String currPlayedPlaylistID="";
     public static SongModel currPlayedSong = null;
     private LinearLayout playBackStatus;
-    private ImageView playPause;
+    private ImageView playPause, addButton;
     DatabaseHelper myDB;
 
     @Override
@@ -75,9 +80,22 @@ public class MainActivity extends AppCompatActivity {
     private void playBackStatus() {
         playBackStatus = findViewById(R.id.linearLayoutPlayBackStatus);
         playPause = findViewById(R.id.imgPlay);
+        addButton = findViewById(R.id.img_add);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currPlayedSong==null){
+                    return;
+                }
+                showAddCurrSongDialog(currPlayedSong, MainActivity.this);
+            }
+        });
         playPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(currPlayedSong==null){
+                    return;
+                }
                 if (mediaPlayer.isPlaying()) {
                     playPause.setImageResource(R.drawable.nutpause);
                     mediaPlayer.pause();
@@ -94,12 +112,46 @@ public class MainActivity extends AppCompatActivity {
                 if(currPlayedSong!=null){
                     Intent intent = new Intent(MainActivity.this, PlayingActivity.class);
                     String songPath = currPlayedSong.getPath();
+                    if(currPlayedPlaylistID!=null){
+                        intent.putExtra("playlistID", currPlayedPlaylistID);
+                    }
                     intent.putExtra("songPath", songPath);
                     startActivity(intent);
                 }
 
             }
         });
+    }
+
+    public static void showAddCurrSongDialog(SongModel song, Context context) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.bottom_current_song_dialog);
+        LinearLayout addPlaylist = dialog.findViewById(R.id.add_playlist);
+        ImageView closeIcon = dialog.findViewById(R.id.layout_close);
+        closeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        addPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String songPath = song.getPath();
+                Intent intent = new Intent(v.getContext(), AddToPlaylistActivity.class);
+                intent.putExtra("songPath", songPath);
+                v.getContext().startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
 
     private void initViewPager() {
@@ -124,12 +176,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadStatus() {
-        TextView song = findViewById(R.id.song_status);
-        if (song_name != null)
-            song.setText(song_name.getText());
-        ImageView img = findViewById(R.id.img_status);
-        if (img_status != null)
-            Glide.with(this).asBitmap().load(img_status).into(img);
+        TextView songName = playBackStatus.findViewById(R.id.song_name);
+        TextView author = playBackStatus.findViewById(R.id.artist_name);
+        ImageView imgSong = playBackStatus.findViewById(R.id.img_status);
+        if (currPlayedSong!=null){
+            songName.setText(currPlayedSong.getTitle());
+            author.setText(currPlayedSong.getArtist());
+            Uri uri = Uri.parse(currPlayedSong.getPath());
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(uri.toString());
+            byte[] img = retriever.getEmbeddedPicture();
+            if (img != null) {
+                Glide.with(this).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(10))).into(imgSong);
+            }
+            else {
+                Glide.with(this).asBitmap().load(R.drawable.default_image).apply(RequestOptions.bitmapTransform(new RoundedCorners(10))).into(imgSong);
+            }
+        }
+
         if (mediaPlayer != null) {
             playPause = findViewById(R.id.imgPlay);
             if (mediaPlayer.isPlaying()) playPause.setImageResource(R.drawable.nutplay);

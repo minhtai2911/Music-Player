@@ -35,12 +35,10 @@
                     android:layout_height="55dp">
                     <ImageView
                         android:id="@+id/back_btn"
-                        android:background="@drawable/iconback"
-                        android:elevation="6dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_width="20dp"
-                        android:layout_height="25dp"/>
-
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/back_btn" />
                 </RelativeLayout>
                 <ImageView
                     android:id="@+id/playlist_image"
@@ -49,7 +47,7 @@
                     android:layout_gravity="center"
                     android:elevation="0dp"
                     android:scaleType="fitXY"
-                    android:src="@drawable/imgitem" />
+                    android:src="@drawable/default_image" />
                 <TextView
                     android:id="@+id/playlist_name"
                     android:layout_width="wrap_content"
@@ -68,16 +66,15 @@
                     android:id="@+id/play_playlist_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginBottom="40dp"
-                    android:background="@drawable/shapebtn"
+                    android:height="50dp"
+                    android:width="120dp"
+                    android:backgroundTint="@color/colorAccent"
                     android:fontFamily="@font/arimo_bold"
                     android:text="Play"
-                    android:textSize="24dp"
-                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="40dp"
                     android:layout_gravity="center"
-                    android:scaleType="fitXY"
-                    />
+                    android:textColor="@color/colorPrimaryDark" />
             </LinearLayout>
 
             <LinearLayout

@@ -18,9 +18,9 @@
             android:layout_gravity="center"
             android:scaleType="fitXY"
             android:id="@+id/imgSong"
-            android:src="@drawable/imgitem"
-            android:layout_width="150dp"
-            android:layout_height="150dp"/>
+            android:src="@drawable/default_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,11 +31,11 @@
             android:layout_marginRight="2dp"
             android:ellipsize="end"
             android:fontFamily="@font/arimo_bold"
-            android:maxWidth="150dp"
+            android:maxWidth="120dp"
             android:maxLines="1"
             android:text="textview"
             android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textSize="17sp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

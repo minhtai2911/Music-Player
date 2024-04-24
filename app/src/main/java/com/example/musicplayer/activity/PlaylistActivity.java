@@ -52,7 +52,56 @@ public class PlaylistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_playlist);
         DataIntent();
         initView();
-        overridePendingTransition(R.anim.anim_intent_in, R.anim.anim_intent_out);
+        recyclerViewPlaylist = findViewById(R.id.recyclerview_playlist_songs);
+            playlistAdapter = new PlaylistAdapter(this, playlistModel.getListSong(),currentPlaylistIntent);
+            recyclerViewPlaylist.setLayoutManager(new LinearLayoutManager(this));
+            recyclerViewPlaylist.setAdapter(playlistAdapter);
+            playlistName.setText(playlistModel.getPlaylistName());
+            String playlistImagePath = playlistModel.getPlaylistImagePath();
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setShape(GradientDrawable.RECTANGLE);
+            int darkColor = android.graphics.Color.parseColor("#121212");
+
+            if (playlistImagePath != null) {
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                retriever.setDataSource(playlistImagePath);
+                byte[] img = retriever.getEmbeddedPicture();
+                Glide.with(this).asBitmap().load(img).into(playlistImage);
+                int domainColor = GetDominantColor.getDominantColor(img);
+                gradientDrawable.setColors(new int[]{darkColor,domainColor, domainColor +20, domainColor +30});
+            }
+            else {
+                Glide.with(this).asBitmap().load(R.drawable.default_playlist_image).into(playlistImage);
+                int domainColor = -13627344;
+                gradientDrawable.setColors(new int[]{darkColor,domainColor, domainColor +20, domainColor +30});
+            }
+            gradientDrawable.setOrientation(GradientDrawable.Orientation.BOTTOM_TOP);
+            gradientDrawable.setCornerRadius(10);
+            LinearLayout linearLayout = findViewById(R.id.playlist_info);
+            linearLayout.setBackground(gradientDrawable);
+            play_playlist_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(playlistModel!=null && playlistModel.getListSong().size()>=1){
+                        if(currPlayedPlaylistID==null||!currPlayedPlaylistID.equals(playlistModel.getPlaylistId())) {
+                            Intent intent = new Intent(PlaylistActivity.this, PlayingActivity.class);
+                            intent.putExtra("playlistID", playlistModel.getPlaylistId());
+                            intent.putExtra("songPath", playlistModel.getListSong().get(0).getPath());
+                            PlaylistActivity.this.startActivity(intent);
+                        } else if (mediaPlayer.isPlaying()) {
+                            mediaPlayer.pause();
+                        } else {
+                            mediaPlayer.start();
+                        }
+                    }
+                }
+            });
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
     }
 
     private void DataIntent() {
@@ -76,81 +125,9 @@ public class PlaylistActivity extends AppCompatActivity {
         }
         play_playlist_btn = findViewById(R.id.play_playlist_btn);
         playlistName = findViewById(R.id.playlist_name);
-        playlistName.setText(playlistModel.getPlaylistName());
         playlistImage = findViewById(R.id.playlist_image);
-        String playlistImagePath = playlistModel.getPlaylistImagePath();
-
-        if (playlistImagePath != null) {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(playlistImagePath);
-            byte[] img = retriever.getEmbeddedPicture();
-            Glide.with(this).asBitmap().load(img).into(playlistImage);
-            GradientDrawable gradientDrawable = new GradientDrawable();
-            gradientDrawable.setShape(GradientDrawable.RECTANGLE);
-            int darkColor = android.graphics.Color.parseColor("#121212");
-            gradientDrawable.setColors(new int[]{darkColor, GetDominantColor.getDominantColor(img)});
-            gradientDrawable.setOrientation(GradientDrawable.Orientation.BOTTOM_TOP);
-            gradientDrawable.setCornerRadius(10);
-            LinearLayout linearLayout = findViewById(R.id.playlist_info);
-            linearLayout.setBackground(gradientDrawable);
-        }
-        else {
-            Glide.with(this).asBitmap().load(R.drawable.imgitem).into(playlistImage);
-        }
-
-        play_playlist_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(playlistModel.getListSong().size()>=1){
-                    if(currPlayedPlaylistID==null||!currPlayedPlaylistID.equals(playlistModel.getPlaylistId())) {
-                        ArrayList<SongModel> songs = playlistModel.getListSong();
-                        setQueuePlaying(songs);
-                        Intent intent = new Intent(PlaylistActivity.this, PlayingActivity.class);
-                        intent.putExtra("playlistID", playlistModel.getPlaylistId());
-                        PlaylistActivity.this.startActivity(intent);
-                    } else {
-                        if (mediaPlayer.isPlaying()) {
-                            mediaPlayer.pause();
-                        }
-                        else {
-                            mediaPlayer.start();
-                        }
-                    }
-                }
-            }
-        });
-
-        recyclerViewPlaylist = findViewById(R.id.recyclerview_playlist_songs);
-        playlistAdapter = new PlaylistAdapter(this, playlistModel.getListSong(),currentPlaylistIntent);
-        recyclerViewPlaylist.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewPlaylist.setAdapter(playlistAdapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(recyclerViewPlaylist);
-
         backButton = findViewById(R.id.back_btn);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        overridePendingTransition(R.anim.anim_intent_in, R.anim.anim_intent_out);
     }
 
-    ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
-        @Override
-        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-            return makeMovementFlags(0,
-                    ItemTouchHelper.START| ItemTouchHelper.END);
-        }
-
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            playlistAdapter.deleteSong(viewHolder.getAdapterPosition());
-        }
-    };
 }

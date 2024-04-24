@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.activity.AddToPlaylistActivity;
 import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.activity.PlaylistActivity;
 import com.example.musicplayer.model.PlaylistModel;
@@ -54,7 +55,7 @@ public class PlaylistAdapter  extends RecyclerView.Adapter<PlaylistAdapter.MyVie
     @Override
     public PlaylistAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        view = inflater.inflate(R.layout.dong_danh_sach_queue, parent, false);
+        view = inflater.inflate(R.layout.item_search, parent, false);
         return new PlaylistAdapter.MyViewHolder(view);
     }
 
@@ -87,11 +88,66 @@ public class PlaylistAdapter  extends RecyclerView.Adapter<PlaylistAdapter.MyVie
             public void onClick(View v) {
                 String songPath = playlistSongs.get(position).getPath();
                 Intent intent = new Intent(context, PlayingActivity.class);
+                intent.putExtra("playlistID", playlistID);
                 intent.putExtra("songPath",songPath);
                 context.startActivity(intent);
             }
         });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                showDialog(position);
+                return false;
+            }
+        });
+        holder.threeDotImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(position);
+            }
+        });
     }
+
+    public void showDialog(int position) {
+        final Dialog dialog = new Dialog(view.getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.bottom_song_in_playlist_dialog);
+        LinearLayout addToOtherPlaylist = dialog.findViewById(R.id.add_playlist);
+        LinearLayout deleteLayout = dialog.findViewById(R.id.layoutDelete);
+        ImageView closeIcon = dialog.findViewById(R.id.layout_close);
+        closeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        addToOtherPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String songPath = playlistSongs.get(position).getPath();
+                Intent intent = new Intent(context, AddToPlaylistActivity.class);
+                intent.putExtra("songPath", songPath);
+                context.startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+
+        deleteLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteSong(position);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
     public void deleteSong(int position){
             if(currPlayedPlaylistID!=null&&currPlayedPlaylistID.equals(playlistID)){
                 Toast.makeText(context, "Can not delete song in playing playlist", Toast.LENGTH_SHORT).show();
@@ -136,19 +192,22 @@ public class PlaylistAdapter  extends RecyclerView.Adapter<PlaylistAdapter.MyVie
 
 
 
+
+
     @Override
     public int getItemCount() {
         return playlistSongs != null ? playlistSongs.size() : 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView imgSong;
+        ImageView imgSong, threeDotImg;
         TextView songName, songArtist;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgSong = itemView.findViewById(R.id.imageViewhinhbaihat);
-            songName = itemView.findViewById(R.id.textViewtenbaihat);
-            songArtist = itemView.findViewById(R.id.textViewtencasi);
+            imgSong = itemView.findViewById(R.id.img_song);
+            songName = itemView.findViewById(R.id.song_name);
+            songArtist = itemView.findViewById(R.id.artist_name);
+            threeDotImg = itemView.findViewById(R.id.three_dot);
         }
     }
 }

@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class AddToPlaylistAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHolder> {
+public class AddToPlaylistAdapter extends RecyclerView.Adapter<AddToPlaylistAdapter.MyViewHolder> {
     Context context;
     View view;
     ArrayList<PlaylistModel> libraryList;
@@ -40,14 +40,14 @@ public class AddToPlaylistAdapter extends RecyclerView.Adapter<LibraryAdapter.My
 
     @NonNull
     @Override
-    public LibraryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AddToPlaylistAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        view = inflater.inflate(R.layout.library_row, parent, false);
-        return new LibraryAdapter.MyViewHolder(view);
+        view = inflater.inflate(R.layout.add_to_library_row, parent, false);
+        return new AddToPlaylistAdapter.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull LibraryAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AddToPlaylistAdapter.MyViewHolder holder, int position) {
         holder.playlistName.setText(libraryList.get(position).getPlaylistName());
         holder.playlistCount.setText(String.format("%d songs",libraryList.get(position).getListSong().size()));
         String playlistImagePath = libraryList.get(position).getPlaylistImagePath();
@@ -57,10 +57,10 @@ public class AddToPlaylistAdapter extends RecyclerView.Adapter<LibraryAdapter.My
             byte[] img = retriever.getEmbeddedPicture();
             Glide.with(context).asBitmap().load(img).into(holder.playlistImg);
         } else {
-            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.playlistImg);
+            Glide.with(context).asBitmap().load(R.drawable.default_playlist_image).into(holder.playlistImg);
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.addImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addToPlaylist(position);
@@ -90,13 +90,14 @@ public class AddToPlaylistAdapter extends RecyclerView.Adapter<LibraryAdapter.My
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView playlistImg;
+        ImageView playlistImg, addImg;
         TextView playlistName, playlistCount;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             playlistImg = itemView.findViewById(R.id.img_playlist);
             playlistName = itemView.findViewById(R.id.playlist_name);
             playlistCount = itemView.findViewById(R.id.count);
+            addImg = itemView.findViewById(R.id.add_img);
         }
     }
 

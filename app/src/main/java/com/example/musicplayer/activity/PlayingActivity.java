@@ -9,6 +9,7 @@ import static com.example.musicplayer.activity.MainActivity.getSongByPath;
 //import static com.example.musicplayer.activity.MainActivity.prevPosition;
 import static com.example.musicplayer.activity.MainActivity.queuePlaying;
 import static com.example.musicplayer.activity.MainActivity.setQueuePlaying;
+import static com.example.musicplayer.activity.MainActivity.showAddCurrSongDialog;
 import static com.example.musicplayer.activity.MainActivity.songList;
 
 import android.content.Intent;
@@ -32,7 +33,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.musicplayer.R;
+import com.example.musicplayer.adapter.LibraryAdapter;
 import com.example.musicplayer.model.SongModel;
+import com.example.musicplayer.tool.DatabaseHelper;
 import com.example.musicplayer.tool.GetDominantColor;
 
 import java.util.ArrayList;
@@ -41,8 +44,8 @@ import java.util.Random;
 
 
 public class PlayingActivity extends AppCompatActivity {
-    TextView artist_name, duration_played, duration_total, title;
-    ImageView cover_img, nextBtn, prevBtn, backBtn, shuffleBtn, repeatBtn, playPauseBtn, img_queue;
+    TextView artist_name, duration_played, duration_total;
+    ImageView cover_img, nextBtn, prevBtn, backBtn, shuffleBtn, repeatBtn, playPauseBtn, img_queue, img_add;
     SeekBar seekBar;
     public static int position = -1;
     static ArrayList<SongModel> listSongs;
@@ -52,8 +55,8 @@ public class PlayingActivity extends AppCompatActivity {
     private Thread playThread, nextThread, prevThread;
     static Boolean shuffleBoolean = false;
     static int repeat = 0;
-    public static TextView song_name;
-    public static byte[] img_status;
+    public  TextView song_name;
+    public  byte[] img_status;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +68,13 @@ public class PlayingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        img_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddCurrSongDialog(currPlayedSong, PlayingActivity.this);
             }
         });
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -175,7 +185,6 @@ public class PlayingActivity extends AppCompatActivity {
         seekBar.setMax(mediaPlayer.getDuration()/1000);
         metaData(uri);
         song_name.setText(listSongs.get(position).getTitle());
-        title.setText(listSongs.get(position).getTitle());
         artist_name.setText(listSongs.get(position).getArtist());
     }
 
@@ -201,22 +210,36 @@ public class PlayingActivity extends AppCompatActivity {
                 String playlistID = getIntent().getStringExtra("playlistID");
                 if(currPlayedPlaylistID==null || !currPlayedPlaylistID.equals(playlistID)){
                     currPlayedPlaylistID = playlistID;
-                    position=0;
-                    currPlayedSong = getQueuePlaying().get(position);
-                    uri = Uri.parse(currPlayedSong.getPath());
-                    setMediaPlayer(uri);
+                    DatabaseHelper myDB = new DatabaseHelper(PlayingActivity.this);
+                    setQueuePlaying(myDB.QueryAllSongInGivenPlaylist(currPlayedPlaylistID));
                     listSongs = getQueuePlaying();
+                }
+
+                if (intent.hasExtra("songPath")) {
+                    String songPath = getIntent().getStringExtra("songPath");
+                    if(currPlayedSong==null || !songPath.equals(currPlayedSong.getPath())){
+                        position = MainActivity.getSongPositonByPath(listSongs, songPath);
+                        currPlayedSong = listSongs.get(position);
+                        uri = Uri.parse(currPlayedSong.getPath());
+                        setMediaPlayer(uri);
+                    }
+                    uri = Uri.parse(currPlayedSong.getPath());
                     setDataView(uri);
                 }
+                return;
             }
 
             if (intent.hasExtra("songPath")){
                 String songPath = getIntent().getStringExtra("songPath");
                 uri = Uri.parse(songPath);
+                if(currPlayedPlaylistID!=null){
+                    currPlayedPlaylistID=null;
+                    setQueuePlaying(new ArrayList<>());
+                }
+
                 position = MainActivity.getSongPositonByPath(getQueuePlaying(), songPath);
                 if(position==-1) {
                     SongModel song = getSongByPath(songList, songPath);
-                    currPlayedPlaylistID=null;
                     ArrayList<SongModel> newQueue = new ArrayList<>();
                     newQueue.add(song);
                     setQueuePlaying(newQueue);
@@ -224,18 +247,15 @@ public class PlayingActivity extends AppCompatActivity {
                     currPlayedSong = getQueuePlaying().get(position);
                     setMediaPlayer(uri);
                 }
-
-                listSongs = getQueuePlaying();
-                setDataView(uri);
+            }
+            listSongs = getQueuePlaying();
+            setDataView(uri);
             }
         }
-    }
-
 
     private void initViews() {
         backBtn = findViewById(R.id.backBtn);
         song_name = findViewById(R.id.song_name);
-        title = findViewById(R.id.toolbar_title);
         artist_name = findViewById(R.id.artist_name);
         duration_played = findViewById(R.id.duration_played);
         duration_total = findViewById(R.id.duration_total);
@@ -246,7 +266,8 @@ public class PlayingActivity extends AppCompatActivity {
         repeatBtn = findViewById(R.id.repeatBtn);
         playPauseBtn = findViewById(R.id.playPauseBtn);
         seekBar = findViewById(R.id.seekBar);
-        img_queue = findViewById(R.id.img_queue);
+        img_queue = findViewById(R.id.layout_queue);
+        img_add = findViewById(R.id.img_add);
         overridePendingTransition(R.anim.anim_intent_in, R.anim.anim_intent_out);
     }
 
@@ -267,7 +288,6 @@ public class PlayingActivity extends AppCompatActivity {
     public void setDataView(Uri uri){
         metaData(uri);
         song_name.setText(currPlayedSong.getTitle());
-        title.setText(currPlayedSong.getTitle());
         artist_name.setText(currPlayedSong.getArtist());
         int durationToTal = Integer.parseInt(currPlayedSong.getDuration()) / 1000;
         seekBar.setMax(durationToTal);
@@ -282,7 +302,7 @@ public class PlayingActivity extends AppCompatActivity {
             Glide.with(this).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
         }
         else {
-            Glide.with(this).asBitmap().load(R.drawable.imgitem).into(cover_img);
+            Glide.with(this).asBitmap().load(R.drawable.default_image).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
         }
         if ((position == listSongs.size() - 1) && repeat != 1 && !shuffleBoolean) nextBtn.setImageResource(R.drawable.iconnextnull);
         else nextBtn.setImageResource(R.drawable.iconnext);
@@ -290,8 +310,8 @@ public class PlayingActivity extends AppCompatActivity {
         else prevBtn.setImageResource(R.drawable.iconprevious);
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
-        int darkColor = android.graphics.Color.parseColor("#121212");
-        gradientDrawable.setColors(new int[]{GetDominantColor.getDominantColor(img), darkColor});
+        int domainColor = GetDominantColor.getDominantColor(img);
+        gradientDrawable.setColors(new int[]{domainColor+20, domainColor,domainColor-10, domainColor-20});
         gradientDrawable.setOrientation(GradientDrawable.Orientation.BOTTOM_TOP);
         gradientDrawable.setCornerRadius(10);
         RelativeLayout relativeLayout = findViewById(R.id.mContainer);
@@ -361,7 +381,6 @@ public class PlayingActivity extends AppCompatActivity {
         seekBar.setMax(mediaPlayer.getDuration()/1000);
         metaData(uri);
         song_name.setText(listSongs.get(position).getTitle());
-        title.setText(listSongs.get(position).getTitle());
         artist_name.setText(listSongs.get(position).getArtist());
     }
 
@@ -429,7 +448,6 @@ public class PlayingActivity extends AppCompatActivity {
         seekBar.setMax(mediaPlayer.getDuration()/1000);
         metaData(uri);
         song_name.setText(listSongs.get(position).getTitle());
-        title.setText(listSongs.get(position).getTitle());
         artist_name.setText(listSongs.get(position).getArtist());
     }
 
@@ -440,6 +458,7 @@ public class PlayingActivity extends AppCompatActivity {
     }
 
     public void getSongRandom(){
+            currPlayedPlaylistID=null;
             int positionRandom = getRandom(songList.size());
             int posInSongList = MainActivity.getSongPositonByPath(songList, currPlayedSong.getPath());
             while (posInSongList == positionRandom) {

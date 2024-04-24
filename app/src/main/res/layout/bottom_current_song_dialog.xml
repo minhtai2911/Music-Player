@@ -14,7 +14,6 @@
             android:id="@+id/layout_close"
             android:layout_width="40dp"
             android:layout_height="30dp"
-            android:layout_gravity="center"
             android:src="@drawable/arrow_down"/>
     </LinearLayout>
     <LinearLayout
@@ -45,25 +44,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add to playlist"
-            android:layout_marginLeft="15dp"
-            android:textColor="#FFFF"
-            android:textSize="20sp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/add_queue"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="15dp">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/queue" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add to queue"
             android:layout_marginLeft="15dp"
             android:textColor="#FFFF"
             android:textSize="20sp"/>

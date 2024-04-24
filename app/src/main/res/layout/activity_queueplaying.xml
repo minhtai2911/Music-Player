@@ -15,11 +15,11 @@
         >
         <ImageView
             android:id="@+id/back_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
             android:scaleType="fitXY"
-            android:src="@drawable/minus" />
+            android:src="@drawable/arrow_down" />
     </LinearLayout>
     <TextView
         android:visibility="visible"

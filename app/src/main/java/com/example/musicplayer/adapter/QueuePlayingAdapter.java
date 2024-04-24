@@ -61,7 +61,7 @@ public class QueuePlayingAdapter extends RecyclerView.Adapter<QueuePlayingAdapte
             Glide.with(context).asBitmap().load(img).into(holder.imgSong);
         }
         else {
-            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgSong);
+            Glide.with(context).asBitmap().load(R.drawable.imageitem).into(holder.imgSong);
         }
     }
 

@@ -64,7 +64,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             Glide.with(context).asBitmap().load(img).into(holder.imgSong);
         }
         else {
-            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgSong);
+            Glide.with(context).asBitmap().load(R.drawable.imageitem).into(holder.imgSong);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,14 +78,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                showDialog(position, song);
+                showAddSongDialog(song, v.getContext());
                 return false;
             }
         });
     }
 
-    public void showDialog(int position, SongModel song) {
-        final Dialog dialog = new Dialog(view.getContext());
+    public static void showAddSongDialog(SongModel song, Context context) {
+        final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.bottom_song_dialog);
         LinearLayout addQueue = dialog.findViewById(R.id.add_queue);

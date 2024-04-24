@@ -5,17 +5,17 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
-android:padding="10dp">
+android:padding="8dp">
 
 <ImageView
     android:id="@+id/imageViewhinhbaihat"
-    android:layout_width="65dp"
-    android:layout_height="65dp"
+    android:layout_width="57dp"
+    android:layout_height="57dp"
     android:scaleType="fitXY"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    tools:srcCompat="@drawable/imgitem" />
+    tools:srcCompat="@drawable/default_image" />
 
 <TextView
     android:id="@+id/textViewtenbaihat"
@@ -24,7 +24,7 @@ android:padding="10dp">
     android:layout_marginStart="12dp"
     android:layout_marginLeft="12dp"
     android:fontFamily="@font/arimo_bold"
-    android:maxWidth="300dp"
+    android:maxWidth="250dp"
     android:text="Song name"
     android:textColor="#FBFBFB"
     android:textSize="21sp"
@@ -44,6 +44,7 @@ android:padding="10dp">
     android:text="Artist"
     android:textColor="#C3C3C3"
     android:textSize="16sp"
+    android:ellipsize="end"
     android:maxLines="1"
     app:layout_constraintStart_toEndOf="@+id/imageViewhinhbaihat"
     app:layout_constraintTop_toBottomOf="@+id/textViewtenbaihat" />

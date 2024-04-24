@@ -9,7 +9,6 @@ import java.util.UUID;
 public class PlaylistModel {
     private String playlistId;
     private String playlistName = "Unknown";
-    private String playlistImagePath;
     private ArrayList<SongModel> listSong = new ArrayList<>();;
 
     public PlaylistModel( String playlistName) {
@@ -26,7 +25,6 @@ public class PlaylistModel {
     public PlaylistModel(String playlistId, String playlistName, ArrayList<SongModel> listSong){
         this.playlistId = playlistId;
         this.playlistName = playlistName;
-        Log.d("List songs", String.valueOf(listSong));
         this.listSong = listSong;
     }
 
@@ -44,7 +42,7 @@ public class PlaylistModel {
         if(this.listSong.size()>0) {
             return listSong.get(0).getPath();
         } else {
-            return playlistImagePath;
+            return null;
         }
     }
 

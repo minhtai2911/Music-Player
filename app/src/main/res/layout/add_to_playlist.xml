@@ -24,11 +24,10 @@
                 >
                 <ImageView
                     android:id="@+id/back_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/minus" />
+                    android:src="@drawable/arrow_down"/>
             </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycle_view_playlist"

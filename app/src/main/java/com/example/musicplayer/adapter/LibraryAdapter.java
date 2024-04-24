@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaMetadataRetriever;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,7 +69,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
             Glide.with(context).asBitmap().load(img).into(holder.playlistImg);
         }
         else {
-            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.playlistImg);
+            Glide.with(context).asBitmap().load(R.drawable.default_playlist_image).into(holder.playlistImg);
         }
 
         int greenColor = android.graphics.Color.parseColor("#1ED760");
@@ -85,6 +86,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 String playlistId = libraryList.get(position).getPlaylistId();
+                Log.d("this is playlistId", playlistId);
                 Intent intent = new Intent(context, PlaylistActivity.class);
                 intent.putExtra("playlistId", playlistId);
                 context.startActivity(intent);
@@ -96,6 +98,13 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
             public boolean onLongClick(View v) {
                 showDialog(position);
                 return false;
+            }
+        });
+
+        holder.threeDotImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(position);
             }
         });
     }
@@ -230,14 +239,14 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView playlistImg;
+        ImageView playlistImg, threeDotImg;
         TextView playlistName, playlistCount;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             playlistImg = itemView.findViewById(R.id.img_playlist);
             playlistName = itemView.findViewById(R.id.playlist_name);
             playlistCount = itemView.findViewById(R.id.count);
-
+            threeDotImg = itemView.findViewById(R.id.three_dot);
         }
     }
 }

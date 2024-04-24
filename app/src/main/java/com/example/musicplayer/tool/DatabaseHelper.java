@@ -114,50 +114,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Toast.makeText(context, "Added to "+playlistContainsSong.getPlaylistName(), Toast.LENGTH_SHORT).show();
     }
 
-
-//    public void UpdateMedia(Playlist playlistContainsMedia, MediaItem updateMedia)
-//    {
-//        playlistDatabaseConnection.Open();
-//
-//        String updateQuery = "UPDATE PlaylistMedias\n"
-//                + "SET PlaylistID = @playlistID\n"
-//                + "WHERE MediaPath = @mediaPath";
-//        SqliteCommand sqlCommand = new SqliteCommand(updateQuery, playlistDatabaseConnection);
-//        AddValueIntoPlaylistMediasinSQLCommand(playlistContainsMedia, updateMedia, sqlCommand);
-//        RunSqlCommand(sqlCommand);
-//
-//        playlistDatabaseConnection.Close();
-//    }
-
-//    public async Task<Playlist> QueryPlaylistGivenPlaylistID(String playlistID)
-//    {
-//        Playlist result = new Playlist();
-//        playlistDatabaseConnection.Open();
-//
-//        String queryPlaylist = "SELECT PlaylistID, PlaylistName, PlaylistThumbnailPath, PlaylistDateOfCreation FROM Playlist " +
-//                "WHERE PlaylistID = @playlistID";
-//        var sqlCommand = new SqliteCommand(queryPlaylist, playlistDatabaseConnection);
-//        var dataReader = sqlCommand.ExecuteReader();
-//        try
-//        {
-//            while (dataReader.Read())
-//            {
-//                List<MediaItem> mediaInPlaylist = QueryAllMediaInGivenPlaylist(playlistID);
-//                result = new Playlist(dataReader["PlaylistID"].ToString(), dataReader["PlaylistName"].ToString(),
-//                        dataReader["PlaylistThumbnailPath"].ToString(), mediaInPlaylist, dataReader["PlaylistDateOfCreation"].ToString());
-//                break;
-//            }
-//        }
-//        catch (Exception ex)
-//        {
-//            await MessageBoxManager.GetMessageBoxStandard("Error", ex.Message).ShowWindowDialogAsync(MainWindow.GetInstance());
-//        }
-//
-//        playlistDatabaseConnection.Close();
-//        return result;
-//    }
-
-
     public ArrayList<SongModel> QueryAllSongInGivenPlaylist(String playlistID)
     {
         ArrayList<SongModel> mediasInPlaylist = new ArrayList();
@@ -199,32 +155,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-//    public void DeleteMediasInGivenPlaylist(String playlistID)
-//    {
-//        if (playlistDatabaseConnection.State == System.Data.ConnectionState.Closed)
-//        {
-//            playlistDatabaseConnection.Open();
-//        }
-//        String deleteQuery = "DELETE FROM PlaylistMedias " +
-//                "WHERE PlaylistID = @playlistID ";
-//        var sqlCommand = new SqliteCommand(deleteQuery, playlistDatabaseConnection);
-//        sqlCommand.Parameters.AddWithValue("@playlistID", playlistID);
-//        RunSqlCommand(sqlCommand);
-//        playlistDatabaseConnection.Close();
-//    }
-//    public void DeleteMediasGivenPath(String mediaPath)
-//    {
-//        if (playlistDatabaseConnection.State == System.Data.ConnectionState.Closed)
-//        {
-//            playlistDatabaseConnection.Open();
-//        }
-//        String deleteQuery = "DELETE FROM PlaylistMedias " +
-//                "WHERE MediaPath = @mediaPath";
-//        var sqlCommand = new SqliteCommand(deleteQuery, playlistDatabaseConnection);
-//        sqlCommand.Parameters.AddWithValue("@mediaPath", mediaPath);
-//        RunSqlCommand(sqlCommand);
-//        playlistDatabaseConnection.Close();
-//    }
 
     public boolean DeleteMediaInAPlaylist(SongModel song, String playlistID)
     {
@@ -239,35 +169,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-//
-//    public void DeleteNotExistMedias()
-//    {
-//        playlistDatabaseConnection.Open();
-//        String query = "SELECT SongPath FROM PlaylistSong";
-//        List<String> deletePaths = new List<String>();
-//        var sqlCommand = new SqliteCommand(query, playlistDatabaseConnection);
-//        var dataReader = sqlCommand.ExecuteReader();
-//
-//        while (dataReader.Read())
-//        {
-//            if (System.IO.File.Exists(dataReader["MediaPath"].ToString()) == false)
-//                deletePaths.Add(dataReader["MediaPath"].ToString());
-//        }
-//        playlistDatabaseConnection.Close();
-//
-//        foreach (var path in deletePaths)
-//        {
-//            DeleteMediasGivenPath(path);
-//        }
-//
-//    }
-//
-//
-//    private void AddValueIntoPlaylistinSQLCommand(SQLiteDatabase db, String sqlString, Playlist insertPlaylist, SqliteCommand sqlCommand)
-//    {
-//        sqlCommand.Parameters.AddWithValue("@playlistID", insertPlaylist.PlayListID);
-//        sqlCommand.Parameters.AddWithValue("@playlistName", insertPlaylist.PlayListName);
-//        sqlCommand.Parameters.AddWithValue("@playlistThumbnailPath", insertPlaylist.BackroundImageFileName);
-//        sqlCommand.Parameters.AddWithValue("@playlistDateOfCreation", insertPlaylist.DateCreated);
-//    }
 }
