@@ -6,6 +6,7 @@ import static com.example.musicplayer.activity.PlayingActivity.position;
 import static com.example.musicplayer.activity.PlayingActivity.song_name;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,7 +15,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,29 +35,34 @@ import com.bumptech.glide.Glide;
 import com.example.musicplayer.adapter.MainViewPagerAdapter;
 import com.example.musicplayer.R;
 import com.example.musicplayer.fragment.LibraryFragment;
-import com.example.musicplayer.model.ListLibraryModel;
+import com.example.musicplayer.model.PlaylistModel;
 import com.example.musicplayer.model.SongModel;
-import com.example.musicplayer.fragment.AlbumFragment;
 import com.example.musicplayer.fragment.HomeFragment;
 import com.example.musicplayer.fragment.SearchFragment;
+import com.example.musicplayer.tool.DatabaseHelper;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
     public static ArrayList<SongModel> songList;
-    public static ArrayList<ListLibraryModel> libraryList = new ArrayList<>();
-    public static ArrayList<SongModel> queuePlaying = new ArrayList<>();
-    public static int prevPosition = -1;
+    public  static ArrayList<SongModel> queuePlaying = new ArrayList<>();
+    public static String currPlayedPlaylistID="";
+    public static SongModel currPlayedSong = null;
     private LinearLayout playBackStatus;
-    private ImageView imgLove, playPause;
+    private ImageView playPause;
+    DatabaseHelper myDB;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        queuePlaying = new ArrayList<>();
+        myDB = new DatabaseHelper(MainActivity.this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -86,14 +91,13 @@ public class MainActivity extends AppCompatActivity {
         playBackStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (songList != null && !songList.isEmpty() && position > -1) {
-                    Log.d("onClick Main: ", String.valueOf(position));
-                    int currentSongIndex = position;
+                if(currPlayedSong!=null){
                     Intent intent = new Intent(MainActivity.this, PlayingActivity.class);
-                    intent.putExtra("playBackStatus", true);
-                    intent.putExtra("position", currentSongIndex);
+                    String songPath = currPlayedSong.getPath();
+                    intent.putExtra("songPath", songPath);
                     startActivity(intent);
                 }
+
             }
         });
     }
@@ -111,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.icontimkiem);
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.iconthuvien);
     }
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -135,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
         } else {
-//            Toast.makeText(this, "Permission Granted! ", Toast.LENGTH_SHORT).show();
             songList = getAllSongs(this);
             initViewPager();
         }
@@ -147,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Toast.makeText(this, "Permission Granted! ", Toast.LENGTH_SHORT).show();
                 songList = getAllSongs(this);
                 initViewPager();
             } else {
@@ -176,12 +180,68 @@ public class MainActivity extends AppCompatActivity {
                 String duration = cursor.getString(1);
                 String path = cursor.getString(2);
                 String artist = cursor.getString(3);
-
                 SongModel song = new SongModel(path,title,artist,duration);
                 songList.add(song);
             }
             cursor.close();
         }
         return songList;
+    }
+
+    public static ArrayList<PlaylistModel> getAllPlaylist( DatabaseHelper myDB) {
+        return myDB.QueryAllPlaylists();
+    }
+
+    public static void setQueuePlaying(ArrayList<SongModel> listSong){
+        queuePlaying.clear();
+        queuePlaying = new ArrayList<>(listSong);
+    }
+
+    public static ArrayList<SongModel> getQueuePlaying(){
+        return queuePlaying;
+    }
+
+    public static void swapSongInQueue(int fromPosition, int toPosition){
+        Collections.swap(queuePlaying,fromPosition,toPosition);
+    }
+
+    public static void addSongToQueue(SongModel song, Context context){
+        for(int i =0;i<queuePlaying.size();i++)
+        {
+            if(queuePlaying.get(i).getPath().equals(song.getPath()))
+            {
+                Toast.makeText(context, "Existed in queue", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        queuePlaying.add(song);
+        Toast.makeText(context, "Added to queue", Toast.LENGTH_SHORT).show();
+    }
+
+    public static void removeSongFromQueue(SongModel song){
+        queuePlaying.remove(song);
+    }
+
+
+    public static SongModel getSongByPath(ArrayList<SongModel>list, String songPath){
+        SongModel song = null;
+        for(int i=0;i< list.size();i++){
+            if(list.get(i).getPath().equals(songPath)){
+                song = list.get(i);
+                break;
+            }
+        }
+        return song;
+    }
+
+    public static int getSongPositonByPath(ArrayList<SongModel> list, String songPath){
+        int positon = -1;
+        for(int i=0;i< list.size();i++){
+            if(list.get(i).getPath().equals(songPath)){
+                positon = i;
+                break;
+            }
+        }
+        return positon;
     }
 }

@@ -18,16 +18,13 @@
             android:name=".activity.PlayingActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.DanhsachbaihatActivity"
-            android:exported="false" />
+            android:name=".activity.PlaylistActivity"
+            android:exported="false"/>
         <activity
-            android:name=".activity.PlayNhacActivity"
-            android:exported="false" />
+            android:name=".activity.AddToPlaylistActivity"
+            android:exported="false"/>
         <activity
             android:name=".activity.QueuePlayingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.InsertNhacThuVienActivity"
             android:exported="false" />
         <activity
             android:name=".activity.MainActivity"

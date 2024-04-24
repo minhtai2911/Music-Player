@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imgnhacthuvien"
+        android:id="@+id/img_playlist"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:layout_marginStart="8dp"
@@ -18,10 +18,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        tools:srcCompat="@drawable/imgitem" />
 
     <TextView
-        android:id="@+id/txttennhacthuvien"
+        android:id="@+id/playlist_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -29,15 +29,15 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/arimo_bold"
         android:maxWidth="300dp"
-        android:text="Tên Bài Hát"
+        android:text="Unkown"
         android:textColor="#FBFBFB"
         android:textSize="21sp"
         android:maxLines="1"
-        app:layout_constraintStart_toEndOf="@+id/imgnhacthuvien"
+        app:layout_constraintStart_toEndOf="@+id/img_playlist"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txtcasinhacthuvien"
+        android:id="@+id/count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -45,22 +45,12 @@
         android:layout_marginTop="6dp"
         android:fontFamily="@font/arimo_bold"
         android:maxWidth="250dp"
-        android:text="Ca siz"
+        android:text="0 song"
         android:textColor="#C3C3C3"
         android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/imgnhacthuvien"
-        app:layout_constraintTop_toBottomOf="@+id/txttennhacthuvien" />
+        android:maxLines="1"
+        app:layout_constraintStart_toEndOf="@+id/img_playlist"
+        app:layout_constraintTop_toBottomOf="@+id/playlist_name" />
 
-    <ImageView
-        android:id="@+id/imginsertnhacthuvien"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/plus"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
