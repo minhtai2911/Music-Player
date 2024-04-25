@@ -5,7 +5,8 @@ import static com.example.musicplayer.activity.MainActivity.getAllPlaylist;
 import static com.example.musicplayer.activity.MainActivity.getQueuePlaying;
 import static com.example.musicplayer.activity.MainActivity.setQueuePlaying;
 import static com.example.musicplayer.activity.MainActivity.swapSongInQueue;
-import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
+//import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
+import static com.example.musicplayer.activity.PlayingActivity.musicService;
 
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
@@ -88,10 +89,10 @@ public class PlaylistActivity extends AppCompatActivity {
                             intent.putExtra("playlistID", playlistModel.getPlaylistId());
                             intent.putExtra("songPath", playlistModel.getListSong().get(0).getPath());
                             PlaylistActivity.this.startActivity(intent);
-                        } else if (mediaPlayer.isPlaying()) {
-                            mediaPlayer.pause();
+                        } else if (musicService.isPlaying()) {
+                            musicService.pause();
                         } else {
-                            mediaPlayer.start();
+                            musicService.start();
                         }
                     }
                 }

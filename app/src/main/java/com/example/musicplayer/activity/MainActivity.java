@@ -1,7 +1,7 @@
 package com.example.musicplayer.activity;
 
-import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
-
+//import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
+import static com.example.musicplayer.activity.PlayingActivity.musicService;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
@@ -93,16 +93,13 @@ public class MainActivity extends AppCompatActivity {
         playPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currPlayedSong==null){
-                    return;
-                }
-                if (mediaPlayer.isPlaying()) {
+                if (musicService.isPlaying()) {
                     playPause.setImageResource(R.drawable.nutpause);
-                    mediaPlayer.pause();
+                    musicService.pause();
                 }
                 else {
                     playPause.setImageResource(R.drawable.nutplay);
-                    mediaPlayer.start();
+                    musicService.start();
                 }
             }
         });
@@ -176,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadStatus() {
+
         TextView songName = playBackStatus.findViewById(R.id.song_name);
         TextView author = playBackStatus.findViewById(R.id.artist_name);
         ImageView imgSong = playBackStatus.findViewById(R.id.img_status);
@@ -194,9 +192,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (mediaPlayer != null) {
+//        if (mediaPlayer != null) {
+//            playPause = findViewById(R.id.imgPlay);
+//            if (mediaPlayer.isPlaying()) playPause.setImageResource(R.drawable.nutplay);
+//            else playPause.setImageResource(R.drawable.nutpause);
+////            if (musicService.isPlaying()) playPause.setImageResource(R.drawable.nutplay);
+//        }
+
+        if (musicService != null) {
             playPause = findViewById(R.id.imgPlay);
-            if (mediaPlayer.isPlaying()) playPause.setImageResource(R.drawable.nutplay);
+            if (musicService.isPlaying()) playPause.setImageResource(R.drawable.nutplay);
             else playPause.setImageResource(R.drawable.nutpause);
         }
     }

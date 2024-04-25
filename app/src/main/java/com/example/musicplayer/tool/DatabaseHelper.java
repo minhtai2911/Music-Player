@@ -4,9 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 import android.database.Cursor;
@@ -16,11 +13,7 @@ import static com.example.musicplayer.activity.MainActivity.songList;
 import com.example.musicplayer.model.PlaylistModel;
 import com.example.musicplayer.model.SongModel;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
-
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
