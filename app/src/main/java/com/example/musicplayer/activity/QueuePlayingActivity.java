@@ -2,6 +2,8 @@ package com.example.musicplayer.activity;
 
 
 import static com.example.musicplayer.activity.MainActivity.swapSongInQueue;
+import static com.example.musicplayer.activity.PlayingActivity.listSongs;
+import static com.example.musicplayer.activity.MainActivity.getQueuePlaying;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -61,12 +63,14 @@ public class QueuePlayingActivity extends AppCompatActivity {
             int toPosition = target.getAdapterPosition();
             swapSongInQueue(fromPosition, toPosition);
             recyclerView.getAdapter().notifyItemMoved(fromPosition,toPosition);
+            listSongs = getQueuePlaying();
             return false;
         }
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             queuePlayingAdapter.deleteSong(viewHolder.getAdapterPosition());
+            listSongs = getQueuePlaying();
         }
     };
 }

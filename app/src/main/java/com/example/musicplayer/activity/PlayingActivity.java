@@ -216,56 +216,75 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     private void getIntentData() {
         Intent intent = getIntent();
         if (intent != null){
-            if (intent.hasExtra("playlistID")){
-                String playlistID = getIntent().getStringExtra("playlistID");
-                if(currPlayedPlaylistID==null || !currPlayedPlaylistID.equals(playlistID)){
-                    currPlayedPlaylistID = playlistID;
-                    DatabaseHelper myDB = new DatabaseHelper(PlayingActivity.this);
-                    setQueuePlaying(myDB.QueryAllSongInGivenPlaylist(currPlayedPlaylistID));
-                    listSongs = getQueuePlaying();
-                }
+            String songPath = getIntent().getStringExtra("songPath");
+            String playlistID = getIntent().getStringExtra("playlistID");
 
-                if (intent.hasExtra("songPath")) {
-                    String songPath = getIntent().getStringExtra("songPath");
-                    if(currPlayedSong==null || !songPath.equals(currPlayedSong.getPath())){
-                        position = MainActivity.getSongPositonByPath(listSongs, songPath);
-                        currPlayedSong = listSongs.get(position);
-                        uri = Uri.parse(currPlayedSong.getPath());
-                        setMediaPlayer(currPlayedSong.getPath());
-//                        if (musicService.isPlaying()) playPauseBtn.setImageResource(R.drawable.nutplay);
-//                        else playPauseBtn.setImageResource(R.drawable.nutpause);
-                    }
-                    uri = Uri.parse(currPlayedSong.getPath());
-                    setDataView(uri);
-                }
+            if(playlistID!=null && songPath!=null) {
+                playPlaylist(playlistID, songPath);
                 return;
             }
-
-            if (intent.hasExtra("songPath")){
-                String songPath = getIntent().getStringExtra("songPath");
-                uri = Uri.parse(songPath);
-                if(currPlayedPlaylistID!=null){
-                    currPlayedPlaylistID=null;
-                    setQueuePlaying(new ArrayList<>());
-                }
-
-                position = MainActivity.getSongPositonByPath(getQueuePlaying(), songPath);
-                if(position==-1) {
-                    SongModel song = getSongByPath(songList, songPath);
-                    ArrayList<SongModel> newQueue = new ArrayList<>();
-                    newQueue.add(song);
-                    setQueuePlaying(newQueue);
-                    position = MainActivity.getSongPositonByPath(getQueuePlaying(), songPath);
-                    currPlayedSong = getQueuePlaying().get(position);
-                    setMediaPlayer(song.getPath());
-//                    if (musicService.isPlaying()) playPauseBtn.setImageResource(R.drawable.nutplay);
-//                    else playPauseBtn.setImageResource(R.drawable.nutpause);
-                }
-            }
-            listSongs = getQueuePlaying();
-            setDataView(uri);
+            if (songPath!=null){
+                playQueue(songPath);
             }
         }
+    }
+
+    public void playPlaylist(String playlistID, String songPath){
+        //phat playlist
+        if (currPlayedPlaylistID == null || !currPlayedPlaylistID.equals(playlistID)) {
+            currPlayedPlaylistID = playlistID;
+            DatabaseHelper myDB = new DatabaseHelper(PlayingActivity.this);
+            setQueuePlaying(myDB.QueryAllSongInGivenPlaylist(currPlayedPlaylistID));
+            listSongs = getQueuePlaying();
+            position = MainActivity.getSongPositonByPath(listSongs, songPath);
+            currPlayedSong = listSongs.get(position);
+            uri = Uri.parse(currPlayedSong.getPath());
+            setMediaPlayer(currPlayedSong.getPath());
+            setDataView(uri);
+        } else {
+            //khong trung bai
+            if (!songPath.equals(currPlayedSong.getPath())) {
+                position = MainActivity.getSongPositonByPath(listSongs, songPath);
+                currPlayedSong = listSongs.get(position);
+                uri = Uri.parse(currPlayedSong.getPath());
+                setMediaPlayer(currPlayedSong.getPath());
+            }
+            uri = Uri.parse(currPlayedSong.getPath());
+            setDataView(uri);
+        }
+    }
+
+    public void playQueue(String songPath){
+        uri = Uri.parse(songPath);
+        //ngung phat playlist
+        if(currPlayedPlaylistID!=null){
+            currPlayedPlaylistID=null;
+            setQueuePlaying(new ArrayList<>());
+        }
+
+        position = MainActivity.getSongPositonByPath(getQueuePlaying(), songPath);
+        //khong nam trong queue
+        if(position==-1) {
+            SongModel song = getSongByPath(songList, songPath);
+            ArrayList<SongModel> newQueue = new ArrayList<>();
+            newQueue.add(song);
+            setQueuePlaying(newQueue);
+            position = MainActivity.getSongPositonByPath(getQueuePlaying(), songPath);
+            currPlayedSong = getQueuePlaying().get(position);
+            setMediaPlayer(song.getPath());
+        } else {
+            //khong trung bai
+            if (!songPath.equals(currPlayedSong.getPath())) {
+                position = MainActivity.getSongPositonByPath(listSongs, songPath);
+                currPlayedSong = listSongs.get(position);
+                setMediaPlayer(currPlayedSong.getPath());
+            }
+            uri = Uri.parse(currPlayedSong.getPath());
+            setDataView(uri);
+        }
+        listSongs = getQueuePlaying();
+        setDataView(uri);
+    }
 
     private void initViews() {
         backBtn = findViewById(R.id.backBtn);

@@ -1,6 +1,7 @@
 package com.example.musicplayer.activity;
 
 //import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
+import static com.example.musicplayer.activity.PlayingActivity.listSongs;
 import static com.example.musicplayer.activity.PlayingActivity.musicService;
 import android.Manifest;
 import android.app.Dialog;
