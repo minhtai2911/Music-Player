@@ -1,27 +1,39 @@
 package com.example.musicplayer.adapter;
 
+import static com.example.musicplayer.activity.MainActivity.addSongToQueue;
 import static com.example.musicplayer.activity.MainActivity.queuePlaying;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaMetadataRetriever;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.activity.AddToPlaylistActivity;
 import com.example.musicplayer.activity.MainActivity;
+import com.example.musicplayer.activity.PlaylistActivity;
+import com.example.musicplayer.model.PlaylistModel;
 import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.activity.PlayingActivity;
+import com.example.musicplayer.tool.DatabaseHelper;
 
 import java.util.ArrayList;
 
@@ -52,79 +64,72 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             Glide.with(context).asBitmap().load(img).into(holder.imgSong);
         }
         else {
-            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgSong);
+            Glide.with(context).asBitmap().load(R.drawable.imageitem).into(holder.imgSong);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String songPath = arrayListSong.get(position).getPath();
                 Intent intent = new Intent(context, PlayingActivity.class);
-                intent.putExtra("position",position);
+                intent.putExtra("songPath",songPath);
                 context.startActivity(intent);
             }
         });
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
-                AlertDialog alertDialog = new AlertDialog.Builder(context)
-                        .setTitle("Thêm nhạc vào PlayingQueue")
-                        .setMessage("Bạn có muốn thêm bài "+song.getTitle()+" ?")
-                        .setPositiveButton("Thêm", null)
-                        .setNegativeButton("Hủy", null)
-                        .show();
-
-                Button pos = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                Button neg = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                pos.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        boolean checkDuplicate = false;
-                        for(int i =0;i<queuePlaying.size();i++)
-                        {
-                            if(queuePlaying.get(i) == song)
-                            {
-                                AlertDialog alertDialog2 = new AlertDialog.Builder(context)
-                                        .setTitle("Thêm nhạc vào PlayingQueue")
-                                        .setMessage("Bài "+song.getTitle()+"đã tồn tại trong danh sách")
-                                        .setNegativeButton("Hủy", null)
-                                        .show();
-                                Button neg2 = alertDialog2.getButton(AlertDialog.BUTTON_NEGATIVE);
-                                neg2.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        alertDialog2.dismiss();
-                                        alertDialog.dismiss();
-                                    }
-                                });
-                                checkDuplicate = true;
-                            }
-                        }
-                        if(!checkDuplicate)
-                        {
-                            queuePlaying.add(song);
-                        }
-                        alertDialog.dismiss();
-                    }
-                });
-                neg.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alertDialog.dismiss();
-                    }
-                });
+                showAddSongDialog(song, v.getContext());
                 return false;
             }
         });
+    }
+
+    public static void showAddSongDialog(SongModel song, Context context) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.bottom_song_dialog);
+        LinearLayout addQueue = dialog.findViewById(R.id.add_queue);
+        LinearLayout addPlaylist = dialog.findViewById(R.id.add_playlist);
+        ImageView closeIcon = dialog.findViewById(R.id.layout_close);
+        closeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        addQueue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addSongToQueue(song, v.getContext());
+                dialog.dismiss();
+            }
+        });
+        addPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String songPath = song.getPath();
+                Intent intent = new Intent(context, AddToPlaylistActivity.class);
+                intent.putExtra("songPath", songPath);
+                context.startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
 
     @Override
     public int getItemCount() {
         return arrayListSong != null ? arrayListSong.size() : 0;
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgSong;
         TextView txtSong;
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgSong = itemView.findViewById(R.id.imgSong);

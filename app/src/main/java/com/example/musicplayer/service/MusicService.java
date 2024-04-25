@@ -1,11 +1,9 @@
 package com.example.musicplayer.service;
 
-import static com.example.musicplayer.activity.MainActivity.songList;
-import static com.example.musicplayer.activity.PlayingActivity.listSongs;
+import static com.example.musicplayer.activity.MainActivity.currPlayedSong;
 import static com.example.musicplayer.activity.PlayingActivity.mediaSessionCompat;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -29,25 +27,17 @@ import com.example.musicplayer.Application;
 import com.example.musicplayer.R;
 import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.interfaces.ActionPlaying;
-import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.receiver.NotificationReceiver;
 
-import java.util.ArrayList;
 
 public class MusicService extends Service {
     MyBinder myBinder = new MyBinder();
     ActionPlaying actionPlaying;
     MediaPlayer mediaPlayer;
-
-    ArrayList<SongModel> tempListSongs = new ArrayList<>();
     Uri uri;
-    int position = -1;
     @Override
     public void onCreate() {
-
         super.onCreate();
-        tempListSongs = listSongs;
-
     }
     @Nullable
     @Override
@@ -62,12 +52,13 @@ public class MusicService extends Service {
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int myPosition = intent.getIntExtra("servicePosition", -1);
+        String songPath = intent.getStringExtra("songPath");
+        if(songPath!=null){
+            uri = Uri.parse(songPath);
+            playMedia(uri);
+        }
         String actionName = intent.getStringExtra("ActionName");
 
-        if(myPosition != -1){
-            playMedia(myPosition);
-        }
         if(actionName!= null){
             switch (actionName){
                 case "playPause":
@@ -87,22 +78,18 @@ public class MusicService extends Service {
                     break;
             }
         }
+
         return START_STICKY;
     }
 
-    private void playMedia(int StartPosition) {
-        tempListSongs = listSongs;
-        position = StartPosition;
-        if(mediaPlayer != null) {
+    private void playMedia(Uri uri) {
+        if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
-            if (tempListSongs != null) {
-                createMediaPlayer(position);
-                mediaPlayer.start();
-            }
-        }
-        else{
-            createMediaPlayer(position);
+            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
+            mediaPlayer.start();
+        } else {
+            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
             mediaPlayer.start();
         }
     }
@@ -131,14 +118,11 @@ public class MusicService extends Service {
     public int getCurrentPosition(){
         return mediaPlayer.getCurrentPosition();
     }
-    public void createMediaPlayer(int positionInner){
-        position = positionInner;
-        uri = Uri.parse(tempListSongs.get(position).getPath());
-        mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
 
+    public void createMediaPlayer(Uri innerUri){
+        mediaPlayer = MediaPlayer.create(getBaseContext(),innerUri);
     }
     public void showNotification(int playPauseBtn, float playbackSpeed) {
-        Log.e("Check position in noti", "showNotification: " + position + " "+listSongs.size() );
         Intent intent = new Intent(this, PlayingActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
@@ -152,7 +136,7 @@ public class MusicService extends Service {
         PendingIntent nextPending = PendingIntent.getBroadcast(this, 0, nextIntent, PendingIntent.FLAG_IMMUTABLE);
 
         byte[] picture = null;
-        picture = getImg(tempListSongs.get(PlayingActivity.position).getPath());
+        picture = getImg(currPlayedSong.getPath());
         Bitmap thumb = null;
         if(picture != null){
             thumb = BitmapFactory.decodeByteArray(picture, 0, picture.length);
@@ -164,8 +148,8 @@ public class MusicService extends Service {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSmallIcon(playPauseBtn)
                 .setLargeIcon(thumb)
-                .setContentTitle(tempListSongs.get(PlayingActivity.position).getTitle())
-                .setContentText(tempListSongs.get(PlayingActivity.position).getArtist())
+                .setContentTitle(currPlayedSong.getTitle())
+                .setContentText(currPlayedSong.getArtist())
                 .addAction(R.drawable.iconprevious, "Previous", prevPending)
                 .addAction(playPauseBtn, "Pause", pausePending)
                 .addAction(R.drawable.iconnext, "Next", nextPending)

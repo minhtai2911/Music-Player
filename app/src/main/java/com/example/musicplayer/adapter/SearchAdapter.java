@@ -1,17 +1,21 @@
 package com.example.musicplayer.adapter;
 
-import static com.example.musicplayer.activity.MainActivity.queuePlaying;
+import static com.example.musicplayer.activity.MainActivity.addSongToQueue;
+import static com.example.musicplayer.adapter.SongAdapter.showAddSongDialog;
 
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaMetadataRetriever;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.activity.AddToPlaylistActivity;
 import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.model.SongModel;
 
@@ -54,78 +59,36 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             Glide.with(context).asBitmap().load(img).into(holder.img_song);
         }
         else {
-            Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.img_song);
+            Glide.with(context).asBitmap().load(R.drawable.imageitem).into(holder.img_song);
         }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
+                String songPath = song.getPath();
                 Intent intent = new Intent(context, PlayingActivity.class);
-                intent.putExtra("position", search);
+                intent.putExtra("songPath",songPath);
                 context.startActivity(intent);
             }
         });
+
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
-                AlertDialog alertDialog = new AlertDialog.Builder(context)
-                        .setTitle("Thêm nhạc vào PlayingQueue")
-                        .setMessage("Bạn có muốn thêm bài "+song.getTitle()+" ?")
-                        .setPositiveButton("Thêm", null)
-                        .setNegativeButton("Hủy", null)
-                        .show();
-
-                Button pos = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                Button neg = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                pos.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        boolean checkDuplicate = false;
-                        for(int i =0;i<queuePlaying.size();i++)
-                        {
-                            if(queuePlaying.get(i) == song)
-                            {
-                                AlertDialog alertDialog2 = new AlertDialog.Builder(context)
-                                        .setTitle("Thêm nhạc vào PlayingQueue")
-                                        .setMessage("Bài "+song.getTitle()+"đã tồn tại trong danh sách")
-                                        .setNegativeButton("Hủy", null)
-                                        .show();
-                                Button neg2 = alertDialog2.getButton(AlertDialog.BUTTON_NEGATIVE);
-                                neg2.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        alertDialog2.dismiss();
-                                        alertDialog.dismiss();
-                                    }
-                                });
-                                checkDuplicate = true;
-                            }
-                        }
-                        if(!checkDuplicate)
-                        {
-                            queuePlaying.add(song);
-                            if(queuePlayingAdapter != null)
-                            {
-                                queuePlayingAdapter.notifyDataSetChanged();
-                            }
-                        }
-                        for(int i = 0; i<queuePlaying.size();i++)
-                        {
-                            Log.d("DANHSACHQUEUE: ", queuePlaying.get(i).getTitle());
-                        }
-                        alertDialog.dismiss();
-                    }
-                });
-                neg.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alertDialog.dismiss();
-                    }
-                });
+                showAddSongDialog(song, v.getContext());
                 return false;
             }
         });
+
+        holder.threeDotImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddSongDialog(song, v.getContext());
+            }
+        });
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -136,13 +99,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView song_name, artist_name;
-        ImageView img_song;
+        ImageView img_song, threeDotImg;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             song_name = itemView.findViewById(R.id.song_name);
             artist_name = itemView.findViewById(R.id.artist_name);
             img_song = itemView.findViewById(R.id.img_song);
+            threeDotImg = itemView.findViewById(R.id.three_dot);
         }
     }
     private byte[] getImg(String uri) {

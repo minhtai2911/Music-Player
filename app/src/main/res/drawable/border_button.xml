@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Auto layout, variables, and unit scale are not yet supported -->
+<vector
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:aapt="http://schemas.android.com/aapt"
+android:width="125dp"
+android:height="47dp"
+android:viewportWidth="125"
+android:viewportHeight="47"
+    >
+<group>
+    <clip-path
+        android:pathData="M23.5 0H101.5C114.479 0 125 10.5213 125 23.5C125 36.4787 114.479 47 101.5 47H23.5C10.5213 47 0 36.4787 0 23.5C0 10.5213 10.5213 0 23.5 0Z"
+        />
+    <path
+        android:pathData="M23.5 0H101.5C114.479 0 125 10.5213 125 23.5C125 36.4787 114.479 47 101.5 47H23.5C10.5213 47 0 36.4787 0 23.5C0 10.5213 10.5213 0 23.5 0Z"
+        android:strokeWidth="8"
+        android:strokeColor="#676767"
+        />
+</group>
+</vector>

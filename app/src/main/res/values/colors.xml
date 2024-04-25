@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorPrimaryLight">#3b3b3b</color>
     <color name="md_white_1000">#FFFFFF</color>
+    <color name="colorDialog">#242424</color>
+    <color name="colorAccent">#36CB67</color>
+    <color name="colorText">#FFFFFF</color>
 </resources>
