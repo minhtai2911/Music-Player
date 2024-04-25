@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
 import com.example.musicplayer.adapter.PlaylistAdapter;
+import com.example.musicplayer.fragment.LibraryFragment;
 import com.example.musicplayer.model.PlaylistModel;
 import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.tool.DatabaseHelper;
@@ -41,7 +42,7 @@ public class PlaylistActivity extends AppCompatActivity {
     TextView playlistName;
     ImageView playlistImage, backButton;
     RecyclerView recyclerViewPlaylist;
-    PlaylistAdapter playlistAdapter;
+    public static PlaylistAdapter playlistAdapter;
     String currentPlaylistIntent;
     PlaylistModel playlistModel = null;
     ArrayList<PlaylistModel> playlists;
@@ -89,6 +90,7 @@ public class PlaylistActivity extends AppCompatActivity {
                             intent.putExtra("playlistID", playlistModel.getPlaylistId());
                             intent.putExtra("songPath", playlistModel.getListSong().get(0).getPath());
                             PlaylistActivity.this.startActivity(intent);
+
                         } else if (musicService.isPlaying()) {
                             musicService.pause();
                         } else {

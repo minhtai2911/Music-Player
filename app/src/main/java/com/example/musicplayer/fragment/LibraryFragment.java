@@ -23,7 +23,7 @@ import android.graphics.drawable.ColorDrawable;
 public class LibraryFragment extends Fragment {
     View view;
     RecyclerView recyclerView;
-    LibraryAdapter libraryAdapter;
+    public static LibraryAdapter libraryAdapter;
     ImageView addPlaylist;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

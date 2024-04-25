@@ -11,7 +11,6 @@ import static com.example.musicplayer.activity.MainActivity.setQueuePlaying;
 import static com.example.musicplayer.activity.MainActivity.showAddCurrSongDialog;
 import static com.example.musicplayer.activity.MainActivity.songList;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -45,6 +44,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.musicplayer.R;
+import com.example.musicplayer.fragment.LibraryFragment;
 import com.example.musicplayer.interfaces.ActionPlaying;
 import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.service.MusicService;
@@ -85,6 +85,10 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(PlaylistActivity.playlistAdapter!=null)
+                PlaylistActivity.playlistAdapter.notifyDataSetChanged();
+                if(LibraryFragment.libraryAdapter!=null)
+                LibraryFragment.libraryAdapter.notifyDataSetChanged();
                 finish();
             }
         });
