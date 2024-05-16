@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.androidApplication)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -9,7 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.example.musicplayer"
         minSdk = 24
-        targetSdk = 30
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -26,7 +27,13 @@ android {
 
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
+
+
 
 dependencies {
 
@@ -36,10 +43,15 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.ui.graphics.android)
     implementation(libs.palette)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation (libs.glide)
     implementation (libs.media)
     implementation (libs.core)
+    implementation("com.google.firebase:firebase-storage")
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation("com.google.firebase:firebase-analytics")
 }
