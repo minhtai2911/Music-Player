@@ -12,6 +12,8 @@ activity = "1.8.0"
 constraintlayout = "2.1.4"
 uiGraphicsAndroid = "1.6.4"
 palette = "1.0.0"
+googleServices = "4.4.1"
+firebaseFirestore = "25.0.0"
 
 [libraries]
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
@@ -28,6 +30,8 @@ activity = { group = "androidx.activity", name = "activity", version = "1.8.2" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-android", version.ref = "uiGraphicsAndroid" }
 palette = { group = "androidx.palette", name = "palette", version.ref = "palette" }
+google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

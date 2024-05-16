@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     public static String currPlayedPlaylistID="";
     public static SongModel currPlayedSong = null;
     private LinearLayout playBackStatus;
-    private ImageView playPause, addButton;
+    private ImageView playPause, addButton, shazamButton;
     DatabaseHelper myDB;
 
     @Override
@@ -82,6 +82,14 @@ public class MainActivity extends AppCompatActivity {
         playBackStatus = findViewById(R.id.linearLayoutPlayBackStatus);
         playPause = findViewById(R.id.imgPlay);
         addButton = findViewById(R.id.img_add);
+        shazamButton = findViewById(R.id.shazam);
+        shazamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, MusicRecognition.class);
+                startActivity(intent);
+            }
+        });
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

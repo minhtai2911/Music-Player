@@ -76,11 +76,22 @@
                 <ImageView
                     android:layout_gravity="center"
                     android:scaleType="fitXY"
-                    android:id="@+id/img_add"
-                    android:src="@drawable/plus"
+                    android:id="@+id/shazam"
+                    android:src="@drawable/shazam_svgrepo_com"
                     android:layout_marginRight="15dp"
                     android:layout_width="30dp"
                     android:layout_height="30dp" />
+
+                <ImageView
+                    android:id="@+id/img_add"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/plus" />
+
                 <ImageView
                     android:id="@+id/imgPlay"
                     android:layout_width="30dp"

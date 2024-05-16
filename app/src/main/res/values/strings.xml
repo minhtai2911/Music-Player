@@ -2,4 +2,13 @@
     <string name="app_name">Music Player</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cover_art">Cover</string>
+    <string name="year">Year</string>
+    <string name="album">Album</string>
+    <string name="label">Label</string>
+    <string name="search">Search</string>
+    <string name="spotify">Spotify</string>
+    <string name="youtube">YouTube</string>
+    <string name="lyrics">Lyrics</string>
+
 </resources>

@@ -7,4 +7,6 @@
     <color name="colorDialog">#242424</color>
     <color name="colorAccent">#36CB67</color>
     <color name="colorText">#FFFFFF</color>
+    <color name="image_view_gradient_shade">#88000000</color>
+    <color name="transparent">#00000000</color>
 </resources>
