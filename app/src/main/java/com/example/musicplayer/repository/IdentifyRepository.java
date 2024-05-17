@@ -4,6 +4,8 @@ import com.example.musicplayer.data.IdentifyDataSource;
 import com.example.musicplayer.model.Music;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+
 public class IdentifyRepository {
     private IdentifyDataSource source;
 
@@ -11,7 +13,7 @@ public class IdentifyRepository {
         this.source = source;
     }
 
-    public CompletableFuture<Music> identify(byte[] data, int duration) {
+    public Music identify(Future<byte[]> data, int duration) {
         return source.identify(data, duration);
     }
 }

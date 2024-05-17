@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.example.musicplayer"
         minSdk = 24
-        targetSdk = 30
+        targetSdk = 32
         versionCode = 1
         versionName = "1.0"
 
@@ -44,4 +44,11 @@ dependencies {
     implementation (libs.glide)
     implementation (libs.media)
     implementation (libs.core)
+    implementation(libs.gson)
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2ConverterGson)
+    implementation(libs.okhttp3)
+    implementation(libs.okhttp3LoggingInterceptor)
+    implementation(libs.uuid)
+
 }

@@ -10,4 +10,16 @@ public class Music implements Serializable {
     private String label;
     private String year;
     private String lyrics;
+    public Music(String title, String artists, String cover, String album, String label, String year, String lyrics) {
+        this.title = title;
+        this.artists = artists;
+        this.cover = cover;
+        this.album = album;
+        this.label = label;
+        this.year = year;
+        this.lyrics = lyrics;
+    }
+    public String getAlbum() {
+        return album;
+    }
 }

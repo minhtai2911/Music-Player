@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.viewmodel.MusicRecognitionViewModel;
 //import com.example.musicplayer.viewmodel.MusicRecognitionViewModel;
 
 public class MusicRecognition extends AppCompatActivity {
@@ -25,7 +26,7 @@ public class MusicRecognition extends AppCompatActivity {
     private ObjectAnimator idleFloatingActionButtonObjectAnimator;
     private ObjectAnimator idleRecordingButtonObjectAnimator;
     private ImageButton btnRecord;
-//    private MusicRecognitionViewModel musicRecognitionViewModel;
+    private MusicRecognitionViewModel musicRecognitionViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class MusicRecognition extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_musicrecognise);
         permission();
+        musicRecognitionViewModel = new MusicRecognitionViewModel();
         MusicRecord();
     }
 
@@ -66,6 +68,16 @@ public class MusicRecognition extends AppCompatActivity {
         btnRecord = findViewById(R.id.shazam_record);
         btnRecord.setOnClickListener(v -> {
 //            MusicRecognitionViewModel.start();
+
+            if (ActivityCompat.checkSelfPermission(
+                    this, Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED) {
+                musicRecognitionViewModel.start();
+            } else {
+                ActivityCompat.requestPermissions(
+                        this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_CODE
+                );
+            }
 
         });
 

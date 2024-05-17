@@ -1,9 +1,29 @@
 package com.example.musicplayer.data;
 
-import com.example.musicplayer.model.Music;
+import static com.example.musicplayer.converters.Converters.toMusic;
+import static com.example.musicplayer.converters.Converters.toShortArray;
 
+import android.util.Log;
+
+import com.example.musicplayer.api.shazam.ShazamRetrofitInstance;
+import com.example.musicplayer.api.shazam.models.Geolocation;
+import com.example.musicplayer.api.shazam.models.ShazamRequestBody;
+import com.example.musicplayer.api.shazam.models.ShazamResponse;
+import com.example.musicplayer.api.shazam.models.Signature;
+import com.example.musicplayer.model.Music;
+import com.example.musicplayer.nativeJNI.ShazamSignature;
+import com.github.f4b6a3.uuid.UuidCreator;
+import com.github.f4b6a3.uuid.enums.UuidNamespace;
+
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class ShazamIdentifyDataSource implements IdentifyDataSource {
     public static final String[] USER_AGENTS = {
@@ -169,7 +189,57 @@ public class ShazamIdentifyDataSource implements IdentifyDataSource {
             "Europe/Zagreb",
             "Europe/Zurich"
     };
+
     @Override
-    public CompletableFuture<Music> identify(byte[] data, int duration) {
-        long timestamp = Calendar.getInstance().getTimeInMillis();
+    public Music identify(Future<byte[]> data, int duration) {
+        int timestamp = (int) Calendar.getInstance().getTime().getTime();
+        Geolocation geolocation = new Geolocation(
+                new Random(timestamp).nextDouble() * 400 + 100,
+                new Random(timestamp).nextDouble() * 180 - 90,
+                new Random(timestamp).nextDouble() * 360 - 180
+        );
+        byte[] bytes = new byte[0];
+        try {
+            bytes = data.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        short[] shorts = toShortArray(bytes);
+        ShazamSignature shazamSignature = new ShazamSignature();
+        Signature signature = new Signature(
+                duration * 1000,
+                timestamp,
+                shazamSignature.create(shorts)
+        );
+        ShazamRequestBody body = new ShazamRequestBody(
+                geolocation,
+                signature,
+                timestamp,
+                TIMEZONES[new Random().nextInt(TIMEZONES.length)]
+        );
+        Log.e("Identify", "identify: " + body.toString());
+        String name = String.valueOf(new Random(timestamp).nextInt(1 << 48));
+        Response<ShazamResponse> response = ShazamRetrofitInstance.getApi().discovery(
+                body,
+                UuidCreator.getNameBasedSha1(UuidNamespace.NAMESPACE_DNS, name).toString(),
+                UuidCreator.getNameBasedSha1(UuidNamespace.NAMESPACE_URL, name).toString(),
+                USER_AGENTS[new Random().nextInt(USER_AGENTS.length)],
+                "en-US", // Content-Language
+                "application/json", // Content-Type
+                "true", // sync
+                "true", // webv3
+                "true", // sampling
+                "true", // connected
+                "5.0", // shazamapiversion
+                "true", // sharehub
+                "true" // video
+        );
+        Log.e("Recognize", response.toString());
+        Log.e("Recognize", "Recognize: " + response.toString());
+        if (response.isSuccessful()) {
+            return toMusic(response.body());
+        } else {
+            return null;
+        }
+    }
 }

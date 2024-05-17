@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.musicplayer.data.ShazamIdentifyDataSource;
 import com.example.musicplayer.model.Music;
 import com.example.musicplayer.repository.IdentifyRepository;
 
@@ -57,7 +58,7 @@ public class MusicRecognitionViewModel extends ViewModel {
     private Integer _identifyDuration;
     private AudioRecord instance = null;
     private CompletableFuture<Future<byte[]>> job = null;
-    private IdentifyRepository repository = new IdentifyRepository();
+    private IdentifyRepository repository = new IdentifyRepository(new ShazamIdentifyDataSource());
     private final Object lock = new Object();
     private final java.util.concurrent.locks.Lock mutex = new java.util.concurrent.locks.ReentrantLock();
     public void start(){
@@ -80,7 +81,7 @@ public class MusicRecognitionViewModel extends ViewModel {
                         Log.d("Record", "IdentifyFragmentViewModel: repository.identify=" + IDENTIFY_RECORD_DURATION_MAXIMUM);
 
                         synchronized(mutex) {
-                            Music music = repo.identify(data, IDENTIFY_RECORD_DURATION_MAXIMUM);
+                            Music music = repository.identify(data, IDENTIFY_RECORD_DURATION_MAXIMUM);
                             if (!_identifyMusic.equals(music)) {
                                 _identifyMusic = music;
                                 _music.emit(music, null);
@@ -131,8 +132,8 @@ public class MusicRecognitionViewModel extends ViewModel {
 
                         try {
                             Log.d("Record", "IdentifyFragmentViewModel: repository.identify=" + result.size());
-
-                            Music music = repository.identify(toByteArray(result), current);
+                            CompletableFuture<byte[]> futureData = CompletableFuture.completedFuture(toByteArray(result));
+                            Music music = repository.identify(futureData, current);
 
                             // NOTE: Only allow "well known" music (with album available in it) in partial samples.
                             if (music.getAlbum() != null) {
