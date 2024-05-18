@@ -30,6 +30,9 @@ import android.os.IBinder;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -54,11 +57,13 @@ import com.example.musicplayer.tool.GetDominantColor;
 import java.util.ArrayList;
 import java.util.Random;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class PlayingActivity extends AppCompatActivity implements ActionPlaying, ServiceConnection  {
     TextView artist_name, duration_played, duration_total;
-    ImageView cover_img, nextBtn, prevBtn, backBtn, shuffleBtn, repeatBtn, playPauseBtn, img_queue, img_add;
+    ImageView nextBtn, prevBtn, backBtn, shuffleBtn, repeatBtn, playPauseBtn, img_queue, img_add;
+    CircleImageView cover_img;
     SeekBar seekBar;
     public static int position = -1;
     public static ArrayList<SongModel> listSongs;
@@ -192,6 +197,13 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             }
         });
     }
+    private Animation loadRotation() {
+        RotateAnimation rotateAnimation = new RotateAnimation(0,360,Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setDuration(10000);
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        return rotateAnimation;
+    }
 
     private void repeatPlay() {
         uri = Uri.parse(listSongs.get(position).getPath());
@@ -311,14 +323,17 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     public void setMediaPlayer(Uri uri){
         Intent intent = new Intent(this, MusicService.class);
         startService(intent);
+        cover_img.startAnimation(loadRotation());
         if (musicService != null) {
             musicService.stop();
             musicService.release();
             musicService.createMediaPlayer(uri);
             musicService.start();
+            cover_img.startAnimation(loadRotation());
         } else {
             musicService.createMediaPlayer(uri);
             musicService.start();
+            cover_img.startAnimation(loadRotation());
         }
         if (musicService.isPlaying()) playPauseBtn.setImageResource(R.drawable.nutplay);
             else playPauseBtn.setImageResource(R.drawable.nutpause);
@@ -328,6 +343,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         Intent intent = new Intent(this, MusicService.class);
         intent.putExtra("songPath", songPath);
         startService(intent);
+        cover_img.startAnimation(loadRotation());
     }
 
     public void setDataView(Uri uri){
@@ -534,6 +550,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         if (musicService.isPlaying()) {
             playPauseBtn.setImageResource(R.drawable.nutpause);
             musicService.pause();
+            cover_img.clearAnimation();
             seekBar.setMax(musicService.getDuration()/1000);
             musicService.showNotification(R.drawable.ic_play,0f);
             PlayingActivity.this.runOnUiThread(new Runnable() {
@@ -551,6 +568,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         else {
             playPauseBtn.setImageResource(R.drawable.nutplay);
             musicService.start();
+            cover_img.startAnimation(loadRotation());
             seekBar.setMax(musicService.getDuration()/1000);
             musicService.showNotification(R.drawable.ic_pause,1f);
             PlayingActivity.this.runOnUiThread(new Runnable() {
