@@ -17,4 +17,10 @@
         <item name="android:textColorPrimary">@color/colorText</item>
         <item name="android:colorAccent">@color/colorAccent</item>
     </style>
+    <style name="Base.Theme.Audire.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog.Centered">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/TextAppearance.Material3.HeadlineSmall</item>
+    </style>
+
 </resources>

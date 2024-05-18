@@ -23,10 +23,13 @@
         <activity
             android:name=".activity.PlayingActivity"
             android:exported="false" />
+        <activity android:name=".activity.MainRecogniseMusicActivity"
+            android:exported="false"/>
         <activity
-            android:name=".activity.MusicRecognition"
+            android:name=".activity.MusicRecognitionActivity"
             android:exported="false" />
-        <activity android:name=".activity.MusicInforActivity"
+        <activity
+            android:name=".activity.MusicActivity"
             android:exported="false" />
         <activity
             android:name=".activity.PlaylistActivity"

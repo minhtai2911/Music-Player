@@ -1,7 +1,6 @@
 package com.example.musicplayer.activity;
 
 //import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
-import static com.example.musicplayer.activity.PlayingActivity.listSongs;
 import static com.example.musicplayer.activity.PlayingActivity.musicService;
 import android.Manifest;
 import android.app.Dialog;
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         shazamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MusicRecognition.class);
+                Intent intent = new Intent(MainActivity.this, MainRecogniseMusicActivity.class);
                 startActivity(intent);
             }
         });

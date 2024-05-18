@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Music Player</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="action_view_error">Couldn\'t start the application</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="cover_art">Cover</string>
     <string name="year">Year</string>
@@ -10,5 +11,11 @@
     <string name="spotify">Spotify</string>
     <string name="youtube">YouTube</string>
     <string name="lyrics">Lyrics</string>
+    <string name="identify_record">Record</string>
+    <string name="identify_stop">Stop</string>
+    <string name="identify_error">Could not identify. Retry?</string>
+    <string name="identify_record_permission_alert_dialog_not_available_title">Insufficient permissions</string>
+    <string name="identify_record_permission_alert_dialog_not_available_message">The application cannot access your microphone to record the audio. Provide access to android.permission.RECORD_AUDIO permission.</string>
+    <string name="ok">OK</string>
 
 </resources>
