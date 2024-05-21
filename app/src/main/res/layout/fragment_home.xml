@@ -29,5 +29,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </fragment>
+        <fragment
+            android:name="com.example.musicplayer.fragment.RecommendationFragment"
+            android:id="@+id/fragmentRecommendation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </fragment>
     </LinearLayout>
 </ScrollView>
