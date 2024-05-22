@@ -19,10 +19,10 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull SongAdapter.ViewHolder holder, int position) {
-
-    }
+//    @Override
+//    public void onBindViewHolder(@NonNull SongAdapter.ViewHolder holder, int position) {
+//
+//    }
 
     @Override
     public int getItemCount() {

@@ -20,12 +20,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.musicplayer.R
 import com.example.musicplayer.databinding.IdentifyMusicBinding
+import com.example.musicplayer.model.SongModel
 import com.example.musicplayer.viewmodel.IdentifyViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.Locale
 
 class IdentifyFragment : Fragment() {
     private var _binding: IdentifyMusicBinding? = null
@@ -86,10 +86,31 @@ class IdentifyFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 identifyViewModel.music.collect {
                     if (isVisible) {
-                        val intent = Intent(context, MusicActivity::class.java).apply {
-                            putExtra(MusicActivity.MUSIC, it)
+//                        val intent = Intent(context, MusicActivity::class.java).apply {
+//                            putExtra(MusicActivity.MUSIC, it)
+//                        }
+//                        startActivity(intent)
+                        for (i in MainActivity.songList.indices) {
+                            val title =
+                                MainActivity.songList[i].title.lowercase(Locale.getDefault())
+                            val artist =
+                                MainActivity.songList[i].artist.lowercase(Locale.getDefault())
+                            if (
+                                artist.contains(it.artists.lowercase(Locale.getDefault())) && title.contains(it.title.lowercase(Locale.getDefault()))
+                                ||  artist.contains(it.artists.lowercase(Locale.getDefault())) && it.title.lowercase(Locale.getDefault()).contains(title)
+                                ||  it.artists.lowercase(Locale.getDefault()).contains(artist) && it.title.lowercase(Locale.getDefault()).contains(title)
+                                ||  it.artists.lowercase(Locale.getDefault()).contains(artist) && title.contains(it.title.lowercase(Locale.getDefault()))
+                            ) {
+                                val songPath: String =   MainActivity.songList[i].path
+                                val intent = Intent(
+                                    context,
+                                    PlayingActivity::class.java
+                                ).apply { putExtra("songPath", songPath) }
+                                startActivity(intent)
+                                break
+                            }
                         }
-                        startActivity(intent)
+
                     }
                 }
             }
