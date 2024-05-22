@@ -4,6 +4,7 @@ package com.example.musicplayer.activity;
 import static com.example.musicplayer.activity.PlayingActivity.musicService;
 import android.Manifest;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -45,10 +48,35 @@ import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.fragment.HomeFragment;
 import com.example.musicplayer.fragment.SearchFragment;
 import com.example.musicplayer.tool.DatabaseHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import org.checkerframework.checker.units.qual.C;
+
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,8 +87,10 @@ public class MainActivity extends AppCompatActivity {
     public static SongModel currPlayedSong = null;
     private LinearLayout playBackStatus;
     private ImageView playPause, addButton, shazamButton;
+    DatabaseReference databaseReference;
+    ValueEventListener valueEventListener;
+    FirebaseFirestore firebaseFirestore;
     DatabaseHelper myDB;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +105,72 @@ public class MainActivity extends AppCompatActivity {
         });
         permission();
         playBackStatus();
+    }
+
+//    private void downloadFileFromUrl(String url) {
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+//        StorageReference storageReference = storage.getReferenceFromUrl(url);
+//        File file = new File(getExternalFilesDir(null), "downloadedFile.mp3");
+//        storageReference.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                Log.d("FirebaseStorage", "File downloaded successfully: " + file.getAbsolutePath());
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.e("FirebaseStorage", "Failed to download file", e);
+//            }
+//        });
+//    }
+
+    private void loadSongFromDatabase() {
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("songs_test")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, Object> data = document.getData();
+                            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                            String urlTemp = (String) data.get("url");
+                            retriever.setDataSource(urlTemp);
+                            String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                            String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                            String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                            Uri uri = Uri.parse(urlTemp);
+                            String path = uri.toString();
+                            SongModel song = new SongModel(path,title,artist,duration);
+                            songList.add(song);
+                        }
+                    }
+                });
+    }
+
+    private void loadSongFromDatabaseTest() {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = database.getReference("songs");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for(DataSnapshot dss : snapshot.getChildren()) {
+                            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                            String url = dss.child("url").getValue(String.class);
+                            retriever.setDataSource(url);
+                            String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                            String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                            String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                            SongModel song = new SongModel(url,title,artist,duration);
+                            songList.add(song);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     private void playBackStatus() {
@@ -162,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPager() {
         ViewPager viewPager = findViewById(R.id.viewpager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
+        loadSongFromDatabase();
         MainViewPagerAdapter mainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
         mainViewPagerAdapter.addFragment(new HomeFragment(),"");
         mainViewPagerAdapter.addFragment(new SearchFragment(),"");
@@ -248,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
                 MediaStore.Audio.Media.TITLE,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.ARTIST
+                MediaStore.Audio.Media.ARTIST,
         };
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null,null);
         if (cursor != null) {
