@@ -37,4 +37,9 @@ public class SongFragment extends Fragment {
         }
         return view;
     }
+    @Override
+    public void onResume() {
+//        CheckConnected.isConnectedToInternet(getContext());
+        super.onResume();
+    }
 }

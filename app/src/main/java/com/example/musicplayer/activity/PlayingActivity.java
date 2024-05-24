@@ -10,11 +10,15 @@ import static com.example.musicplayer.activity.MainActivity.queuePlaying;
 import static com.example.musicplayer.activity.MainActivity.setQueuePlaying;
 import static com.example.musicplayer.activity.MainActivity.showAddCurrSongDialog;
 import static com.example.musicplayer.activity.MainActivity.songList;
+//import static com.example.musicplayer.tool.NetworkChangeReceiver.checkConnected;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -23,6 +27,8 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,8 +43,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -50,16 +58,26 @@ import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.service.MusicService;
 import com.example.musicplayer.tool.DatabaseHelper;
 import com.example.musicplayer.tool.GetDominantColor;
+import com.example.musicplayer.tool.NetworkChangeReceiver;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 
 
-public class PlayingActivity extends AppCompatActivity implements ActionPlaying, ServiceConnection  {
+public class PlayingActivity extends AppCompatActivity implements ActionPlaying, ServiceConnection {
     TextView artist_name, duration_played, duration_total;
     ImageView cover_img, nextBtn, prevBtn, backBtn, shuffleBtn, repeatBtn, playPauseBtn, img_queue, img_add;
     SeekBar seekBar;
+    FirebaseFirestore firebaseFirestore;
     public static int position = -1;
     public static ArrayList<SongModel> listSongs;
     static Uri uri;
@@ -72,9 +90,23 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     static int repeat = 0;
     public  TextView song_name;
     public  byte[] img_status;
+    public PlayingActivity() {
+
+    }
+    private BroadcastReceiver networkChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (NetworkChangeReceiver.NETWORK_CHANGE_ACTION.equals(intent.getAction())) {
+                boolean isConnected = intent.getBooleanExtra("checkConnected", false);
+                Log.d("checkInternetConnecting", isConnected+" ");
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LocalBroadcastManager.getInstance(this).registerReceiver(networkChangeReceiver,
+                new IntentFilter(NetworkChangeReceiver.NETWORK_CHANGE_ACTION));
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_playing);
         mediaSessionCompat = new MediaSessionCompat(getBaseContext(), "My Audio");
@@ -191,6 +223,9 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
                 startActivity(intent);
             }
         });
+    }
+    public PlayingActivity(NetworkChangeReceiver networkChangeReceiver) {
+        this.networkChangeReceiver = networkChangeReceiver;
     }
 
     private void repeatPlay() {
@@ -365,6 +400,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
 
     @Override
     protected void onResume() {
+//        Log.d("checkInternetConnect", checkConnected+"");
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, this, BIND_AUTO_CREATE);
         playThreadBtn();
@@ -372,6 +408,12 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         prevThreadBtn();
         super.onResume();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -584,7 +626,6 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     public void onServiceDisconnected(ComponentName componentName) {
         musicService = null;
     }
-
     private class MyMediaSessionCallback extends MediaSessionCompat.Callback {
         @Override
         public void onSeekTo(long position) {
@@ -598,5 +639,4 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
                 }
         }
     }
-
 }
