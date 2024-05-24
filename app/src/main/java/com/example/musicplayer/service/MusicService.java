@@ -27,6 +27,7 @@ import com.example.musicplayer.Application;
 import com.example.musicplayer.R;
 import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.interfaces.ActionPlaying;
+import com.example.musicplayer.receiver.NetworkChangeReceiver;
 import com.example.musicplayer.receiver.NotificationReceiver;
 
 

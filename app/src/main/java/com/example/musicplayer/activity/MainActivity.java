@@ -124,29 +124,29 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //    }
 
-    private void loadSongFromDatabase() {
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseFirestore.collection("songs_test")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Map<String, Object> data = document.getData();
-                            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-                            String urlTemp = (String) data.get("url");
-                            retriever.setDataSource(urlTemp);
-                            String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-                            String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                            String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-                            Uri uri = Uri.parse(urlTemp);
-                            String path = uri.toString();
-                            SongModel song = new SongModel(path,title,artist,duration);
-                            songList.add(song);
-                        }
-                    }
-                });
-    }
+//    private void loadSongFromDatabase() {
+//        firebaseFirestore = FirebaseFirestore.getInstance();
+//        firebaseFirestore.collection("songs_test")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        for (QueryDocumentSnapshot document : task.getResult()) {
+//                            Map<String, Object> data = document.getData();
+//                            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+//                            String urlTemp = (String) data.get("url");
+//                            retriever.setDataSource(urlTemp);
+//                            String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+//                            String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+//                            String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+//                            Uri uri = Uri.parse(urlTemp);
+//                            String path = uri.toString();
+//                            SongModel song = new SongModel(path,title,artist,duration);
+//                            songList.add(song);
+//                        }
+//                    }
+//                });
+//    }
 
     private void loadSongFromDatabaseTest() {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPager() {
         ViewPager viewPager = findViewById(R.id.viewpager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
-        loadSongFromDatabase();
+//        loadSongFromDatabase();
         MainViewPagerAdapter mainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
         mainViewPagerAdapter.addFragment(new HomeFragment(),"");
         mainViewPagerAdapter.addFragment(new SearchFragment(),"");
