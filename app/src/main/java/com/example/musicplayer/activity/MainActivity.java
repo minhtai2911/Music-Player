@@ -8,12 +8,17 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaMetadataRetriever;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -49,6 +54,7 @@ import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.fragment.HomeFragment;
 import com.example.musicplayer.fragment.SearchFragment;
 import com.example.musicplayer.tool.DatabaseHelper;
+import com.example.musicplayer.tool.NetworkChangeReceiver;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -92,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
     ValueEventListener valueEventListener;
     FirebaseFirestore firebaseFirestore;
     DatabaseHelper myDB;
+    private NetworkChangeReceiver reciver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,25 +112,11 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         permission();
+        reciver = new NetworkChangeReceiver();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(reciver, intentFilter);
         playBackStatus();
     }
-
-//    private void downloadFileFromUrl(String url) {
-//        FirebaseStorage storage = FirebaseStorage.getInstance();
-//        StorageReference storageReference = storage.getReferenceFromUrl(url);
-//        File file = new File(getExternalFilesDir(null), "downloadedFile.mp3");
-//        storageReference.getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-//                Log.d("FirebaseStorage", "File downloaded successfully: " + file.getAbsolutePath());
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Log.e("FirebaseStorage", "Failed to download file", e);
-//            }
-//        });
-//    }
 
     private void loadSongFromDatabase() {
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -142,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                             String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
                             Uri uri = Uri.parse(urlTemp);
                             String path = uri.toString();
-                            SongModel song = new SongModel(path,title,artist,duration);
+                            SongModel song = new SongModel(path,title,artist,duration,1);
                             songList.add(song);
                         }
                     }
@@ -162,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                             String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                             String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                             String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-                            SongModel song = new SongModel(url,title,artist,duration);
+                            SongModel song = new SongModel(url,title,artist,duration, 1);
                             songList.add(song);
                         }
                     }
@@ -216,7 +209,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Activity bị tạm dừng, lưu trạng thái hiện tại hoặc ngừng các cập nhật không cần thiết
+    }
 
+    @Override
+    protected void onStop() {
+
+        super.onStop();
+
+    }
     public static void showAddCurrSongDialog(SongModel song, Context context) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -251,7 +255,6 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPager() {
         ViewPager viewPager = findViewById(R.id.viewpager);
         TabLayout tabLayout = findViewById(R.id.tab_layout);
-        loadSongFromDatabase();
         MainViewPagerAdapter mainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
         mainViewPagerAdapter.addFragment(new HomeFragment(),"");
         mainViewPagerAdapter.addFragment(new SearchFragment(),"");
@@ -347,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
                 String duration = cursor.getString(1);
                 String path = cursor.getString(2);
                 String artist = cursor.getString(3);
-                SongModel song = new SongModel(path,title,artist,duration);
+                SongModel song = new SongModel(path,title,artist,duration, 0);
                 songList.add(song);
             }
             cursor.close();
@@ -411,4 +414,14 @@ public class MainActivity extends AppCompatActivity {
         }
         return positon;
     }
+
+    class waitTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+    }
+
+
 }

@@ -11,12 +11,13 @@ public class
     private String title;
     private String artist;
     private String duration;
-
-    public SongModel(String path, String title, String artist, String duration) {
+    private Integer type;
+    public SongModel(String path, String title, String artist, String duration, Integer type) {
         this.path = path;
         this.title = title;
         this.artist = artist;
         this.duration = duration;
+        this.type = type;
     }
 
     protected SongModel(Parcel in) {
@@ -24,6 +25,7 @@ public class
         title = in.readString();
         artist = in.readString();
         duration = in.readString();
+        type = in.readInt();
     }
 
     @Override
@@ -32,6 +34,7 @@ public class
         dest.writeString(title);
         dest.writeString(artist);
         dest.writeString(duration);
+        dest.writeInt(type);
     }
 
     @Override
@@ -65,6 +68,8 @@ public class
 
     public String getDuration() { return duration; }
 
+    public Integer getType() {return type;}
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -80,4 +85,6 @@ public class
     public void setDuration(String duration) {
         this.duration = duration;
     }
+    public void setType(Integer type) {this.type = type;}
 }
+
