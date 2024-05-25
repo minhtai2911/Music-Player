@@ -52,6 +52,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.musicplayer.R;
+import com.example.musicplayer.fragment.HomeFragment;
 import com.example.musicplayer.fragment.LibraryFragment;
 import com.example.musicplayer.interfaces.ActionPlaying;
 import com.example.musicplayer.model.SongModel;
@@ -98,7 +99,10 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         public void onReceive(Context context, Intent intent) {
             if (NetworkChangeReceiver.NETWORK_CHANGE_ACTION.equals(intent.getAction())) {
                 boolean isConnected = intent.getBooleanExtra("checkConnected", false);
-                Log.d("checkInternetConnecting", isConnected+" ");
+                Log.d("checkInternetConnect", isConnected+" ");
+                if(isConnected == false) {
+                    Log.d("checkInternetConnect", "finish activity here");
+                }
             }
         }
     };
@@ -400,13 +404,14 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
 
     @Override
     protected void onResume() {
-//        Log.d("checkInternetConnect", checkConnected+"");
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, this, BIND_AUTO_CREATE);
         playThreadBtn();
         nextThreadBtn();
         prevThreadBtn();
         super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(networkChangeReceiver,
+                new IntentFilter(NetworkChangeReceiver.NETWORK_CHANGE_ACTION));
     }
 
     @Override

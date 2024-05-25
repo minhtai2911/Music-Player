@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         reciver = new NetworkChangeReceiver();
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(reciver, intentFilter);
+//        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+//        registerReceiver(new NetworkChangeReceiver(), filter);
         playBackStatus();
     }
 

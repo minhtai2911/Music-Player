@@ -29,6 +29,8 @@ import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.interfaces.ActionPlaying;
 import com.example.musicplayer.receiver.NotificationReceiver;
 
+import java.io.IOException;
+
 
 public class MusicService extends Service {
     MyBinder myBinder = new MyBinder();
@@ -83,16 +85,65 @@ public class MusicService extends Service {
     }
 
     private void playMedia(Uri uri) {
+//        if (mediaPlayer != null) {
+//            mediaPlayer.stop();
+//            mediaPlayer.release();
+//            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
+////            mediaPlayer.start();
+//            mediaPlayer.setOnPreparedListener(mp -> {
+//                mp.start();
+//            });
+//            mediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
+//                Log.d("Loading", "Buffering: " + percent + "%");
+//            });
+//            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
+//                // Xử lý lỗi
+//                Log.e("this is error msg", "Error occurred: what=" + what + ", extra=" + extra);
+//                return true;
+//            });
+//        } else {
+//            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
+////            mediaPlayer.start();
+//            mediaPlayer.setOnPreparedListener(mp -> {
+//                mp.start();
+//            });
+//            mediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
+//                Log.d("Loading", "Buffering: " + percent + "%");
+//            });
+//            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
+//                // Xử lý lỗi
+//                Log.e("this is error msg", "Error occurred: what=" + what + ", extra=" + extra);
+//                return true;
+//            });
+//        }
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
-            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
-            mediaPlayer.start();
         } else {
-            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
-            mediaPlayer.start();
+
+        }
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(getBaseContext(), uri);
+            mediaPlayer.setOnPreparedListener(mp -> {
+                mp.start();
+            });
+            mediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
+                Log.d("Loading", "Buffering: " + percent + "%");
+            });
+            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
+                // Xử lý lỗi
+                Log.e("this is error msg", "Error occurred: what=" + what + ", extra=" + extra);
+                return true;
+            });
+            mediaPlayer.prepareAsync(); // Sử dụng prepareAsync để load dữ liệu không đồng bộ
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("this is error msg", "Failed to set data source", e);
         }
     }
+
+
 
     public void start(){
         mediaPlayer.start();
@@ -118,6 +169,7 @@ public class MusicService extends Service {
     public int getCurrentPosition(){
         return mediaPlayer.getCurrentPosition();
     }
+    public void setNullForMediaPlayer() {mediaPlayer = null;}
 
     public void createMediaPlayer(Uri innerUri){
         mediaPlayer = MediaPlayer.create(getBaseContext(),innerUri);
