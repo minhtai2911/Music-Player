@@ -53,11 +53,11 @@
         android:id="@+id/add_img"
         android:layout_width="27dp"
         android:layout_height="27dp"
-        android:background="@drawable/plus"
+        android:src="@drawable/plus"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/plus" />
+         />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

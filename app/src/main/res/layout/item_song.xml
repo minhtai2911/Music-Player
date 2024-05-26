@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="160dp"
+    android:layout_height="160dp"
     android:layout_gravity="center"
     android:layout_marginRight="10dp"
     android:layout_marginLeft="10dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:background="@color/colorPrimary"
         android:orientation="vertical"
         android:id="@+id/linearLayoutItemSong"
@@ -19,23 +19,43 @@
             android:scaleType="fitXY"
             android:id="@+id/imgSong"
             android:src="@drawable/default_image"
-            android:layout_width="120dp"
-            android:layout_height="120dp"/>
-
+            android:layout_width="160dp"
+            android:layout_height="160dp"/>
+        <ImageView
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/song_layer">
+        </ImageView>
         <TextView
+            android:id="@+id/txtSong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/txtSong"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:ellipsize="end"
-            android:fontFamily="@font/arimo_bold"
-            android:maxWidth="120dp"
+            android:layout_marginLeft="10dp"
+            android:textFontWeight="700"
+            android:fontFamily="@font/poppin_semibold"
+            android:maxWidth="130dp"
+            android:text="Song name"
+            android:textColor="#FBFBFB"
+            android:textSize="15sp"
+            android:layout_above="@+id/artist_song"
             android:maxLines="1"
-            android:text="textview"
-            android:textColor="#ffffff"
-            android:textSize="17sp" />
+            />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/artist_song"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textFontWeight="700"
+            android:fontFamily="@font/poppin_semibold"            android:maxWidth="130dp"
+            android:paddingBottom="5dp"
+            android:text="Artist"
+            android:textColor="#C3C3C3"
+            android:textSize="13sp"
+            android:layout_alignParentBottom="true"
+            android:ellipsize="end"
+            android:maxLines="1" />
+
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>

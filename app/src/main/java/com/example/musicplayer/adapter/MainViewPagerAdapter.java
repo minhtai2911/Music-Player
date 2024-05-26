@@ -28,6 +28,7 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
     public void addFragment(Fragment fragment, String title){
         fragments.add(fragment);
         titles.add(title);
+
     }
     @Nullable
     @Override
