@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -42,9 +43,11 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             networkChangeIntent.putExtra("checkConnected", checkConnected);
             LocalBroadcastManager.getInstance(context).sendBroadcast(networkChangeIntent);
             Log.e("checkInternetConnect", "connect");
+            Toast.makeText(context, "you're online", Toast.LENGTH_SHORT).show();
         } else {
             checkConnected = false;
             networkChangeIntent.putExtra("checkConnected", checkConnected);
+            Toast.makeText(context, "you're offline", Toast.LENGTH_LONG).show();
             LocalBroadcastManager.getInstance(context).sendBroadcast(networkChangeIntent);
             if(songList.size() != 0) {
                 Iterator<SongModel> iterator = songList.iterator();
@@ -61,9 +64,15 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     }
 
     public boolean isConnectedToNetwork(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        return activeNetwork != null;
+        try {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            return (activeNetwork != null && activeNetwork.isConnected());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     public void loadSongFromDatabase() {

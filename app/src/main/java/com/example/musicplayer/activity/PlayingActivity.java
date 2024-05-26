@@ -52,6 +52,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.musicplayer.R;
+import com.example.musicplayer.fragment.HomeFragment;
 import com.example.musicplayer.fragment.LibraryFragment;
 import com.example.musicplayer.interfaces.ActionPlaying;
 import com.example.musicplayer.model.SongModel;
@@ -98,20 +99,19 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         public void onReceive(Context context, Intent intent) {
             if (NetworkChangeReceiver.NETWORK_CHANGE_ACTION.equals(intent.getAction())) {
                 boolean isConnected = intent.getBooleanExtra("checkConnected", false);
-                Log.d("checkInternetConnecting", isConnected+" ");
-                if (!isConnected) {
-                        if (currPlayedSong.getType() == 1) {
-                            if(PlaylistActivity.playlistAdapter!=null)
-                                PlaylistActivity.playlistAdapter.notifyDataSetChanged();
-                            if(LibraryFragment.libraryAdapter!=null)
-                                LibraryFragment.libraryAdapter.notifyDataSetChanged();
-                            finish();
-                            Log.d("checkConnected", "onReceive: " + isConnected);
-                            Toast.makeText(PlayingActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
-                        }
-                }
-                else{
-                    Log.d("checkInternetConnecting", "onReceive: " + isConnected);
+                Intent networkChangeIntent = new Intent(PlayingActivity.this, MainActivity.class);
+                networkChangeIntent.putExtra("checkConnected", isConnected);
+                Log.d("checkInternetConnect", isConnected+" ");
+                if(isConnected == false) {
+                    if(currPlayedSong.getType() == 0) {
+                        return;
+                    }
+                    Log.d("checkInternetConnect", "finish playing activity here");
+//                    if(musicService != null) {
+//                        unbindService(PlayingActivity.this);
+//                    }
+                    startActivity(networkChangeIntent);
+                    finish();
                 }
             }
         }
@@ -420,7 +420,6 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
 
     @Override
     protected void onResume() {
-//        Log.d("checkInternetConnect", checkConnected+"");
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, this, BIND_AUTO_CREATE);
         playThreadBtn();
@@ -438,6 +437,12 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     protected void onPause() {
         super.onPause();
         unbindService(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangeReceiver);
     }
 
     private void prevThreadBtn() {
