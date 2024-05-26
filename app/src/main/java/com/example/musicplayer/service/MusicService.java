@@ -169,7 +169,11 @@ public class MusicService extends Service {
     public int getCurrentPosition(){
         return mediaPlayer.getCurrentPosition();
     }
-    public void setNullForMediaPlayer() {mediaPlayer = null;}
+    public void setNullForMediaPlayer() {
+        mediaPlayer.release();
+        mediaPlayer.stop();
+        mediaPlayer = null;
+    }
 
     public void createMediaPlayer(Uri innerUri){
         mediaPlayer = MediaPlayer.create(getBaseContext(),innerUri);

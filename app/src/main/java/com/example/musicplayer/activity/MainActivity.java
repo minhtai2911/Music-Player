@@ -5,6 +5,7 @@ import static com.example.musicplayer.activity.PlayingActivity.listSongs;
 import static com.example.musicplayer.activity.PlayingActivity.musicService;
 import android.Manifest;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -115,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
         reciver = new NetworkChangeReceiver();
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(reciver, intentFilter);
-//        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-//        registerReceiver(new NetworkChangeReceiver(), filter);
+//        broadcastReceiver = new NetworkChangeReceiver();
+//        registerBroadcastReceiver();
         playBackStatus();
     }
 
@@ -272,7 +273,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadStatus();
+        Intent intent = getIntent();
+        if(intent != null) {
+            boolean isConnected = getIntent().getBooleanExtra("checkConnected", true);
+            Log.d("checkInternetConnecting", isConnected+" ");
+            if(currPlayedSong != null) {
+                if(currPlayedSong.getType() == 0 || (isConnected == true && currPlayedSong.getType() == 1)) {
+                    Log.d("checkInternetConnect", "finish main activity here");
+                    loadStatus();
+                }
+            }
+        }
     }
 
     private void loadStatus() {

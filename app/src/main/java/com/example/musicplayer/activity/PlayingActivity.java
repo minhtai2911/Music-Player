@@ -99,9 +99,19 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         public void onReceive(Context context, Intent intent) {
             if (NetworkChangeReceiver.NETWORK_CHANGE_ACTION.equals(intent.getAction())) {
                 boolean isConnected = intent.getBooleanExtra("checkConnected", false);
+                Intent networkChangeIntent = new Intent(PlayingActivity.this, MainActivity.class);
+                networkChangeIntent.putExtra("checkConnected", isConnected);
                 Log.d("checkInternetConnect", isConnected+" ");
                 if(isConnected == false) {
-                    Log.d("checkInternetConnect", "finish activity here");
+                    if(currPlayedSong.getType() == 0) {
+                        return;
+                    }
+                    Log.d("checkInternetConnect", "finish playing activity here");
+//                    if(musicService != null) {
+//                        unbindService(PlayingActivity.this);
+//                    }
+                    startActivity(networkChangeIntent);
+                    finish();
                 }
             }
         }
@@ -410,8 +420,6 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         nextThreadBtn();
         prevThreadBtn();
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(networkChangeReceiver,
-                new IntentFilter(NetworkChangeReceiver.NETWORK_CHANGE_ACTION));
     }
 
     @Override
@@ -423,6 +431,12 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     protected void onPause() {
         super.onPause();
         unbindService(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangeReceiver);
     }
 
     private void prevThreadBtn() {
