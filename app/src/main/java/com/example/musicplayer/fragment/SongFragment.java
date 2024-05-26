@@ -15,11 +15,13 @@ import android.widget.TextView;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.adapter.SongAdapter;
+import com.example.musicplayer.utils.LoadSongTask;
 
 public class SongFragment extends Fragment {
     RecyclerView recyclerView;
     SongAdapter songAdapter;
     TextView title;
+    LoadSongTask loadSongTask;
 
 
     @Override
@@ -28,6 +30,8 @@ public class SongFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_song, container, false);
         recyclerView = view.findViewById(R.id.recyclerview_song);
         title = view.findViewById(R.id.txtSong);
+        loadSongTask = new LoadSongTask();
+        loadSongTask.execute();
         if (!(songList.isEmpty())) {
             songAdapter = new SongAdapter(getActivity(), songList);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());

@@ -18,6 +18,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.example.musicplayer.activity.MainActivity;
 import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.model.SongModel;
+import com.example.musicplayer.utils.LoadSongTask;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,7 +37,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent networkChangeIntent = new Intent(NETWORK_CHANGE_ACTION);
         if (isConnectedToNetwork(context)) {
-            loadSongFromDatabase();
+
             checkConnected = true;
             networkChangeIntent.putExtra("checkConnected", checkConnected);
             LocalBroadcastManager.getInstance(context).sendBroadcast(networkChangeIntent);

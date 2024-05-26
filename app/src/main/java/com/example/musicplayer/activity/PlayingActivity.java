@@ -99,6 +99,20 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             if (NetworkChangeReceiver.NETWORK_CHANGE_ACTION.equals(intent.getAction())) {
                 boolean isConnected = intent.getBooleanExtra("checkConnected", false);
                 Log.d("checkInternetConnecting", isConnected+" ");
+                if (!isConnected) {
+                        if (currPlayedSong.getType() == 1) {
+                            if(PlaylistActivity.playlistAdapter!=null)
+                                PlaylistActivity.playlistAdapter.notifyDataSetChanged();
+                            if(LibraryFragment.libraryAdapter!=null)
+                                LibraryFragment.libraryAdapter.notifyDataSetChanged();
+                            finish();
+                            Log.d("checkConnected", "onReceive: " + isConnected);
+                            Toast.makeText(PlayingActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                }
+                else{
+                    Log.d("checkInternetConnecting", "onReceive: " + isConnected);
+                }
             }
         }
     };
@@ -118,9 +132,9 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             @Override
             public void onClick(View v) {
                 if(PlaylistActivity.playlistAdapter!=null)
-                PlaylistActivity.playlistAdapter.notifyDataSetChanged();
+                    PlaylistActivity.playlistAdapter.notifyDataSetChanged();
                 if(LibraryFragment.libraryAdapter!=null)
-                LibraryFragment.libraryAdapter.notifyDataSetChanged();
+                    LibraryFragment.libraryAdapter.notifyDataSetChanged();
                 finish();
             }
         });
@@ -236,6 +250,11 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         song_name.setText(listSongs.get(position).getTitle());
         artist_name.setText(listSongs.get(position).getArtist());
     }
+//    @Override
+//    public void onDestroy(){
+//        super.onDestroy();
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangeReceiver);
+//    }
 
     private String formattedTime(int mCurrentPosition) {
         String totalout = "";
@@ -375,27 +394,28 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     }
     private void metaData(Uri uri) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(uri.toString());
-        byte[] img = retriever.getEmbeddedPicture();
-        img_status = img;
-        if (img != null) {
-            Glide.with(this).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
-        }
-        else {
-            Glide.with(this).asBitmap().load(R.drawable.default_image).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
-        }
-        if ((position == listSongs.size() - 1) && repeat != 1 && !shuffleBoolean) nextBtn.setImageResource(R.drawable.iconnextnull);
-        else nextBtn.setImageResource(R.drawable.iconnext);
-        if (position == 0 && repeat != 1 && !shuffleBoolean) prevBtn.setImageResource(R.drawable.iconpreviousnull);
-        else prevBtn.setImageResource(R.drawable.iconprevious);
-        GradientDrawable gradientDrawable = new GradientDrawable();
-        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
-        int domainColor = GetDominantColor.getDominantColor(img);
-        gradientDrawable.setColors(new int[]{domainColor+20, domainColor,domainColor-10, domainColor-20});
-        gradientDrawable.setOrientation(GradientDrawable.Orientation.BOTTOM_TOP);
-        gradientDrawable.setCornerRadius(10);
-        RelativeLayout relativeLayout = findViewById(R.id.mContainer);
-        relativeLayout.setBackground(gradientDrawable);
+            retriever.setDataSource(uri.toString());
+            byte[] img = retriever.getEmbeddedPicture();
+            img_status = img;
+            if (img != null) {
+                Glide.with(this).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
+            } else {
+                Glide.with(this).asBitmap().load(R.drawable.default_image).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
+            }
+            if ((position == listSongs.size() - 1) && repeat != 1 && !shuffleBoolean)
+                nextBtn.setImageResource(R.drawable.iconnextnull);
+            else nextBtn.setImageResource(R.drawable.iconnext);
+            if (position == 0 && repeat != 1 && !shuffleBoolean)
+                prevBtn.setImageResource(R.drawable.iconpreviousnull);
+            else prevBtn.setImageResource(R.drawable.iconprevious);
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setShape(GradientDrawable.RECTANGLE);
+            int domainColor = GetDominantColor.getDominantColor(img);
+            gradientDrawable.setColors(new int[]{domainColor + 20, domainColor, domainColor - 10, domainColor - 20});
+            gradientDrawable.setOrientation(GradientDrawable.Orientation.BOTTOM_TOP);
+            gradientDrawable.setCornerRadius(10);
+            RelativeLayout relativeLayout = findViewById(R.id.mContainer);
+            relativeLayout.setBackground(gradientDrawable);
     }
 
     @Override
@@ -638,5 +658,10 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
                     }
                 }
         }
+    }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangeReceiver);
     }
 }

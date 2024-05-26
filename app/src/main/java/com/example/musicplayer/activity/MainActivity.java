@@ -55,6 +55,7 @@ import com.example.musicplayer.fragment.HomeFragment;
 import com.example.musicplayer.fragment.SearchFragment;
 import com.example.musicplayer.tool.DatabaseHelper;
 import com.example.musicplayer.tool.NetworkChangeReceiver;
+import com.example.musicplayer.utils.LoadSongTask;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
