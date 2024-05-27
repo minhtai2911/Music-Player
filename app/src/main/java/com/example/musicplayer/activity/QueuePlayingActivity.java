@@ -1,15 +1,18 @@
 package com.example.musicplayer.activity;
 
 
+import static com.example.musicplayer.activity.MainActivity.currPlayedSong;
 import static com.example.musicplayer.activity.MainActivity.swapSongInQueue;
 import static com.example.musicplayer.activity.PlayingActivity.listSongs;
 import static com.example.musicplayer.activity.MainActivity.getQueuePlaying;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -22,11 +25,13 @@ import com.example.musicplayer.adapter.QueuePlayingAdapter;
 
 public class QueuePlayingActivity extends AppCompatActivity {
     RecyclerView recyclerViewQueue;
-    QueuePlayingAdapter queuePlayingAdapter;
+    @SuppressLint("StaticFieldLeak")
+    public static QueuePlayingAdapter queuePlayingAdapter;
     ImageView backButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_queueplaying);
         initView();
         overridePendingTransition(R.anim.anim_intent_in, R.anim.anim_intent_out);
@@ -64,6 +69,7 @@ public class QueuePlayingActivity extends AppCompatActivity {
             swapSongInQueue(fromPosition, toPosition);
             recyclerView.getAdapter().notifyItemMoved(fromPosition,toPosition);
             listSongs = getQueuePlaying();
+            PlayingActivity.position = MainActivity.getSongPositonByPath(listSongs, currPlayedSong.getPath());
             return false;
         }
 
@@ -71,6 +77,7 @@ public class QueuePlayingActivity extends AppCompatActivity {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             queuePlayingAdapter.deleteSong(viewHolder.getAdapterPosition());
             listSongs = getQueuePlaying();
+            PlayingActivity.position = MainActivity.getSongPositonByPath(listSongs, currPlayedSong.getPath());
         }
     };
 }

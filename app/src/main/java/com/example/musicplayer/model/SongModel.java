@@ -11,14 +11,24 @@ public class
     private String title;
     private String artist;
     private String duration;
-    private Integer type;
-    public SongModel(String path, String title, String artist, String duration, Integer type) {
+
+//    private String album;
+
+    public SongModel(String path, String title, String artist, String duration) {
         this.path = path;
         this.title = title;
         this.artist = artist;
         this.duration = duration;
-        this.type = type;
+//        this.album=null;
     }
+
+//    public SongModel(String path, String title, String artist, String duration, String album) {
+//        this.path = path;
+//        this.title = title;
+//        this.artist = artist;
+//        this.duration = duration;
+//        this.album = album;
+//    }
 
     protected SongModel(Parcel in) {
         path = in.readString();
@@ -85,6 +95,9 @@ public class
     public void setDuration(String duration) {
         this.duration = duration;
     }
-    public void setType(Integer type) {this.type = type;}
+
+//    public String getAlbum(){
+//        return album;
+//    }
 }
 

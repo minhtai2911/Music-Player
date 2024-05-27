@@ -47,70 +47,9 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 
     @Override
     public void onBindViewHolder(@NonNull RecommendationAdapter.ViewHolder holder, int position) {
-        SongModel song = arrayListSongRecommend.get(position);
-        holder.txtSong.setText(song.getTitle());
-        byte[] img = getImg(song.getPath());
-        if (img != null) {
-            Glide.with(context).asBitmap().load(img).into(holder.imgSong);
-        }
-        else {
-            Glide.with(context).asBitmap().load(R.drawable.imageitem).into(holder.imgSong);
-        }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String songPath = arrayListSongRecommend.get(position).getPath();
-                Intent intent = new Intent(context, PlayingActivity.class);
-                intent.putExtra("songPath",songPath);
-                context.startActivity(intent);
-            }
-        });
-        view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                showAddSongDialog(song, v.getContext());
-                return false;
-            }
-        });
-    }
-    public static void showAddSongDialog(SongModel song, Context context) {
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.bottom_song_dialog);
-        LinearLayout addQueue = dialog.findViewById(R.id.add_queue);
-        LinearLayout addPlaylist = dialog.findViewById(R.id.add_playlist);
-        ImageView closeIcon = dialog.findViewById(R.id.layout_close);
-        closeIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        addQueue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addSongToQueue(song, v.getContext());
-                dialog.dismiss();
-            }
-        });
-        addPlaylist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String songPath = song.getPath();
-                Intent intent = new Intent(context, AddToPlaylistActivity.class);
-                intent.putExtra("songPath", songPath);
-                context.startActivity(intent);
-                dialog.dismiss();
-            }
-        });
 
-        dialog.show();
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
     }
-//
+
 //    @Override
 //    public void onBindViewHolder(@NonNull SongAdapter.ViewHolder holder, int position) {
 //

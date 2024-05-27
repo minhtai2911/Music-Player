@@ -6,6 +6,7 @@ import static com.example.musicplayer.activity.MainActivity.removeSongFromQueue;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,12 +47,16 @@ public class QueuePlayingAdapter extends RecyclerView.Adapter<QueuePlayingAdapte
         SongModel song = listSongs.get(position);
         holder.songName.setText(song.getTitle());
         holder.songAuthor.setText(song.getArtist());
-        int colorTextButton = android.graphics.Color.parseColor("#36CB67");
-        int darkColor = android.graphics.Color.parseColor("#121212");
+        int bgPlayingColor = android.graphics.Color.parseColor("#383838");
+        int greenColor = android.graphics.Color.parseColor("#1ED760");
+        int whiteColor = android.graphics.Color.parseColor("#FFFFFF");
+        int blackColor = android.graphics.Color.parseColor("#151515");
         if(song.getPath().equals(currPlayedSong.getPath())){
-            holder.itemView.setBackgroundColor(colorTextButton);
+            holder.itemView.setBackgroundColor(bgPlayingColor);
+            holder.songName.setTextColor(greenColor);
         } else {
-            holder.itemView.setBackgroundColor(darkColor);
+            holder.itemView.setBackgroundColor(blackColor);
+            holder.songName.setTextColor(whiteColor);
         }
         String songPath = listSongs.get(position).getPath();
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();

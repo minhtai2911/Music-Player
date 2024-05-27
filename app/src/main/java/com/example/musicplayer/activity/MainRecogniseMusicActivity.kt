@@ -2,12 +2,12 @@ package com.example.musicplayer.activity
 
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.musicplayer.adapter.MainViewPagerAdapter
 import com.example.musicplayer.databinding.ActivityMainrecogniseBinding
-import com.example.musicplayer.fragment.HomeFragment
 import com.example.musicplayer.service.FindMusicTileService
 import com.example.musicplayer.viewmodel.IdentifyViewModel
 import kotlinx.coroutines.launch
@@ -17,6 +17,7 @@ class MainRecogniseMusicActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.enableEdgeToEdge()
         binding = ActivityMainrecogniseBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)

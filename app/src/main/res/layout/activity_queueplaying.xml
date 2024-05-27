@@ -12,10 +12,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="10dp"
+        android:layout_marginTop="46dp"
         >
         <ImageView
             android:id="@+id/back_btn"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:scaleType="fitXY"
@@ -26,6 +27,8 @@
         android:textColor="#FFF"
         android:text="Next in queue"
         android:textSize="20sp"
+        android:textFontWeight="700"
+        android:fontFamily="@font/poppin_semibold"
         android:id="@+id/queueTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,9 +37,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:fitsSystemWindows="false"
         android:id="@+id/recyclerview_queuePlaying"
-        android:background="@color/colorPrimary"
+        android:background="#1ED760"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_below="@+id/queueTitle"
         app:expandedTitleGravity="center|bottom"

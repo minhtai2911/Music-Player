@@ -20,8 +20,7 @@ import com.example.musicplayer.utils.LoadSongTask;
 public class SongFragment extends Fragment {
     RecyclerView recyclerView;
     SongAdapter songAdapter;
-    TextView title;
-    LoadSongTask loadSongTask;
+    TextView title, artist;
 
 
     @Override
@@ -30,6 +29,7 @@ public class SongFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_song, container, false);
         recyclerView = view.findViewById(R.id.recyclerview_song);
         title = view.findViewById(R.id.txtSong);
+        artist = view.findViewById(R.id.artist_song);
         if (!(songList.isEmpty())) {
             songAdapter = new SongAdapter(getActivity(), songList);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());

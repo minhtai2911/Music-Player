@@ -26,6 +26,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.musicplayer.R;
 import com.example.musicplayer.activity.AddToPlaylistActivity;
 import com.example.musicplayer.activity.MainActivity;
@@ -56,15 +58,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SongAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull SongAdapter.ViewHolder holder,  int position) {
         SongModel song = arrayListSong.get(position);
         holder.txtSong.setText(song.getTitle());
+        holder.artist.setText(song.getArtist());
         byte[] img = getImg(song.getPath());
         if (img != null) {
-            Glide.with(context).asBitmap().load(img).into(holder.imgSong);
+            Glide.with(context).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(29))).into(holder.imgSong);
         }
         else {
-            Glide.with(context).asBitmap().load(R.drawable.imageitem).into(holder.imgSong);
+            Glide.with(context).asBitmap().load(R.drawable.imageitem).apply(RequestOptions.bitmapTransform(new RoundedCorners(29))).into(holder.imgSong);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,10 +78,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                 context.startActivity(intent);
             }
         });
-        view.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                showAddSongDialog(song, v.getContext());
+                SongModel addSong = arrayListSong.get(position);
+                showAddSongDialog(addSong, v.getContext());
                 return false;
             }
         });
@@ -129,11 +133,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgSong;
-        TextView txtSong;
+        TextView txtSong, artist;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgSong = itemView.findViewById(R.id.imgSong);
             txtSong = itemView.findViewById(R.id.txtSong);
+            artist = itemView.findViewById(R.id.artist_song);
         }
     }
     private byte[] getImg(String uri) {

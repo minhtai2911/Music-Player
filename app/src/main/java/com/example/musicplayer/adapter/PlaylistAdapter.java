@@ -41,14 +41,18 @@ import java.util.ArrayList;
 
 public class PlaylistAdapter  extends RecyclerView.Adapter<PlaylistAdapter.MyViewHolder>{
     Context context;
-    ArrayList<SongModel> playlistSongs;
-    String playlistID;
+    public ArrayList<SongModel> playlistSongs;
+    public String playlistID;
     View view;
 
     public PlaylistAdapter(Context context,  ArrayList<SongModel> playlistSongs, String playlistID){
         this.context = context;
         this.playlistSongs = playlistSongs;
         this.playlistID = playlistID;
+    }
+
+    public void setPlaylistSongs(ArrayList<SongModel> playlistSongs){
+        this.playlistSongs = playlistSongs;
     }
 
     @NonNull
@@ -75,12 +79,14 @@ public class PlaylistAdapter  extends RecyclerView.Adapter<PlaylistAdapter.MyVie
         }
         int greenColor = android.graphics.Color.parseColor("#1ED760");
         int whiteColor = android.graphics.Color.parseColor("#FFFFFF");
-
+        int bgColor = android.graphics.Color.parseColor("#383838");
         if(currPlayedPlaylistID!=null&&currPlayedPlaylistID.equals(playlistID)&&song.getPath().equals(currPlayedSong.getPath()))
         {
             holder.songName.setTextColor(greenColor);
+            holder.itemView.setBackgroundColor(bgColor);
         }else {
             holder.songName.setTextColor(whiteColor);
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +190,7 @@ public class PlaylistAdapter  extends RecyclerView.Adapter<PlaylistAdapter.MyVie
                     if(isDeleted){
                     playlistSongs.remove(song);
                     notifyItemRemoved(position);
+                        ((PlaylistActivity)(context)).initView();
                     }
                     alertDialogDelete.dismiss();
                 };

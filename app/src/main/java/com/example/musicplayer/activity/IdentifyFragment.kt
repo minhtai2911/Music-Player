@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -23,9 +24,8 @@ import com.example.musicplayer.databinding.IdentifyMusicBinding
 import com.example.musicplayer.viewmodel.IdentifyViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.Locale
 
 class IdentifyFragment : Fragment() {
     private var _binding: IdentifyMusicBinding? = null
@@ -45,7 +45,6 @@ class IdentifyFragment : Fragment() {
         val view = binding.root
         val launcher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
-                // FUCK YOU
                 // identifyViewModel.start()
             } else {
                 showRecordAudioPermissionNotAvailableDialog()
@@ -66,8 +65,14 @@ class IdentifyFragment : Fragment() {
                 }
             }
         }
+
         binding.stopButton.setOnClickListener {
             identifyViewModel.stop()
+        }
+
+        binding.backBtn.setOnClickListener{
+            identifyViewModel.stop()
+            (context as? MainRecogniseMusicActivity)?.finish()
         }
 
         // https://stackoverflow.com/a/55049571/12825435
@@ -86,10 +91,32 @@ class IdentifyFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 identifyViewModel.music.collect {
                     if (isVisible) {
-                        val intent = Intent(context, MusicActivity::class.java).apply {
-                            putExtra(MusicActivity.MUSIC, it)
+//                        val intent = Intent(context, MusicActivity::class.java).apply {
+//                            putExtra(MusicActivity.MUSIC, it)
+//                        }
+//                        startActivity(intent)
+                        for (i in MainActivity.songList.indices) {
+                            val title =
+                                MainActivity.songList[i].title.lowercase(Locale.getDefault())
+                            val artist =
+                                MainActivity.songList[i].artist.lowercase(Locale.getDefault())
+                            if (
+                                artist.contains(it.artists.lowercase(Locale.getDefault())) && title.contains(it.title.lowercase(Locale.getDefault()))
+                                ||  artist.contains(it.artists.lowercase(Locale.getDefault())) && it.title.lowercase(Locale.getDefault()).contains(title)
+                                ||  it.artists.lowercase(Locale.getDefault()).contains(artist) && it.title.lowercase(Locale.getDefault()).contains(title)
+                                ||  it.artists.lowercase(Locale.getDefault()).contains(artist) && title.contains(it.title.lowercase(Locale.getDefault()))
+                            ) {
+                                val songPath: String =   MainActivity.songList[i].path
+                                val intent = Intent(
+                                    context,
+                                    PlayingActivity::class.java
+                                ).apply { putExtra("songPath", songPath) }
+                                startActivity(intent)
+                                (context as? MainRecogniseMusicActivity)?.finish()
+                                break
+                            }
                         }
-                        startActivity(intent)
+
                     }
                 }
             }
@@ -167,15 +194,15 @@ class IdentifyFragment : Fragment() {
             idleFloatingActionButtonObjectAnimator.cancel()
         }
 
-        binding.primaryMaterialToolbar.setOnMenuItemClickListener {
-            val intent = when (it.itemId) {
-                else -> null
-            }
-            if (intent != null) {
-                startActivity(intent)
-            }
-            true
-        }
+//        binding.primaryMaterialToolbar.setOnMenuItemClickListener {
+//            val intent = when (it.itemId) {
+//                else -> null
+//            }
+//            if (intent != null) {
+//                startActivity(intent)
+//            }
+//            true
+//        }
 
         return view
     }

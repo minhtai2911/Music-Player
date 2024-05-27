@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
 import com.example.musicplayer.activity.AddToPlaylistActivity;
+import com.example.musicplayer.fragment.LibraryFragment;
 import com.example.musicplayer.model.PlaylistModel;
 import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.tool.DatabaseHelper;
@@ -60,15 +61,33 @@ public class AddToPlaylistAdapter extends RecyclerView.Adapter<AddToPlaylistAdap
             Glide.with(context).asBitmap().load(R.drawable.default_playlist_image).into(holder.playlistImg);
         }
 
+        PlaylistModel playlist = libraryList.get(position);
+        ArrayList<SongModel> playlistSongs = playlist.getListSong();
+        for(int i =0;i<playlistSongs.size();i++)
+        {
+            if(playlistSongs.get(i).getPath().equals(selectedSongPath))
+            {
+                holder.addImg.setImageResource(R.drawable.check);
+                break;
+            }
+        }
+
         holder.addImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToPlaylist(position);
+                addToPlaylist(position, holder);
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addToPlaylist(position, holder);
             }
         });
     }
 
-    public void addToPlaylist(int position){
+    public void addToPlaylist(int position, AddToPlaylistAdapter.MyViewHolder holder){
         PlaylistModel playlist = libraryList.get(position);
         ArrayList<SongModel> playlistSongs = playlist.getListSong();
         for(int i =0;i<playlistSongs.size();i++)
@@ -79,7 +98,12 @@ public class AddToPlaylistAdapter extends RecyclerView.Adapter<AddToPlaylistAdap
                 return;
             }
         }
+        holder.addImg.setImageResource(R.drawable.check);
         myDB.InsertSongIntoPlaylistSong(selectedSongPath,playlist);
+        if(LibraryFragment.libraryAdapter!=null){
+            LibraryAdapter.libraryList = getAllPlaylist(myDB);
+            LibraryFragment.libraryAdapter.notifyDataSetChanged();
+        }
         activity.finish();
     }
 

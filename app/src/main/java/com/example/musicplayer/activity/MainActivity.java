@@ -3,7 +3,9 @@ package com.example.musicplayer.activity;
 //import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
 import static com.example.musicplayer.activity.PlayingActivity.listSongs;
 import static com.example.musicplayer.activity.PlayingActivity.musicService;
+
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -22,6 +24,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -47,6 +50,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.musicplayer.adapter.LibraryAdapter;
 import com.example.musicplayer.adapter.MainViewPagerAdapter;
 import com.example.musicplayer.R;
 import com.example.musicplayer.fragment.LibraryFragment;
@@ -87,30 +91,36 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
-    public static ArrayList<SongModel> songList;
+    public static ArrayList<SongModel> songList = new ArrayList<>();
     public  static ArrayList<SongModel> queuePlaying = new ArrayList<>();
     public static String currPlayedPlaylistID="";
     public static SongModel currPlayedSong = null;
-    private LinearLayout playBackStatus;
-    private ImageView playPause, addButton;
-    DatabaseReference databaseReference;
-    ValueEventListener valueEventListener;
-    FirebaseFirestore firebaseFirestore;
+    public static LinearLayout playBackStatus;
+    public static ImageView playPause, addButton;
+//            ImageView shazamButton;
     DatabaseHelper myDB;
-    private NetworkChangeReceiver reciver;
+
+    public static Context context;
+
+    public static HomeFragment homeFragment;
+
+    public  TabLayout tabLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         queuePlaying = new ArrayList<>();
+        context = this;
         myDB = new DatabaseHelper(MainActivity.this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom);
             return insets;
         });
         permission();
@@ -175,25 +185,39 @@ public class MainActivity extends AppCompatActivity {
         playBackStatus = findViewById(R.id.linearLayoutPlayBackStatus);
         playPause = findViewById(R.id.imgPlay);
         addButton = findViewById(R.id.img_add);
+//        shazamButton = findViewById(R.id.shazam);
+//        shazamButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, MainRecogniseMusicActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(currPlayedSong==null){
                     return;
                 }
-                showAddCurrSongDialog(currPlayedSong, MainActivity.this);
+                String songPath = currPlayedSong.getPath();
+                Intent intent = new Intent(v.getContext(), AddToPlaylistActivity.class);
+                intent.putExtra("songPath", songPath);
+                v.getContext().startActivity(intent);
+//                showAddCurrSongDialog(currPlayedSong, MainActivity.this);
             }
         });
         playPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (musicService.isPlaying()) {
-                    playPause.setImageResource(R.drawable.nutpause);
-                    musicService.pause();
-                }
-                else {
-                    playPause.setImageResource(R.drawable.nutplay);
-                    musicService.start();
+                if(currPlayedSong!=null){
+                    if (musicService.isPlaying()) {
+                        playPause.setImageResource(R.drawable.nutpause);
+                        musicService.pause();
+                    }
+                    else {
+                        playPause.setImageResource(R.drawable.nutplay);
+                        musicService.start();
+                    }
                 }
             }
         });
@@ -258,9 +282,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViewPager() {
         ViewPager viewPager = findViewById(R.id.viewpager);
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout = findViewById(R.id.tab_layout);
         MainViewPagerAdapter mainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
-        mainViewPagerAdapter.addFragment(new HomeFragment(),"");
+        homeFragment = new HomeFragment();
+        mainViewPagerAdapter.addFragment(homeFragment,"");
         mainViewPagerAdapter.addFragment(new SearchFragment(),"");
         mainViewPagerAdapter.addFragment(new LibraryFragment(),"");
         viewPager.setAdapter(mainViewPagerAdapter);
@@ -268,6 +293,29 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.icontrangchu);
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.icontimkiem);
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.iconthuvien);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int tabId = tab.getPosition();
+                if(tabId==0){
+                    homeFragment.startRandomSong();
+                } else {
+                    homeFragment.stopRandomSong();
+                }
+                Log.d("TabLayout", "Tab clicked: " + tabId); // Print the tab ID (position)
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
     }
 
 
@@ -287,8 +335,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadStatus() {
-
+    public static void loadStatus() {
         TextView songName = playBackStatus.findViewById(R.id.song_name);
         TextView author = playBackStatus.findViewById(R.id.artist_name);
         ImageView imgSong = playBackStatus.findViewById(R.id.img_status);
@@ -299,12 +346,13 @@ public class MainActivity extends AppCompatActivity {
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(uri.toString());
             byte[] img = retriever.getEmbeddedPicture();
-            if (img != null) {
-                Glide.with(this).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(10))).into(imgSong);
-            }
-            else {
-                Glide.with(this).asBitmap().load(R.drawable.default_image).apply(RequestOptions.bitmapTransform(new RoundedCorners(10))).into(imgSong);
-            }
+                if (img != null) {
+                    Glide.with(context).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(10))).into(imgSong);
+                }
+                else {
+                    Glide.with(context).asBitmap().load(R.drawable.default_image).apply(RequestOptions.bitmapTransform(new RoundedCorners(10))).into(imgSong);
+                }
+
         }
 
 //        if (mediaPlayer != null) {
@@ -315,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
         if (musicService != null) {
-            playPause = findViewById(R.id.imgPlay);
+            playPause = playBackStatus.findViewById(R.id.imgPlay);
             if (musicService.isPlaying()) playPause.setImageResource(R.drawable.nutplay);
             else playPause.setImageResource(R.drawable.nutpause);
         }
@@ -356,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM,
         };
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null,null);
         if (cursor != null) {
@@ -364,7 +413,8 @@ public class MainActivity extends AppCompatActivity {
                 String duration = cursor.getString(1);
                 String path = cursor.getString(2);
                 String artist = cursor.getString(3);
-                SongModel song = new SongModel(path,title,artist,duration, 0);
+//                String album = cursor.getString(4);
+                SongModel song = new SongModel(path,title,artist,duration);
                 songList.add(song);
             }
             cursor.close();
@@ -400,6 +450,7 @@ public class MainActivity extends AppCompatActivity {
         }
         queuePlaying.add(song);
         Toast.makeText(context, "Added to queue", Toast.LENGTH_SHORT).show();
+
     }
 
     public static void removeSongFromQueue(SongModel song){
@@ -429,13 +480,7 @@ public class MainActivity extends AppCompatActivity {
         return positon;
     }
 
-    class waitTask extends AsyncTask<Void, Void, Void> {
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-            return null;
-        }
-    }
 
 
 }

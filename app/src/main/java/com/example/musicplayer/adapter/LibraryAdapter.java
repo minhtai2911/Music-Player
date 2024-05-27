@@ -37,14 +37,14 @@ import java.util.ArrayList;
 public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHolder> {
     Context context;
     View view;
-    ArrayList<PlaylistModel> libraryList;
+    public static ArrayList<PlaylistModel> libraryList;
     DatabaseHelper myDB;
 
 
     public LibraryAdapter( Context context){
         this.context = context;
         myDB = new DatabaseHelper(context);
-        this.libraryList = getAllPlaylist(myDB);
+        libraryList = getAllPlaylist(myDB);
     }
 
     @NonNull
@@ -59,7 +59,15 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
     public void onBindViewHolder(@NonNull LibraryAdapter.MyViewHolder holder, int position) {
         PlaylistModel playlistModel = libraryList.get(position);
         holder.playlistName.setText(playlistModel.getPlaylistName());
-        holder.playlistCount.setText(String.format("%d songs",playlistModel.getListSong().size()));
+        int count = playlistModel.getListSong().size();
+        if(count > 1){
+            String countStr = count +" songs";
+            holder.playlistCount.setText(countStr);
+        } else {
+            String countStr = count +" song";
+            holder.playlistCount.setText(countStr);
+
+        }
         String playlistImagePath = libraryList.get(position).getPlaylistImagePath();
 
         if (playlistImagePath != null) {

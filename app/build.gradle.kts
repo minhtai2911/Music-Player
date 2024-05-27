@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId = "com.example.musicplayer"
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -78,4 +78,5 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 }
