@@ -35,7 +35,6 @@ public class
         title = in.readString();
         artist = in.readString();
         duration = in.readString();
-        type = in.readInt();
     }
 
     @Override
@@ -44,7 +43,6 @@ public class
         dest.writeString(title);
         dest.writeString(artist);
         dest.writeString(duration);
-        dest.writeInt(type);
     }
 
     @Override
@@ -77,9 +75,7 @@ public class
     }
 
     public String getDuration() { return duration; }
-
-    public Integer getType() {return type;}
-
+    
     public void setPath(String path) {
         this.path = path;
     }

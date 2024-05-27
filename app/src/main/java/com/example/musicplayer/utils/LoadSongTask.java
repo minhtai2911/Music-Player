@@ -43,8 +43,8 @@ public class LoadSongTask extends AsyncTask<Void, Void, ArrayList<SongModel>> {
                         String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
                         Uri uri = Uri.parse(urlTemp);
                         String path = uri.toString();
-                        SongModel song = new SongModel(path,title,artist,duration,1);
-                        songs.add(song);
+//                        SongModel song = new SongModel(path,title,artist,duration,1);
+//                        songs.add(song);
                     } catch(Exception e) {
                         e.printStackTrace();
                     }

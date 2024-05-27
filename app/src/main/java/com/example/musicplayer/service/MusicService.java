@@ -86,63 +86,17 @@ public class MusicService extends Service {
     }
 
     private void playMedia(Uri uri) {
-//        if (mediaPlayer != null) {
-//            mediaPlayer.stop();
-//            mediaPlayer.release();
-//            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
-////            mediaPlayer.start();
-//            mediaPlayer.setOnPreparedListener(mp -> {
-//                mp.start();
-//            });
-//            mediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
-//                Log.d("Loading", "Buffering: " + percent + "%");
-//            });
-//            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
-//                // Xử lý lỗi
-//                Log.e("this is error msg", "Error occurred: what=" + what + ", extra=" + extra);
-//                return true;
-//            });
-//        } else {
-//            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
-////            mediaPlayer.start();
-//            mediaPlayer.setOnPreparedListener(mp -> {
-//                mp.start();
-//            });
-//            mediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
-//                Log.d("Loading", "Buffering: " + percent + "%");
-//            });
-//            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
-//                // Xử lý lỗi
-//                Log.e("this is error msg", "Error occurred: what=" + what + ", extra=" + extra);
-//                return true;
-//            });
-//        }
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
+            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
+            mediaPlayer.start();
         } else {
-
-        }
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(getBaseContext(), uri);
-            mediaPlayer.setOnPreparedListener(mp -> {
-                mp.start();
-            });
-            mediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
-                Log.d("Loading", "Buffering: " + percent + "%");
-            });
-            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
-                // Xử lý lỗi
-                Log.e("this is error msg", "Error occurred: what=" + what + ", extra=" + extra);
-                return true;
-            });
-            mediaPlayer.prepareAsync(); // Sử dụng prepareAsync để load dữ liệu không đồng bộ
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("this is error msg", "Failed to set data source", e);
+            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
+            mediaPlayer.start();
         }
     }
+
 
 
 

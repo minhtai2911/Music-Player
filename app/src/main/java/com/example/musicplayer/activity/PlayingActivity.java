@@ -110,10 +110,10 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
                 networkChangeIntent.putExtra("checkConnected", isConnected);
                 Log.d("checkInternetConnect", isConnected+" ");
                 if(isConnected == false) {
-                    if(currPlayedSong.getType() == 0) {
-                        return;
-                    }
-                    Log.d("checkInternetConnect", "finish playing activity here");
+//                    if(currPlayedSong.getType() == 0) {
+//                        return;
+//                    }
+//                    Log.d("checkInternetConnect", "finish playing activity here");
 //                    if(musicService != null) {
 //                        unbindService(PlayingActivity.this);
 //                    }

@@ -60,7 +60,6 @@ import com.example.musicplayer.fragment.HomeFragment;
 import com.example.musicplayer.fragment.SearchFragment;
 import com.example.musicplayer.tool.DatabaseHelper;
 import com.example.musicplayer.tool.NetworkChangeReceiver;
-import com.example.musicplayer.utils.LoadSongTask;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -109,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
     public static HomeFragment homeFragment;
 
     public  TabLayout tabLayout;
+    private NetworkChangeReceiver reciver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadSongFromDatabase() {
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("songs_test")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                             String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
                             Uri uri = Uri.parse(urlTemp);
                             String path = uri.toString();
-                            SongModel song = new SongModel(path,title,artist,duration,1);
+                            SongModel song = new SongModel(path,title,artist,duration);
                             songList.add(song);
                         }
                     }
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                             String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
                             String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                             String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-                            SongModel song = new SongModel(url,title,artist,duration, 1);
+                            SongModel song = new SongModel(url,title,artist,duration);
                             songList.add(song);
                         }
                     }
@@ -322,17 +322,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent = getIntent();
-        if(intent != null) {
-            boolean isConnected = getIntent().getBooleanExtra("checkConnected", true);
-            Log.d("checkInternetConnecting", isConnected+" ");
-            if(currPlayedSong != null) {
-                if(currPlayedSong.getType() == 0 || (isConnected == true && currPlayedSong.getType() == 1)) {
-                    Log.d("checkInternetConnect", "finish main activity here");
+//        Intent intent = getIntent();
+//        if(intent != null) {
+//            boolean isConnected = getIntent().getBooleanExtra("checkConnected", true);
+//            Log.d("checkInternetConnecting", isConnected+" ");
+//            if(currPlayedSong != null) {
+//                if(currPlayedSong.getType() == 0 || (isConnected == true && currPlayedSong.getType() == 1)) {
+//                    Log.d("checkInternetConnect", "finish main activity here");
                     loadStatus();
-                }
-            }
-        }
+//                }
+//            }
+//        }
     }
 
     public static void loadStatus() {

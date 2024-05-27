@@ -43,23 +43,23 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             LocalBroadcastManager.getInstance(context).sendBroadcast(networkChangeIntent);
             Log.e("checkInternetConnect", "connect");
             Toast.makeText(context, "you're online", Toast.LENGTH_SHORT).show();
-            loadSongFromDatabase();
+//            loadSongFromDatabase();
         } else {
             checkConnected = false;
             networkChangeIntent.putExtra("checkConnected", checkConnected);
             Toast.makeText(context, "you're offline", Toast.LENGTH_LONG).show();
             LocalBroadcastManager.getInstance(context).sendBroadcast(networkChangeIntent);
-            if(songList.size() != 0) {
-                Iterator<SongModel> iterator = songList.iterator();
-                while (iterator.hasNext()) {
-                    SongModel song = iterator.next();
-                    if (song.getType() == 1) {
-                        iterator.remove();
-                    }
-                }
-            }
+//            if(songList.size() != 0) {
+//                Iterator<SongModel> iterator = songList.iterator();
+//                while (iterator.hasNext()) {
+//                    SongModel song = iterator.next();
+//                    if (song.getType() == 1) {
+//                        iterator.remove();
+//                    }
+//                }
+//            }
 //            startActivity();
-            Log.e("checkInternetConnect", "not connect");
+//            Log.e("checkInternetConnect", "not connect");
         }
     }
 
@@ -93,7 +93,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                                 String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
                                 Uri uri = Uri.parse(urlTemp);
                                 String path = uri.toString();
-                                SongModel song = new SongModel(path,title,artist,duration,1);
+                                SongModel song = new SongModel(path,title,artist,duration);
                                 songList.add(song);
                             } catch(Exception e) {
                                 e.printStackTrace();
