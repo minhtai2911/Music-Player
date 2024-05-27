@@ -476,7 +476,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             Glide.with(this).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
         }
         else {
-            Glide.with(this).asBitmap().load(R.drawable.default_image).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
+            Glide.with(this).asBitmap().load(R.drawable.imageitem).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
         }
         if ((position == listSongs.size() - 1) && repeat != 1 && !shuffleBoolean) nextBtn.setImageResource(R.drawable.iconnextnull);
         else nextBtn.setImageResource(R.drawable.iconnext);
@@ -719,7 +719,6 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         MusicService.MyBinder myBinder = (MusicService.MyBinder) iBinder;
         musicService = myBinder.getService();
         musicService.setCallBack(PlayingActivity.this);
-        musicService.showNotification(R.drawable.ic_pause,1f);
         Log.e("Check service", "onServiceConnected: "+musicService);
         Log.e("Check Position", "onServiceConnected: " + position);
 //        metaData(uri);
@@ -729,9 +728,12 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         setDataView(uri);
         if(musicService.isPlaying()){
             playPauseBtn.setImageResource(R.drawable.nutplay);
+            musicService.showNotification(R.drawable.ic_pause,1f);
+
             cover_img.startAnimation(loadRotation());
         } else {
             playPauseBtn.setImageResource(R.drawable.nutpause);
+            musicService.showNotification(R.drawable.ic_play,0f);
             cover_img.clearAnimation();
         }
     }

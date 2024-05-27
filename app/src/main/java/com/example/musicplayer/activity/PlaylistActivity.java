@@ -38,6 +38,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.musicplayer.R;
 import com.example.musicplayer.adapter.LibraryAdapter;
 import com.example.musicplayer.adapter.PlaylistAdapter;
@@ -257,8 +259,15 @@ public class PlaylistActivity extends AppCompatActivity {
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(playlistImagePath);
             byte[] img = retriever.getEmbeddedPicture();
-            Glide.with(this).asBitmap().load(img).into(playlistImage2);
-            Glide.with(this).asBitmap().load(img).into(playlistImage);
+            if (img != null) {
+                Glide.with(this).asBitmap().load(img).into(playlistImage2);
+                Glide.with(this).asBitmap().load(img).into(playlistImage);
+            }
+            else {
+                Glide.with(this).asBitmap().load(R.drawable.imageitem).into(playlistImage2);
+                Glide.with(this).asBitmap().load(R.drawable.imageitem).into(playlistImage);
+            }
+
             int domainColor = GetDominantColor.getDominantColor(img);
             gradientDrawable.setColors(new int[]{domainColor-10,domainColor, domainColor +10, domainColor});
             gradientDrawableHeader.setColors(new int[]{domainColor-10,domainColor, domainColor +10, domainColor});
