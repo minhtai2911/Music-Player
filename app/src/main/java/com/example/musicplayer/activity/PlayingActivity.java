@@ -664,9 +664,4 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
                 }
         }
     }
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangeReceiver);
-    }
 }

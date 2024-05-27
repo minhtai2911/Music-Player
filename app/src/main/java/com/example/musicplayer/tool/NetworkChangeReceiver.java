@@ -38,12 +38,12 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent networkChangeIntent = new Intent(NETWORK_CHANGE_ACTION);
         if (isConnectedToNetwork(context)) {
-
             checkConnected = true;
             networkChangeIntent.putExtra("checkConnected", checkConnected);
             LocalBroadcastManager.getInstance(context).sendBroadcast(networkChangeIntent);
             Log.e("checkInternetConnect", "connect");
             Toast.makeText(context, "you're online", Toast.LENGTH_SHORT).show();
+            loadSongFromDatabase();
         } else {
             checkConnected = false;
             networkChangeIntent.putExtra("checkConnected", checkConnected);
@@ -98,11 +98,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                             } catch(Exception e) {
                                 e.printStackTrace();
                             }
-                        }
-                        try {
-                            retriever.release();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
                         }
                     }
                 });

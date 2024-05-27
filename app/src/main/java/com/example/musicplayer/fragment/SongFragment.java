@@ -30,8 +30,6 @@ public class SongFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_song, container, false);
         recyclerView = view.findViewById(R.id.recyclerview_song);
         title = view.findViewById(R.id.txtSong);
-        loadSongTask = new LoadSongTask();
-        loadSongTask.execute();
         if (!(songList.isEmpty())) {
             songAdapter = new SongAdapter(getActivity(), songList);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
