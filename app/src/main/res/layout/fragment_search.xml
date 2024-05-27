@@ -6,22 +6,43 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     >
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
+
+    <RelativeLayout
+        android:id="@+id/searchLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bgr_searchview"
-        android:layout_margin="10dp"
-        app:iconifiedByDefault="false"
-        app:queryHint = "What do you want to play?"/>
+        android:layout_marginTop="46dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:orientation="horizontal">
 
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginRight="60dp"
+            android:background="@drawable/bgr_searchview"
+            app:iconifiedByDefault="false"
+            app:queryHint="What do you want to play?" />
+
+        <ImageView
+            android:id="@+id/recordBtn"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@null"
+            android:scaleType="fitXY"
+            android:src="@drawable/record" />
+    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_search"
         android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/searchView"
-        android:layout_marginTop="20dp" />
+        android:layout_below="@+id/searchLayout"
+         />
 
     <TextView
         android:visibility="gone"

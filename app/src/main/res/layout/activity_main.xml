@@ -11,7 +11,7 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="10">
         <View
             android:background="#FFF"
@@ -19,63 +19,95 @@
             android:layout_height="100dp"/>
     </androidx.viewpager.widget.ViewPager>
     <LinearLayout
-        android:background="@drawable/bgr_status"
-        android:orientation="horizontal"
-        android:id="@+id/linearLayoutPlayBackStatus"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:layout_gravity="center"
-            android:scaleType="fitXY"
-            android:layout_margin="10dp"
-            android:id="@+id/img_status"
-            android:src="@drawable/imgitem"
-            android:layout_width="50dp"
-            android:layout_height="50dp"/>
-
-        <TextView
-            android:layout_width="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:id="@+id/linearLayoutPlayBackStatus">
+        <RelativeLayout
+            android:background="@drawable/bgr_status"
+            android:orientation="horizontal"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/song_status"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="10dp"
-            android:fontFamily="@font/arimo_bold"
-            android:maxWidth="250dp"
-            android:maxLines="1"
-            android:text="Unknown"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:padding="10dp">
 
-        <ImageView
-            android:layout_gravity="center"
-            android:scaleType="fitXY"
-            android:id="@+id/imgLove"
-            android:src="@drawable/iconlove"
-            android:layout_marginRight="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <ImageView
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:id="@+id/img_status"
+                android:src="@drawable/default_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+            <TextView
+                android:id="@+id/song_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_toEndOf="@+id/img_status"
+                android:layout_marginLeft="12dp"
+                android:fontFamily="@font/arimo_bold"
+                android:maxWidth="200dp"
+                android:text="Song name"
+                android:textColor="#FBFBFB"
+                android:textSize="18sp"
+                android:maxLines="1"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/artist_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/song_name"
+                android:layout_toEndOf="@+id/img_status"
+                android:layout_marginStart="12dp"
+                android:layout_marginLeft="12dp"
+                android:fontFamily="@font/arimo_bold"
+                android:maxWidth="200dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="Artist"
+                android:textColor="#C3C3C3"
+                android:textSize="16sp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true">
 
-        <ImageView
-            android:layout_gravity="center"
-            android:scaleType="fitXY"
-            android:id="@+id/imgPlay"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/nutpause"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
+<!--                <ImageView-->
+<!--                    android:id="@+id/shazam"-->
+<!--                    android:layout_width="25dp"-->
+<!--                    android:layout_height="30dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_marginRight="15dp"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    android:src="@drawable/shazam_svgrepo_com" />-->
 
+                <ImageView
+                    android:id="@+id/img_add"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/plus" />
+
+                <ImageView
+                    android:id="@+id/imgPlay"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/nutpause" />
+            </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         app:tabIndicatorColor="#ffffff"
         app:tabIndicatorHeight="1dp"
         app:tabMode="fixed"

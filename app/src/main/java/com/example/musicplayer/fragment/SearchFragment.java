@@ -1,7 +1,9 @@
 package com.example.musicplayer.fragment;
 
 import static com.example.musicplayer.activity.MainActivity.songList;
+import static com.example.musicplayer.activity.PlayingActivity.musicService;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -18,9 +20,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.activity.MainActivity;
+import com.example.musicplayer.activity.MainRecogniseMusicActivity;
+import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.adapter.SearchAdapter;
 import com.example.musicplayer.model.SongModel;
 
@@ -30,6 +36,7 @@ import java.util.HashMap;
 public class SearchFragment extends Fragment {
     View view;
     SearchView searchView;
+     ImageView shazamButton;
     RecyclerView recyclerView;
     TextView textViewNull;
     SearchAdapter searchAdapter;
@@ -45,7 +52,8 @@ public class SearchFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerview_search);
         textViewNull = view.findViewById(R.id.search_null);
         searchView = view.findViewById(R.id.searchView);
-        searchAdapter = new SearchAdapter(getActivity(), listSongs);
+        searchAdapter = new SearchAdapter(getActivity(), listSongs, null);
+        shazamButton = view.findViewById(R.id.recordBtn);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(searchAdapter);
@@ -61,6 +69,18 @@ public class SearchFragment extends Fragment {
                 return false;
             }
         });
+
+        shazamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (musicService!=null && musicService.isPlaying()) {
+                    musicService.pause();
+                }
+                Intent intent = new Intent(v.getContext(), MainRecogniseMusicActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -79,7 +99,7 @@ public class SearchFragment extends Fragment {
             textViewNull.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         } else {
-            searchAdapter = new SearchAdapter(getActivity(), listSongs);
+            searchAdapter = new SearchAdapter(getActivity(), listSongs, null);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setAdapter(searchAdapter);
