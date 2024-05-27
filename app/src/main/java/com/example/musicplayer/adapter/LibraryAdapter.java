@@ -74,7 +74,11 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(playlistImagePath);
             byte[] img = retriever.getEmbeddedPicture();
-            Glide.with(context).asBitmap().load(img).into(holder.playlistImg);
+            if(img!=null){
+                Glide.with(context).asBitmap().load(img).into(holder.playlistImg);
+            } else {
+                Glide.with(context).asBitmap().load(R.drawable.imageitem).into(holder.playlistImg);
+            }
         }
         else {
             Glide.with(context).asBitmap().load(R.drawable.default_playlist_image).into(holder.playlistImg);
