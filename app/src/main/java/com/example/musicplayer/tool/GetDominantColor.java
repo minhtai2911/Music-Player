@@ -9,7 +9,7 @@ public class GetDominantColor {
 
     public static int getDominantColor(byte[] imageBytes) {
         if (imageBytes == null || imageBytes.length == 0) {
-            return 0x001111;
+            return 0x16777215;
         }
 
 
@@ -24,7 +24,7 @@ public class GetDominantColor {
         if (dominantSwatch != null) {
             return dominantSwatch.getRgb();
         } else {
-            return 0x001111;
+            return 0x16777215;
         }
     }
 }

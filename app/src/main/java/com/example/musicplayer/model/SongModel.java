@@ -1,17 +1,63 @@
 package com.example.musicplayer.model;
 
-public class SongModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+public class
+ SongModel implements Parcelable {
     private String path;
     private String title;
     private String artist;
     private String duration;
-
-    public SongModel(String path, String title, String artist, String duration) {
+    private Integer type;
+    byte[] img;
+    public SongModel(String path, String title, String artist, String duration, Integer type) {
         this.path = path;
         this.title = title;
         this.artist = artist;
         this.duration = duration;
+        this.type = type;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(Uri.parse(path).toString());
+        this.img =retriever.getEmbeddedPicture();
     }
+
+    protected SongModel(Parcel in) {
+        path = in.readString();
+        title = in.readString();
+        artist = in.readString();
+        duration = in.readString();
+        type = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(path);
+        dest.writeString(title);
+        dest.writeString(artist);
+        dest.writeString(duration);
+        dest.writeInt(type);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<SongModel> CREATOR = new Creator<SongModel>() {
+        @Override
+        public SongModel createFromParcel(Parcel in) {
+            return new SongModel(in);
+        }
+
+        @Override
+        public SongModel[] newArray(int size) {
+            return new SongModel[size];
+        }
+    };
 
     public String getPath() {
         return path;
@@ -25,9 +71,9 @@ public class SongModel {
         return artist;
     }
 
-    public String getDuration() {
-        return duration;
-    }
+    public String getDuration() { return duration; }
+
+    public Integer getType() {return type;}
 
     public void setPath(String path) {
         this.path = path;
@@ -44,4 +90,10 @@ public class SongModel {
     public void setDuration(String duration) {
         this.duration = duration;
     }
+    public void setType(Integer type) {this.type = type;}
+
+    public byte[] getImg() {
+        return img;
+    }
 }
+

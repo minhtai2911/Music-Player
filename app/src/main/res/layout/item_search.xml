@@ -4,21 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/img_song"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="57dp"
+        android:layout_height="57dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        tools:srcCompat="@drawable/default_image" />
 
     <TextView
         android:id="@+id/song_name"
@@ -26,10 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="16dp"
         android:fontFamily="@font/arimo_bold"
-        android:maxWidth="300dp"
-        android:text="Tên Bài Hát"
+        android:maxWidth="250dp"
+        android:text="Song name"
         android:textColor="#FBFBFB"
         android:textSize="21sp"
         android:maxLines="1"
@@ -45,23 +41,21 @@
         android:layout_marginTop="6dp"
         android:fontFamily="@font/arimo_bold"
         android:maxWidth="250dp"
-        android:text="Ca siz"
+        android:text="Artist"
         android:textColor="#C3C3C3"
         android:textSize="16sp"
+        android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintStart_toEndOf="@+id/img_song"
         app:layout_constraintTop_toBottomOf="@+id/song_name" />
 
     <ImageView
-        android:id="@+id/img_love"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/iconlove"
+        android:id="@+id/three_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/three_dot"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        tools:srcCompat="@drawable/three_dot" />
 </androidx.constraintlayout.widget.ConstraintLayout>

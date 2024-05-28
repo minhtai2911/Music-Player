@@ -19,7 +19,7 @@ import com.example.musicplayer.adapter.SongAdapter;
 public class SongFragment extends Fragment {
     RecyclerView recyclerView;
     SongAdapter songAdapter;
-    TextView title;
+    TextView title, artist;
 
 
     @Override
@@ -28,6 +28,7 @@ public class SongFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_song, container, false);
         recyclerView = view.findViewById(R.id.recyclerview_song);
         title = view.findViewById(R.id.txtSong);
+        artist = view.findViewById(R.id.artist_song);
         if (!(songList.isEmpty())) {
             songAdapter = new SongAdapter(getActivity(), songList);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -36,5 +37,10 @@ public class SongFragment extends Fragment {
             recyclerView.setAdapter(songAdapter);
         }
         return view;
+    }
+    @Override
+    public void onResume() {
+//        CheckConnected.isConnectedToInternet(getContext());
+        super.onResume();
     }
 }

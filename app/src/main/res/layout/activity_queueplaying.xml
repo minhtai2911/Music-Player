@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_marginTop="46dp"
+        >
+        <ImageView
+            android:id="@+id/back_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:src="@drawable/arrow_down" />
+    </LinearLayout>
+    <TextView
+        android:visibility="visible"
+        android:textColor="#FFF"
+        android:text="Next in queue"
+        android:textSize="20sp"
+        android:textFontWeight="700"
+        android:fontFamily="@font/poppin_semibold"
+        android:id="@+id/queueTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:fitsSystemWindows="false"
+        android:id="@+id/recyclerview_queuePlaying"
+        android:background="#1ED760"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/queueTitle"
+        app:expandedTitleGravity="center|bottom"
+        app:expandedTitleMarginBottom="33dp"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
+</LinearLayout>
