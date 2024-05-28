@@ -9,7 +9,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
@@ -29,6 +28,8 @@ import com.example.musicplayer.R;
 import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.interfaces.ActionPlaying;
 import com.example.musicplayer.receiver.NotificationReceiver;
+
+import java.io.IOException;
 
 
 public class MusicService extends Service {
@@ -56,8 +57,7 @@ public class MusicService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String songPath = intent.getStringExtra("songPath");
         if(songPath!=null){
-            uri = Uri.parse(songPath);
-            playMedia(uri);
+            playMedia(songPath);
         }
         String actionName = intent.getStringExtra("ActionName");
 
@@ -89,17 +89,36 @@ public class MusicService extends Service {
         stopSelf();
     }
 
-    private void playMedia(Uri uri) {
+    private void playMedia(String songPath) {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             mediaPlayer.release();
-            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
-            mediaPlayer.start();
         } else {
-            mediaPlayer = MediaPlayer.create(getBaseContext(),uri);
-            mediaPlayer.start();
+
+        }
+        mediaPlayer = new MediaPlayer();
+        try {
+            uri = Uri.parse(songPath);
+            mediaPlayer.setDataSource(getBaseContext(), uri);
+            mediaPlayer.setOnPreparedListener(mp -> {
+                mp.start();
+            });
+            mediaPlayer.setOnBufferingUpdateListener((mp, percent) -> {
+                Log.d("Loading", "Buffering: " + percent + "%");
+            });
+            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
+                // Xử lý lỗi
+                Log.e("this is error msg", "Error occurred: what=" + what + ", extra=" + extra);
+                return true;
+            });
+            mediaPlayer.prepareAsync(); // Sử dụng prepareAsync để load dữ liệu không đồng bộ
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("this is error msg", "Failed to set data source", e);
         }
     }
+
+
 
     public void start(){
         mediaPlayer.start();
@@ -125,10 +144,13 @@ public class MusicService extends Service {
     public int getCurrentPosition(){
         return mediaPlayer.getCurrentPosition();
     }
-
-    public void createMediaPlayer(Uri innerUri){
-        mediaPlayer = MediaPlayer.create(getBaseContext(),innerUri);
+    public void setNullForMediaPlayer() {
+        mediaPlayer.release();
+        mediaPlayer.stop();
+        mediaPlayer = null;
     }
+
+
     public void showNotification(int playPauseBtn, float playbackSpeed) {
         Intent intent = new Intent(this, PlayingActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
@@ -143,7 +165,7 @@ public class MusicService extends Service {
         PendingIntent nextPending = PendingIntent.getBroadcast(this, 0, nextIntent, PendingIntent.FLAG_IMMUTABLE);
 
         byte[] picture = null;
-        picture = getImg(currPlayedSong.getPath());
+        picture = currPlayedSong.getImg();
         Bitmap thumb = null;
         if(picture != null){
             thumb = BitmapFactory.decodeByteArray(picture, 0, picture.length);
@@ -175,20 +197,6 @@ public class MusicService extends Service {
                     .build());
         }
         startForeground(1,notification);
-    }
-    private byte[] getImg(String uri) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(uri);
-        return retriever.getEmbeddedPicture();
-    }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-        }
-        stopForeground(true);
     }
 
     public void setCallBack(ActionPlaying actionPlaying){

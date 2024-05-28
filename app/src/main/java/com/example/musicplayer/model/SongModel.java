@@ -4,37 +4,33 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
-
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 public class
  SongModel implements Parcelable {
     private String path;
     private String title;
     private String artist;
     private String duration;
-
-//    private String album;
-
-    public SongModel(String path, String title, String artist, String duration) {
+    private Integer type;
+    byte[] img;
+    public SongModel(String path, String title, String artist, String duration, Integer type) {
         this.path = path;
         this.title = title;
         this.artist = artist;
         this.duration = duration;
-//        this.album=null;
+        this.type = type;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(Uri.parse(path).toString());
+        this.img =retriever.getEmbeddedPicture();
     }
-
-//    public SongModel(String path, String title, String artist, String duration, String album) {
-//        this.path = path;
-//        this.title = title;
-//        this.artist = artist;
-//        this.duration = duration;
-//        this.album = album;
-//    }
 
     protected SongModel(Parcel in) {
         path = in.readString();
         title = in.readString();
         artist = in.readString();
         duration = in.readString();
+        type = in.readInt();
     }
 
     @Override
@@ -43,6 +39,7 @@ public class
         dest.writeString(title);
         dest.writeString(artist);
         dest.writeString(duration);
+        dest.writeInt(type);
     }
 
     @Override
@@ -76,6 +73,8 @@ public class
 
     public String getDuration() { return duration; }
 
+    public Integer getType() {return type;}
+
     public void setPath(String path) {
         this.path = path;
     }
@@ -91,8 +90,10 @@ public class
     public void setDuration(String duration) {
         this.duration = duration;
     }
+    public void setType(Integer type) {this.type = type;}
 
-//    public String getAlbum(){
-//        return album;
-//    }
+    public byte[] getImg() {
+        return img;
+    }
 }
+

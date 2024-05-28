@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -68,17 +67,9 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
             holder.playlistCount.setText(countStr);
 
         }
-        String playlistImagePath = libraryList.get(position).getPlaylistImagePath();
-
-        if (playlistImagePath != null) {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(playlistImagePath);
-            byte[] img = retriever.getEmbeddedPicture();
-            if(img!=null){
-                Glide.with(context).asBitmap().load(img).into(holder.playlistImg);
-            } else {
-                Glide.with(context).asBitmap().load(R.drawable.imageitem).into(holder.playlistImg);
-            }
+        byte [] img = libraryList.get(position).getPlaylistImage();
+        if (img != null) {
+             Glide.with(context).asBitmap().load(img).into(holder.playlistImg);
         }
         else {
             Glide.with(context).asBitmap().load(R.drawable.default_playlist_image).into(holder.playlistImg);

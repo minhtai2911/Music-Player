@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaMetadataRetriever;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +53,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         if (song == null) return;
         holder.song_name.setText(song.getTitle());
         holder.artist_name.setText(song.getArtist());
-        byte[] img = getImg(song.getPath());
+        byte[] img = song.getImg();
         if (img != null) {
             Glide.with(context).asBitmap().load(img).into(holder.img_song);
         }
@@ -108,11 +107,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             img_song = itemView.findViewById(R.id.img_song);
             threeDotImg = itemView.findViewById(R.id.three_dot);
         }
-    }
-    private byte[] getImg(String uri) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(uri);
-        return retriever.getEmbeddedPicture();
     }
 }
 

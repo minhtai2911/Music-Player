@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -68,15 +67,8 @@ public class PlaylistAdapter  extends RecyclerView.Adapter<PlaylistAdapter.MyVie
         SongModel song = playlistSongs.get(position);
         holder.songName.setText(song.getTitle());
         holder.songArtist.setText(song.getArtist());
-        if (song.getPath() != null) {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(song.getPath());
-            byte[] img = retriever.getEmbeddedPicture();
-            if(img!=null){
-                Glide.with(context).asBitmap().load(img).into(holder.imgSong);
-            } else {
-                Glide.with(context).asBitmap().load(R.drawable.imageitem).into(holder.imgSong);
-            }
+        if (song.getImg() != null) {
+                Glide.with(context).asBitmap().load(song.getImg()).into(holder.imgSong);
         }
         else {
             Glide.with(context).asBitmap().load(R.drawable.imgitem).into(holder.imgSong);

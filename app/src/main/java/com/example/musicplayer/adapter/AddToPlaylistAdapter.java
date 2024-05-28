@@ -1,7 +1,6 @@
 package com.example.musicplayer.adapter;
 import static com.example.musicplayer.activity.MainActivity.getAllPlaylist;
 import android.content.Context;
-import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,11 +50,8 @@ public class AddToPlaylistAdapter extends RecyclerView.Adapter<AddToPlaylistAdap
     public void onBindViewHolder(@NonNull AddToPlaylistAdapter.MyViewHolder holder, int position) {
         holder.playlistName.setText(libraryList.get(position).getPlaylistName());
         holder.playlistCount.setText(String.format("%d songs",libraryList.get(position).getListSong().size()));
-        String playlistImagePath = libraryList.get(position).getPlaylistImagePath();
-        if (playlistImagePath != null) {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(playlistImagePath);
-            byte[] img = retriever.getEmbeddedPicture();
+        byte [] img = libraryList.get(position).getPlaylistImage();
+        if (img != null) {
             Glide.with(context).asBitmap().load(img).into(holder.playlistImg);
         } else {
             Glide.with(context).asBitmap().load(R.drawable.default_playlist_image).into(holder.playlistImg);
