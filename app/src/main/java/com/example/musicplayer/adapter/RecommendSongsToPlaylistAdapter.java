@@ -4,7 +4,6 @@ import static com.example.musicplayer.adapter.SongAdapter.showAddSongDialog;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +55,7 @@ public class RecommendSongsToPlaylistAdapter extends RecyclerView.Adapter<Recomm
         SongModel song = songList.get(position);
         holder.song_name.setText(song.getTitle());
         holder.artist_name.setText(song.getArtist());
-        byte[] img = getImg(song.getPath());
+        byte[] img = song.getImg();
         if (img != null) {
             Glide.with(context).asBitmap().load(img).into(holder.img_song);
         }
@@ -112,11 +111,6 @@ public class RecommendSongsToPlaylistAdapter extends RecyclerView.Adapter<Recomm
             img_song = itemView.findViewById(R.id.img_playlist);
             addImg = itemView.findViewById(R.id.add_img);
         }
-    }
-    private byte[] getImg(String uri) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(uri);
-        return retriever.getEmbeddedPicture();
     }
 }
 

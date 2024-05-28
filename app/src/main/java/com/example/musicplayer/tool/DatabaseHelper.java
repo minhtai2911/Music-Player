@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 import android.widget.Toast;
 import android.database.Cursor;
 import androidx.annotation.Nullable;
@@ -120,10 +119,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(cursor.getCount()!=0){
             while(cursor.moveToNext()){
                 String songPath = cursor.getString(0);
-                Log.d("song path", songPath);
                 for(int i=0;i<songList.size();i++){
                     SongModel song = songList.get(i);
-                    Log.d("song path search", String.valueOf(song.getPath().equals(songPath)));
 
                     if(song.getPath().equals(songPath)){
                         mediasInPlaylist.add(song);
@@ -131,7 +128,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
             }
         }
-        Log.d("result hehe", String.valueOf(mediasInPlaylist));
         return mediasInPlaylist;
     }
 

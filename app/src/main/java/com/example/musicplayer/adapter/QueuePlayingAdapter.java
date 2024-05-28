@@ -7,7 +7,6 @@ import static com.example.musicplayer.activity.MainActivity.removeSongFromQueue;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,10 +57,7 @@ public class QueuePlayingAdapter extends RecyclerView.Adapter<QueuePlayingAdapte
             holder.itemView.setBackgroundColor(blackColor);
             holder.songName.setTextColor(whiteColor);
         }
-        String songPath = listSongs.get(position).getPath();
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(songPath);
-        byte[] img = retriever.getEmbeddedPicture();
+        byte[] img = song.getImg();
         if (img != null) {
             Glide.with(context).asBitmap().load(img).into(holder.imgSong);
         }

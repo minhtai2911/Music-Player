@@ -17,7 +17,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
-import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -256,9 +255,7 @@ public class PlaylistActivity extends AppCompatActivity {
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
 
         if (playlistImagePath != null) {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(playlistImagePath);
-            byte[] img = retriever.getEmbeddedPicture();
+            byte[] img = playlistModel.getPlaylistImage();
             if (img != null) {
                 Glide.with(this).asBitmap().load(img).into(playlistImage2);
                 Glide.with(this).asBitmap().load(img).into(playlistImage);

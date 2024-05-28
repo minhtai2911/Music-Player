@@ -4,7 +4,6 @@ package com.example.musicplayer.fragment;
 
         import android.content.Intent;
         import android.graphics.drawable.GradientDrawable;
-        import android.media.MediaMetadataRetriever;
         import android.net.Uri;
         import android.os.Bundle;
 
@@ -75,7 +74,7 @@ public class HomeFragment extends Fragment {
                             }
                         }
                     });
-                    metaData(Uri.parse(randomSong.getPath()));
+                    metaData();
                     Log.d("randomsong",randomSong.getPath());
 
                 }
@@ -101,22 +100,13 @@ public class HomeFragment extends Fragment {
         handler.removeCallbacks(runnable);
     }
 
-    public void metaData(Uri uri) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(uri.toString());
-        byte[] img = retriever.getEmbeddedPicture();
+    public void metaData() {
+        byte[] img = randomSong.getImg();
         if (img != null) {
             Glide.with(view.getContext()).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
         }
         else {
             Glide.with(view.getContext()).asBitmap().load(R.drawable.default_image).apply(RequestOptions.bitmapTransform(new RoundedCorners(50))).into(cover_img);
         }
-//        GradientDrawable gradientDrawable = new GradientDrawable();
-//        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
-//        int domainColor = GetDominantColor.getDominantColor(img);
-//        gradientDrawable.setColors(new int[]{domainColor-10, domainColor,domainColor+10, domainColor});
-//        gradientDrawable.setOrientation(GradientDrawable.Orientation.BOTTOM_TOP);
-//        gradientDrawable.setCornerRadius(10);
-//        relativeLayout.setBackground(gradientDrawable);
     }
 }

@@ -46,6 +46,16 @@ public class PlaylistModel {
         }
     }
 
+
+    public byte [] getPlaylistImage(){
+        if(this.listSong.size()>0) {
+            return listSong.get(0).getImg();
+        } else {
+            return null;
+        }
+
+    }
+
     public ArrayList<SongModel> getListSong() {
         return listSong;
     }

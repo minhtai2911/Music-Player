@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaMetadataRetriever;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +61,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         SongModel song = arrayListSong.get(position);
         holder.txtSong.setText(song.getTitle());
         holder.artist.setText(song.getArtist());
-        byte[] img = getImg(song.getPath());
+        byte[] img = song.getImg();
         if (img != null) {
             Glide.with(context).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(29))).into(holder.imgSong);
         }
@@ -141,9 +140,5 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             artist = itemView.findViewById(R.id.artist_song);
         }
     }
-    private byte[] getImg(String uri) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(uri);
-        return retriever.getEmbeddedPicture();
-    }
+
 }
