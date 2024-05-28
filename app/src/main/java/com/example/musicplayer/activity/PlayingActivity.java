@@ -457,6 +457,10 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         super.onPause();
         unbindService(this);
     }
+    @Override
+    protected void onStop(){
+        super.onStop();
+    }
 
     private void prevThreadBtn() {
         prevThread = new Thread() {
@@ -680,6 +684,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
         musicService = null;
+        musicService.onDestroy();
     }
 
     private class MyMediaSessionCallback extends MediaSessionCompat.Callback {

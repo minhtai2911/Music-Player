@@ -22,6 +22,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.ServiceCompat;
 
 import com.example.musicplayer.Application;
 import com.example.musicplayer.R;
@@ -32,6 +33,7 @@ import com.example.musicplayer.receiver.NotificationReceiver;
 
 public class MusicService extends Service {
     MyBinder myBinder = new MyBinder();
+    Notification notification;
     ActionPlaying actionPlaying;
     MediaPlayer mediaPlayer;
     Uri uri;
@@ -80,6 +82,11 @@ public class MusicService extends Service {
         }
 
         return START_STICKY;
+    }
+    public void quit() {
+        pause();
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
+        stopSelf();
     }
 
     private void playMedia(Uri uri) {
@@ -144,7 +151,7 @@ public class MusicService extends Service {
         else {
             thumb = BitmapFactory.decodeResource(getResources(), R.drawable.imgitem);
         }
-        Notification notification = new NotificationCompat.Builder(this, Application.CHANNEL_ID_2)
+        notification = new NotificationCompat.Builder(this, Application.CHANNEL_ID_1)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSmallIcon(playPauseBtn)
                 .setLargeIcon(thumb)
@@ -167,12 +174,21 @@ public class MusicService extends Service {
                     .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
                     .build());
         }
-        startForeground(2,notification);
+        startForeground(1,notification);
     }
     private byte[] getImg(String uri) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(uri);
         return retriever.getEmbeddedPicture();
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+        stopForeground(true);
     }
 
     public void setCallBack(ActionPlaying actionPlaying){

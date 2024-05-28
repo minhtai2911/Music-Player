@@ -6,7 +6,6 @@ import android.os.Build;
 
 public class Application extends android.app.Application{
     public static final String CHANNEL_ID_1 = "channel1";
-    public static final String CHANNEL_ID_2 = "channel2";
     public static final String ACTION_PREVIOUS = "actionprevious";
     public static final String ACTION_PLAY = "actionplay";
     public static final String ACTION_NEXT = "actionnext";
@@ -18,6 +17,14 @@ public class Application extends android.app.Application{
         createNotificationChannel();
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NotificationManager.class);
+        notificationManager.cancel(1);
+    }
+
+
     private void createNotificationChannel() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel1 = new NotificationChannel(
@@ -26,17 +33,10 @@ public class Application extends android.app.Application{
                     NotificationManager.IMPORTANCE_HIGH
             );
             channel1.setDescription("This is Channel 1");
-
-            NotificationChannel channel2 = new NotificationChannel(
-                    CHANNEL_ID_2,
-                    "Channel (2)",
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            channel2.setDescription("This is Channel 2");
-
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel1);
-            manager.createNotificationChannel(channel2);
+
         }
     }
+
 }

@@ -50,10 +50,17 @@ import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.fragment.HomeFragment;
 import com.example.musicplayer.fragment.SearchFragment;
 import com.example.musicplayer.tool.DatabaseHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
@@ -89,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         });
         permission();
         playBackStatus();
+
     }
 
     private void playBackStatus() {
@@ -216,6 +224,29 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+    private void loadSongFromDatabase() {
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("songs_test")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, Object> data = document.getData();
+                            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                            String urlTemp = (String) data.get("url");
+                            retriever.setDataSource(urlTemp);
+                            String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+                            String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                            String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                            Uri uri = Uri.parse(urlTemp);
+                            String path = uri.toString();
+                            SongModel song = new SongModel(path,title,artist,duration);
+                            songList.add(song);
+                        }
+                    }
+                });
+    }
 
 
     @Override
@@ -232,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected  void onStop() {
         super.onStop();
+        Log.d("OnStop", "onStop");
         homeFragment.stopRandomSong();
     }
 
@@ -275,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             songList = getAllSongs(this);
             initViewPager();
+            loadSongFromDatabase();
         }
     }
 
