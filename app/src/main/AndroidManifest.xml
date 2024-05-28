@@ -55,10 +55,15 @@
         </activity>
 
         <service android:name="com.example.musicplayer.service.MusicService"
-                android:foregroundServiceType="mediaPlayback">
+                android:foregroundServiceType="mediaPlayback"/>
+        <service android:name="com.example.musicplayer.service.LogMonitoringService" />
 
-        </service>
-
+        <receiver android:name="com.example.musicplayer.receiver.LogEventReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.LOG_EVENT" />
+            </intent-filter>
+        </receiver>
         <receiver android:name="com.example.musicplayer.receiver.NotificationReceiver" android:enabled="true"
             android:exported="true">
             <intent-filter>

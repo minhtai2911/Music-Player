@@ -15,6 +15,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
@@ -53,10 +54,13 @@ import com.example.musicplayer.adapter.LibraryAdapter;
 import com.example.musicplayer.adapter.MainViewPagerAdapter;
 import com.example.musicplayer.R;
 import com.example.musicplayer.fragment.LibraryFragment;
+import com.example.musicplayer.interfaces.OnTaskCompleted;
 import com.example.musicplayer.model.PlaylistModel;
 import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.fragment.HomeFragment;
 import com.example.musicplayer.fragment.SearchFragment;
+import com.example.musicplayer.receiver.LogEventReceiver;
+import com.example.musicplayer.service.LogMonitoringService;
 import com.example.musicplayer.tool.DatabaseHelper;
 import com.example.musicplayer.tool.NetworkChangeReceiver;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -99,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
     public static SongModel currPlayedSong = null;
     public static LinearLayout playBackStatus;
     public static ImageView playPause, addButton;
+    private LogEventReceiver logEventReceiver;
 //            ImageView shazamButton;
     DatabaseReference databaseReference;
     ValueEventListener valueEventListener;
@@ -110,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     public static HomeFragment homeFragment;
 
     public  TabLayout tabLayout;
-    private NetworkChangeReceiver reciver;
+    private NetworkChangeReceiver receiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,13 +130,12 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         permission();
-        reciver = new NetworkChangeReceiver();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(reciver, intentFilter);
+
 //        broadcastReceiver = new NetworkChangeReceiver();
 //        registerBroadcastReceiver();
+        Intent intent = new Intent(this, LogMonitoringService.class);
+        startService(intent);
         playBackStatus();
-
     }
 
 
@@ -265,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    private void loadSongFromDatabase() {
+    public void loadSongFromDatabase(OnTaskCompleted listener) {
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseFirestore.collection("songs_test")
                 .get()
@@ -282,9 +286,11 @@ public class MainActivity extends AppCompatActivity {
                             String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
                             Uri uri = Uri.parse(urlTemp);
                             String path = uri.toString();
-                            SongModel song = new SongModel(path,title,artist,duration);
+                            SongModel song = new SongModel(path,title,artist,duration,1);
                             songList.add(song);
                         }
+                        // Gọi phương thức callback khi hoàn tất
+                        listener.onTaskCompleted();
                     }
                 });
     }
@@ -305,10 +311,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 //        loadStatus();
-        if(tabLayout.getSelectedTabPosition()==0){
-            homeFragment.startRandomSong();
-        } else {
-            homeFragment.stopRandomSong();
+        if(tabLayout!=null) {
+            if (tabLayout.getSelectedTabPosition() == 0) {
+                homeFragment.startRandomSong();
+            } else {
+                homeFragment.stopRandomSong();
+            }
         }
     }
 
@@ -317,6 +325,16 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         Log.d("OnStop", "onStop");
         homeFragment.stopRandomSong();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Stop the log monitoring service
+        if (logEventReceiver != null) {
+            unregisterReceiver(logEventReceiver);
+        }
+        Intent intent = new Intent(this, LogMonitoringService.class);
+        stopService(intent);
     }
 
     public static void loadStatus() {
@@ -355,8 +373,16 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
         } else {
             songList = getAllSongs(this);
-            initViewPager();
-            loadSongFromDatabase();
+
+            loadSongFromDatabase(new OnTaskCompleted() {
+                        @Override
+                        public void onTaskCompleted() {
+                            Log.d("LoadSong", "Load song completed");
+                            initViewPager();
+                        }
+            });
+
+
         }
     }
 

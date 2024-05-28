@@ -4,6 +4,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
 
+import androidx.profileinstaller.ProfileInstaller;
+
 public class Application extends android.app.Application{
     public static final String CHANNEL_ID_1 = "channel1";
     public static final String ACTION_PREVIOUS = "actionprevious";

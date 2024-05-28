@@ -44,6 +44,7 @@ android {
 
 
 dependencies {
+    implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     implementation("androidx.activity:activity-ktx:1.3.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.4.1")

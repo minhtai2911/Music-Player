@@ -38,6 +38,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         Intent networkChangeIntent = new Intent(NETWORK_CHANGE_ACTION);
         if (isConnectedToNetwork(context)) {
             loadSongFromDatabase();
+            Log.d("Catch event", "onReceive: connected to network");
             checkConnected = true;
             networkChangeIntent.putExtra("checkConnected", checkConnected);
             LocalBroadcastManager.getInstance(context).sendBroadcast(networkChangeIntent);
@@ -57,11 +58,9 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                     }
                 }
             }
-//            startActivity();
             Log.e("checkInternetConnect", "not connect");
         }
     }
-
     public boolean isConnectedToNetwork(Context context) {
         try {
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
