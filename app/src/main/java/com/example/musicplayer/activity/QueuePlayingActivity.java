@@ -7,6 +7,7 @@ import static com.example.musicplayer.activity.PlayingActivity.listSongs;
 import static com.example.musicplayer.activity.MainActivity.getQueuePlaying;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.adapter.QueuePlayingAdapter;
+import com.example.musicplayer.tool.NetworkChangeReceiver;
 
 
 public class QueuePlayingActivity extends AppCompatActivity {
@@ -28,6 +30,7 @@ public class QueuePlayingActivity extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public static QueuePlayingAdapter queuePlayingAdapter;
     ImageView backButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,12 @@ public class QueuePlayingActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected  void onResume(){
+        super.onResume();
+        NetworkChangeReceiver.appContext = this;
     }
 
     ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {

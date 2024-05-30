@@ -36,8 +36,8 @@ import java.util.ArrayList;
 public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHolder> {
     Context context;
     View view;
-    public static ArrayList<PlaylistModel> libraryList;
-    DatabaseHelper myDB;
+    public static ArrayList<PlaylistModel> libraryList = new ArrayList<>();
+    public static DatabaseHelper myDB;
 
 
     public LibraryAdapter( Context context){
@@ -251,5 +251,12 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
             playlistCount = itemView.findViewById(R.id.count);
             threeDotImg = itemView.findViewById(R.id.three_dot);
         }
+    }
+
+    public void setLibraryList(){
+        if(myDB==null){
+            return;
+        }
+        libraryList = getAllPlaylist(myDB);
     }
 }

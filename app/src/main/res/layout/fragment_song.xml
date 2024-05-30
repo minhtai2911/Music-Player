@@ -13,7 +13,7 @@
         android:layout_marginTop="30dp"
         android:textFontWeight="700"
         android:fontFamily="@font/poppin_semibold"
-        android:text="Your Music"
+        android:text="Your Mixed Music"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"

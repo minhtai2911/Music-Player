@@ -1,6 +1,8 @@
 package com.example.musicplayer.fragment;
 
         import static com.example.musicplayer.activity.MainActivity.songList;
+        import static com.example.musicplayer.activity.PlayingActivity.isPlayable;
+        import static com.example.musicplayer.tool.NetworkChangeReceiver.checkConnected;
 
         import android.content.Intent;
         import android.graphics.drawable.GradientDrawable;
@@ -56,6 +58,13 @@ public class HomeFragment extends Fragment {
                     Random random = new Random();
                     int positionRandom = random.nextInt(songList.size());
                     randomSong = songList.get(positionRandom);
+                    if(randomSong!=null){
+                        while(!isPlayable(randomSong, checkConnected)){
+                            int positionRandomAgain = random.nextInt(songList.size());
+                            randomSong = songList.get(positionRandomAgain);
+                        }
+                    }
+
                     song_name = view.findViewById(R.id.song_name_random);
                     artist_name = view.findViewById(R.id.song_artist_random);
                     cover_img = view.findViewById(R.id.song_img);
@@ -66,7 +75,7 @@ public class HomeFragment extends Fragment {
                     randomImage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(randomSong!=null){
+                            if(randomSong!=null&&isPlayable(randomSong, checkConnected)){
                                 String songPath = randomSong.getPath();
                                 Intent intent = new Intent(v.getContext(), PlayingActivity.class);
                                 intent.putExtra("songPath",songPath);
@@ -75,8 +84,6 @@ public class HomeFragment extends Fragment {
                         }
                     });
                     metaData();
-                    Log.d("randomsong",randomSong.getPath());
-
                 }
                 handler.postDelayed(this, 5000);
             }

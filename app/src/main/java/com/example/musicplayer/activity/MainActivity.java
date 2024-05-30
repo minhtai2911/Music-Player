@@ -1,6 +1,5 @@
 package com.example.musicplayer.activity;
 
-//import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
 import static com.example.musicplayer.activity.PlayingActivity.musicService;
 
 import android.Manifest;
@@ -109,8 +108,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static HomeFragment homeFragment;
 
-    public  TabLayout tabLayout;
+    public static TabLayout tabLayout;
     private NetworkChangeReceiver reciver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,18 +118,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         queuePlaying = new ArrayList<>();
         context = this;
+        NetworkChangeReceiver.appContext = this;
         myDB = new DatabaseHelper(MainActivity.this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom);
             return insets;
         });
-        permission();
         reciver = new NetworkChangeReceiver();
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(reciver, intentFilter);
-//        broadcastReceiver = new NetworkChangeReceiver();
-//        registerBroadcastReceiver();
+        permission();
         playBackStatus();
     }
 
@@ -190,12 +189,6 @@ public class MainActivity extends AppCompatActivity {
         // Activity bị tạm dừng, lưu trạng thái hiện tại hoặc ngừng các cập nhật không cần thiết
     }
 
-//    @Override
-//    protected void onStop() {
-//
-//        super.onStop();
-//
-//    }
     public static void showAddCurrSongDialog(SongModel song, Context context) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -269,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        NetworkChangeReceiver.appContext = this;
         Intent intent = getIntent();
         if(intent != null) {
             boolean isConnected = getIntent().getBooleanExtra("checkConnected", true);
@@ -279,12 +273,6 @@ public class MainActivity extends AppCompatActivity {
                     loadStatus();
                 }
             }
-        }
-//        loadStatus();
-        if(tabLayout.getSelectedTabPosition()==0){
-            homeFragment.startRandomSong();
-        } else {
-            homeFragment.stopRandomSong();
         }
     }
 

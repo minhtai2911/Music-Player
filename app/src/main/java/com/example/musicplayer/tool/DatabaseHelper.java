@@ -8,6 +8,8 @@ import android.widget.Toast;
 import android.database.Cursor;
 import androidx.annotation.Nullable;
 import static com.example.musicplayer.activity.MainActivity.songList;
+import static com.example.musicplayer.activity.PlayingActivity.isPlayable;
+import static com.example.musicplayer.tool.NetworkChangeReceiver.checkConnected;
 
 import com.example.musicplayer.model.PlaylistModel;
 import com.example.musicplayer.model.SongModel;
@@ -121,8 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String songPath = cursor.getString(0);
                 for(int i=0;i<songList.size();i++){
                     SongModel song = songList.get(i);
-
-                    if(song.getPath().equals(songPath)){
+                    if(isPlayable(song,checkConnected) && song.getPath().equals(songPath)){
                         mediasInPlaylist.add(song);
                     }
                 }

@@ -56,6 +56,14 @@
             android:layout_alignParentBottom="true"
             android:ellipsize="end"
             android:maxLines="1" />
-
+        <ImageView
+            android:id="@+id/local"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/local"
+            android:layout_above="@+id/artist_song"
+            android:layout_alignParentRight="true"
+           android:layout_marginRight="10dp"
+            />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

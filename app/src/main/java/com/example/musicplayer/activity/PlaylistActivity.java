@@ -7,12 +7,14 @@ import static com.example.musicplayer.activity.MainActivity.setQueuePlaying;
 import static com.example.musicplayer.activity.MainActivity.swapSongInQueue;
 //import static com.example.musicplayer.activity.PlayingActivity.mediaPlayer;
 import static com.example.musicplayer.activity.MainActivity.songList;
+import static com.example.musicplayer.activity.PlayingActivity.isPlayable;
 import static com.example.musicplayer.activity.PlayingActivity.musicService;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -48,6 +50,7 @@ import com.example.musicplayer.model.PlaylistModel;
 import com.example.musicplayer.model.SongModel;
 import com.example.musicplayer.tool.DatabaseHelper;
 import com.example.musicplayer.tool.GetDominantColor;
+import com.example.musicplayer.tool.NetworkChangeReceiver;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,9 +62,12 @@ import java.util.Objects;
 import java.util.Set;
 import android.animation.ObjectAnimator;
 import de.hdodenhof.circleimageview.CircleImageView;
-
+import static com.example.musicplayer.tool.NetworkChangeReceiver.checkConnected;
 public class PlaylistActivity extends AppCompatActivity {
-    TextView playlistName, songCount, playlistName2;
+    TextView playlistName, playlistName2;
+
+    @SuppressLint("StaticFieldLeak")
+    public static TextView songCount;
     ImageView backButton, editButton, backButton2;
 
     LinearLayout header;
@@ -72,14 +78,17 @@ public class PlaylistActivity extends AppCompatActivity {
     RecyclerView recommendView;
     @SuppressLint("StaticFieldLeak")
     public static PlaylistAdapter playlistAdapter;
-
-    RecommendSongsToPlaylistAdapter recommendSongsToPlaylistAdapter;
-    String currentPlaylistIntent;
-    PlaylistModel playlistModel = null;
-    ArrayList<PlaylistModel> playlists;
+    @SuppressLint("StaticFieldLeak")
+    public static RecommendSongsToPlaylistAdapter recommendSongsToPlaylistAdapter;
+    public static String currentPlaylistIntent;
+    public static PlaylistModel playlistModel = null;
+    public static ArrayList<PlaylistModel> playlists;
     public static ImageView play_playlist_btn, play_btn_2;
 
     NestedScrollView scrollView;
+
+    public static   DatabaseHelper myDB;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +96,7 @@ public class PlaylistActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_playlist);
         DataIntent();
-        DatabaseHelper myDB = new DatabaseHelper(PlaylistActivity.this);
+        myDB = new DatabaseHelper(PlaylistActivity.this);
         this.playlists = getAllPlaylist(myDB);
         backButton = findViewById(R.id.back_btn);
         backButton2 = findViewById(R.id.back_btn_2);
@@ -211,6 +220,11 @@ public class PlaylistActivity extends AppCompatActivity {
             });
     }
 
+    @Override
+    protected  void onResume(){
+        super.onResume();
+        NetworkChangeReceiver.appContext = this;
+    }
     private void DataIntent() {
         Intent intent = getIntent();
         if (intent != null){
@@ -284,8 +298,10 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void updateRecommend(){
-        DatabaseHelper myDB = new DatabaseHelper(this);
+    public static void staticUpdateRecommend(){
+       if(myDB==null){
+           return;
+       }
         playlists = getAllPlaylist(myDB);
         for (PlaylistModel playlist: playlists) {
             if(Objects.equals(playlist.getPlaylistId(), currentPlaylistIntent)) {
@@ -297,7 +313,36 @@ public class PlaylistActivity extends AppCompatActivity {
         ArrayList<SongModel> recommendedSongList = (ArrayList<SongModel>) recommendSongs(songList, playlistModel.getListSong());
 
         recommendSongsToPlaylistAdapter.setSongList(recommendedSongList);
-        playlistAdapter.notifyItemInserted(playlistModel.getListSong().size()-1);
+        playlistAdapter.notifyDataSetChanged();
+        recommendSongsToPlaylistAdapter.notifyItemRangeChanged(0,5);
+
+        int count = playlistModel.getListSong().size();
+        if(count > 1){
+            String countStr = count +" songs";
+            songCount.setText(countStr);
+        } else {
+            String countStr = count +" song";
+            songCount.setText(countStr);
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public  void updateRecommend(){
+        if(myDB==null){
+            return;
+        }
+        playlists = getAllPlaylist(myDB);
+        for (PlaylistModel playlist: playlists) {
+            if(Objects.equals(playlist.getPlaylistId(), currentPlaylistIntent)) {
+                playlistModel = new PlaylistModel(playlist.getPlaylistId(), playlist.getPlaylistName(), playlist.getListSong());
+                break;
+            }
+        }
+        playlistAdapter.setPlaylistSongs(playlistModel.getListSong());
+        ArrayList<SongModel> recommendedSongList = (ArrayList<SongModel>) recommendSongs(songList, playlistModel.getListSong());
+
+        recommendSongsToPlaylistAdapter.setSongList(recommendedSongList);
+        playlistAdapter.notifyDataSetChanged();
         recommendSongsToPlaylistAdapter.notifyItemRangeChanged(0,5);
 
         int count = playlistModel.getListSong().size();
@@ -363,17 +408,20 @@ public class PlaylistActivity extends AppCompatActivity {
         HashMap<String, Integer> recommendationCounts = new HashMap<>();
         for (SongModel playlistSong : playlistSongs) {
             playlistSongTitle.add(playlistSong.getTitle());
-//            String album = playlistSong.getAlbum();
             String artist = playlistSong.getArtist();
-//            if (album != null) {
-//                recommendationCounts.put(album, recommendationCounts.getOrDefault(album, 0) +  2 );
-//            }
             recommendationCounts.put(artist, recommendationCounts.getOrDefault(artist, 0) + 1);
         }
 
         // Sort entries by count in descending order
         List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<>(recommendationCounts.entrySet());
         sortedEntries.sort((entry1, entry2) -> entry2.getValue() - entry1.getValue());
+
+        List<SongModel> allPlayableSongs = new ArrayList<>();
+        for(SongModel song : allSongs){
+            if(isPlayable(song,checkConnected)){
+                allPlayableSongs.add(song);
+            }
+        }
 
         // Extract recommended songs (max 5 with diversity check)
         List<SongModel> recommendedSongs = new ArrayList<>();
@@ -382,27 +430,20 @@ public class PlaylistActivity extends AppCompatActivity {
             int addedSongCount = 0;
             for(int idx = 0;addedSongCount<5 && idx <sortedEntries.size(); idx++){
                 String recommendation = sortedEntries.get(idx).getKey();
-                for (SongModel song : allSongs) {
+                for (SongModel song : allPlayableSongs) {
                     if (!playlistSongTitle.contains(song.getTitle()) &&
                             ((
-//                                    song.getAlbum()!=null&&recommendation.equals(song.getAlbum()) ||
                                             recommendation.equals(song.getArtist()))
                                     && !recommendedSongs.contains(song))) {
-                        //diversify
                         if (
-//                                song.getAlbum()!=null&&recommendation.equals(song.getAlbum()) ||
                                         recommendation.equals(song.getArtist())) {
                             if (
-//                                    recommendedAlbumsArtists.contains(song.getAlbum()) ||
                                     recommendedArtists.contains(song.getArtist())) {
                                 continue; // Skip if exceeding allowed  repeats
                             }
                         }
                         recommendedSongs.add(song);
                         addedSongCount++;
-//                        if(song.getAlbum()!=null){
-//                            recommendedAlbumsArtists.add(song.getAlbum());
-//                        }
                         recommendedArtists.add(song.getArtist());
                         break; // Only add one song per recommendation entry
                     }
@@ -413,8 +454,8 @@ public class PlaylistActivity extends AppCompatActivity {
         if (recommendedSongs.size() < 5) {
             int neededSongs = 5 - recommendedSongs.size();
             Set<SongModel> usedSongs = new HashSet<>(recommendedSongs); // Track already recommended songs
-            for (int  idx=0;neededSongs>0 && idx < allSongs.size();idx++) {
-                SongModel song = allSongs.get(idx);
+            for (int  idx=0;neededSongs>0 && idx < allPlayableSongs.size();idx++) {
+                SongModel song = allPlayableSongs.get(idx);
                 if (!playlistSongTitle.contains(song.getTitle()) && !usedSongs.contains(song)) {
                     recommendedSongs.add(song);
                     usedSongs.add(song);

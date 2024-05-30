@@ -53,6 +53,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         if (song == null) return;
         holder.song_name.setText(song.getTitle());
         holder.artist_name.setText(song.getArtist());
+        if(song.getType()==0){
+            holder.localIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.localIcon.setVisibility(View.GONE);
+        }
+
         byte[] img = song.getImg();
         if (img != null) {
             Glide.with(context).asBitmap().load(img).into(holder.img_song);
@@ -98,7 +104,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView song_name, artist_name;
-        ImageView img_song, threeDotImg;
+        ImageView img_song, threeDotImg, localIcon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -106,6 +112,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             artist_name = itemView.findViewById(R.id.artist_name);
             img_song = itemView.findViewById(R.id.img_song);
             threeDotImg = itemView.findViewById(R.id.three_dot);
+            localIcon = itemView.findViewById(R.id.local);
         }
     }
 }

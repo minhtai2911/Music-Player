@@ -1,7 +1,9 @@
 package com.example.musicplayer.fragment;
 
 import static com.example.musicplayer.activity.MainActivity.songList;
+import static com.example.musicplayer.activity.PlayingActivity.isPlayable;
 import static com.example.musicplayer.activity.PlayingActivity.musicService;
+import static com.example.musicplayer.tool.NetworkChangeReceiver.checkConnected;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.activity.MainActivity;
@@ -73,6 +76,11 @@ public class SearchFragment extends Fragment {
         shazamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!checkConnected){
+                    Toast.makeText(v.getContext(), "Connect internet and try again", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if (musicService!=null && musicService.isPlaying()) {
                     musicService.pause();
                 }
@@ -87,11 +95,13 @@ public class SearchFragment extends Fragment {
     private void search(String song) {
         listSongs = new HashMap<>();
         for (int i = 0; i<songList.size(); i++) {
-            String title = songList.get(i).getTitle().toLowerCase();
-            String artist = songList.get(i).getArtist().toLowerCase();
-
-            if (title.contains(song.toLowerCase()) || artist.contains(song.toLowerCase())) {
-                listSongs.put(i,songList.get(i));
+            SongModel songListItem = songList.get(i);
+            if(isPlayable(songListItem,checkConnected)){
+                String title = songListItem.getTitle().toLowerCase();
+                String artist = songListItem.getArtist().toLowerCase();
+                if (title.contains(song.toLowerCase()) || artist.contains(song.toLowerCase())) {
+                    listSongs.put(i,songListItem);
+                }
             }
         }
 

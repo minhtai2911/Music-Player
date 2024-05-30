@@ -67,6 +67,11 @@ public class PlaylistAdapter  extends RecyclerView.Adapter<PlaylistAdapter.MyVie
         SongModel song = playlistSongs.get(position);
         holder.songName.setText(song.getTitle());
         holder.songArtist.setText(song.getArtist());
+        if(song.getType()==0){
+            holder.localIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.localIcon.setVisibility(View.GONE);
+        }
         if (song.getImg() != null) {
                 Glide.with(context).asBitmap().load(song.getImg()).into(holder.imgSong);
         }
@@ -203,7 +208,7 @@ public class PlaylistAdapter  extends RecyclerView.Adapter<PlaylistAdapter.MyVie
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView imgSong, threeDotImg;
+        ImageView imgSong, threeDotImg, localIcon;
         TextView songName, songArtist;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -211,6 +216,7 @@ public class PlaylistAdapter  extends RecyclerView.Adapter<PlaylistAdapter.MyVie
             songName = itemView.findViewById(R.id.song_name);
             songArtist = itemView.findViewById(R.id.artist_name);
             threeDotImg = itemView.findViewById(R.id.three_dot);
+            localIcon = itemView.findViewById(R.id.local);
         }
     }
 }

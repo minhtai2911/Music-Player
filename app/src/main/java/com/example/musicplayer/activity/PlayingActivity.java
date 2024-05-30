@@ -11,6 +11,7 @@ import static com.example.musicplayer.activity.MainActivity.queuePlaying;
 import static com.example.musicplayer.activity.MainActivity.setQueuePlaying;
 import static com.example.musicplayer.activity.MainActivity.showAddCurrSongDialog;
 import static com.example.musicplayer.activity.MainActivity.songList;
+import static com.example.musicplayer.tool.NetworkChangeReceiver.checkConnected;
 //import static com.example.musicplayer.tool.NetworkChangeReceiver.checkConnected;
 
 import android.app.NotificationManager;
@@ -55,6 +56,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.musicplayer.R;
+import com.example.musicplayer.adapter.QueuePlayingAdapter;
 import com.example.musicplayer.fragment.HomeFragment;
 import com.example.musicplayer.adapter.LibraryAdapter;
 import com.example.musicplayer.fragment.LibraryFragment;
@@ -97,7 +99,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     static int repeat = 0;
     public  TextView song_name;
     public  byte[] img_status;
-
+    public static Context playingContext;
     public static int seekBarDuration = 0;
     public PlayingActivity() {
 
@@ -127,6 +129,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        playingContext = this;
         LocalBroadcastManager.getInstance(this).registerReceiver(networkChangeReceiver,
                 new IntentFilter(NetworkChangeReceiver.NETWORK_CHANGE_ACTION));
         EdgeToEdge.enable(this);
@@ -174,6 +177,11 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (musicService != null && fromUser) {
                     musicService.seekTo(progress*1000);
+                    if(musicService.isPlaying()){
+                        musicService.showNotification(R.drawable.ic_pause,1f);
+                    } else {
+                        musicService.showNotification(R.drawable.ic_play,0f);
+                    }
                 }
                 if (seekBar.getProgress() == (seekBarDuration)) {
                     seekBar.setProgress(0);
@@ -185,6 +193,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
                         nextBtnClicked();
                     }
                 }
+
                 if(seekBar.getProgress()==1 && musicService!=null){
                     if(musicService.isPlaying()) {
                         musicService.showNotification(R.drawable.ic_pause,1f);
@@ -271,6 +280,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             }
         });
     }
+
     public PlayingActivity(NetworkChangeReceiver networkChangeReceiver) {
         this.networkChangeReceiver = networkChangeReceiver;
     }
@@ -409,6 +419,9 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
 
 
     public void setMediaPlayer(String songPath){
+        if(!isPlayable(currPlayedSong, checkConnected)){
+            return;
+        }
         Intent intent = new Intent(this, MusicService.class);
         intent.putExtra("songPath", songPath);
         startService(intent);
@@ -430,7 +443,6 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         }
 
         if(musicService!=null){
-            boolean isPlaying = musicService.isPlaying();
             if(musicService.isPlaying()) {
                 playPauseBtn.setImageResource(R.drawable.nutplay);
                 musicService.showNotification(R.drawable.ic_pause,1f);
@@ -447,16 +459,10 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         artist_name.setText(currPlayedSong.getArtist());
         duration_total.setText(formattedTime(seekBarDuration));
         if(PlaylistActivity.playlistAdapter!=null){
-            ArrayList<SongModel> songsPlaylist = PlaylistActivity.playlistAdapter.playlistSongs;
-            for(int i = 0; i< songsPlaylist.size();i++){
-                PlaylistActivity.playlistAdapter.notifyItemChanged(i);
-            }
+                PlaylistActivity.playlistAdapter.notifyDataSetChanged();
         }
         if(QueuePlayingActivity.queuePlayingAdapter!=null){
-            if(position>0){
-                QueuePlayingActivity.queuePlayingAdapter.notifyItemChanged(position-1);
-            }
-            QueuePlayingActivity.queuePlayingAdapter.notifyItemChanged(position);
+            QueuePlayingActivity.queuePlayingAdapter.notifyDataSetChanged();
         }
     }
     private void metaData() {
@@ -491,6 +497,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
         nextThreadBtn();
         prevThreadBtn();
         super.onResume();
+        NetworkChangeReceiver.appContext = this;
     }
 
     @Override
@@ -716,5 +723,55 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
                     }
                 }
         }
+    }
+
+    public static boolean isPlayable(SongModel songModel, boolean isConnected){
+        if(songModel==null){
+            return false;
+        }
+        if(isConnected){
+            return true;
+        } else {
+            if(songModel.getType()==1){
+                return false;
+            } else if(songModel.getType()==0){
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public static void staticUpdateQueue(){
+        if(currPlayedSong==null){
+            return;
+        }
+        ArrayList<SongModel> currentQueue = new ArrayList<>();
+        ArrayList<SongModel> queue = getQueuePlaying();
+        for(SongModel song: queue){
+            if(isPlayable(song,checkConnected)){
+                currentQueue.add(song);
+            }
+        }
+        setQueuePlaying(currentQueue);
+        listSongs = getQueuePlaying();
+        position = MainActivity.getSongPositonByPath(listSongs, currPlayedSong.getPath());
+        uri = Uri.parse(currPlayedSong.getPath());
+        if(QueuePlayingActivity.queuePlayingAdapter!=null){
+            QueuePlayingActivity.queuePlayingAdapter.listSongs = getQueuePlaying();
+            QueuePlayingActivity.queuePlayingAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public static void staticUpdateCurrentsong(){
+        if(currPlayedSong==null){
+            return;
+        }
+        if(playingContext!=null){
+            while(!isPlayable(currPlayedSong,checkConnected)){
+                ((PlayingActivity)playingContext).nextBtnClicked();
+            }
+        }
+
     }
 }

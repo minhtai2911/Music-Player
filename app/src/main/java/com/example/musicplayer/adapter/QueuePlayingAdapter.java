@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class QueuePlayingAdapter extends RecyclerView.Adapter<QueuePlayingAdapter.ViewHolder>{
     Context context;
-    ArrayList<SongModel> listSongs;
+    public ArrayList<SongModel> listSongs;
     View view;
     public QueuePlayingAdapter(Context context) {
         this.context = context;

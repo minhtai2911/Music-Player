@@ -85,8 +85,11 @@ class IdentifyViewModel : ViewModel() {
 
     private val repository = IdentifyRepository(ShazamIdentifyDataSource())
 
+    public var isStart: Boolean = false;
+
     @Throws(SecurityException::class)
     fun start() {
+        isStart = true
         createAudioRecord()
         synchronized(lock) {
             if (_idle.value != false) {
@@ -128,6 +131,7 @@ class IdentifyViewModel : ViewModel() {
     }
 
     fun stop() {
+        isStart = false
         createAudioRecord()
         synchronized(lock) {
             if (job != null) {

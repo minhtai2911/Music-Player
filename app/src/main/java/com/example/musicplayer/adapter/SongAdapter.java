@@ -2,6 +2,9 @@ package com.example.musicplayer.adapter;
 
 import static com.example.musicplayer.activity.MainActivity.addSongToQueue;
 import static com.example.musicplayer.activity.MainActivity.queuePlaying;
+import static com.example.musicplayer.activity.MainActivity.songList;
+import static com.example.musicplayer.activity.PlayingActivity.isPlayable;
+import static com.example.musicplayer.tool.NetworkChangeReceiver.checkConnected;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,15 +40,23 @@ import com.example.musicplayer.activity.PlayingActivity;
 import com.example.musicplayer.tool.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     Context context;
-    ArrayList<SongModel> arrayListSong;
+    public ArrayList<SongModel> arrayListSong;
     View view;
 
     public SongAdapter(Context context, ArrayList<SongModel> arrayListSong) {
         this.context = context;
-        this.arrayListSong = arrayListSong;
+        ArrayList<SongModel> playableSong = new ArrayList<>();
+        for(SongModel song: arrayListSong){
+            if(isPlayable(song, checkConnected)){
+                playableSong.add(song);
+            }
+        }
+        Collections.shuffle(playableSong);
+        this.arrayListSong = playableSong;
     }
 
     @NonNull
@@ -61,6 +72,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         SongModel song = arrayListSong.get(position);
         holder.txtSong.setText(song.getTitle());
         holder.artist.setText(song.getArtist());
+        if(song.getType()==0){
+            holder.localIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.localIcon.setVisibility(View.GONE);
+        }
         byte[] img = song.getImg();
         if (img != null) {
             Glide.with(context).asBitmap().load(img).apply(RequestOptions.bitmapTransform(new RoundedCorners(29))).into(holder.imgSong);
@@ -131,13 +147,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgSong;
+        ImageView imgSong, localIcon;
         TextView txtSong, artist;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgSong = itemView.findViewById(R.id.imgSong);
             txtSong = itemView.findViewById(R.id.txtSong);
             artist = itemView.findViewById(R.id.artist_song);
+            localIcon = itemView.findViewById(R.id.local);
         }
     }
 

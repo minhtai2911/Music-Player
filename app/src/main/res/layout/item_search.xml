@@ -48,7 +48,15 @@
         android:maxLines="1"
         app:layout_constraintStart_toEndOf="@+id/img_song"
         app:layout_constraintTop_toBottomOf="@+id/song_name" />
-
+    <ImageView
+        android:id="@+id/local"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/local"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/three_dot"
+        app:layout_constraintTop_toTopOf="parent"
+        />
     <ImageView
         android:id="@+id/three_dot"
         android:layout_width="wrap_content"

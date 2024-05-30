@@ -1,7 +1,14 @@
 package com.example.musicplayer.fragment;
 
+import static com.example.musicplayer.activity.MainActivity.currPlayedSong;
+import static com.example.musicplayer.activity.MainActivity.getQueuePlaying;
+import static com.example.musicplayer.activity.MainActivity.setQueuePlaying;
 import static com.example.musicplayer.activity.MainActivity.songList;
+import static com.example.musicplayer.activity.PlayingActivity.isPlayable;
+import static com.example.musicplayer.tool.NetworkChangeReceiver.checkConnected;
 
+import android.annotation.SuppressLint;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,11 +21,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.activity.MainActivity;
+import com.example.musicplayer.activity.QueuePlayingActivity;
 import com.example.musicplayer.adapter.SongAdapter;
+import com.example.musicplayer.model.SongModel;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class SongFragment extends Fragment {
     RecyclerView recyclerView;
-    SongAdapter songAdapter;
+    public static SongAdapter songAdapter;
     TextView title, artist;
 
 
@@ -40,7 +53,22 @@ public class SongFragment extends Fragment {
     }
     @Override
     public void onResume() {
-//        CheckConnected.isConnectedToInternet(getContext());
         super.onResume();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public static void staticUpdateHomeSong(){
+        if(songAdapter==null){
+            return;
+        }
+        ArrayList<SongModel> playableSong = new ArrayList<>();
+        for(SongModel song: songList){
+            if(isPlayable(song, checkConnected)){
+                playableSong.add(song);
+            }
+        }
+        Collections.shuffle(playableSong);
+        songAdapter.arrayListSong = playableSong;
+        songAdapter.notifyDataSetChanged();
     }
 }

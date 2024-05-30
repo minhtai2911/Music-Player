@@ -71,7 +71,9 @@ class IdentifyFragment : Fragment() {
         }
 
         binding.backBtn.setOnClickListener{
-            identifyViewModel.stop()
+            if(identifyViewModel!=null && identifyViewModel.isStart==true){
+                identifyViewModel.stop()
+            }
             (context as? MainRecogniseMusicActivity)?.finish()
         }
 

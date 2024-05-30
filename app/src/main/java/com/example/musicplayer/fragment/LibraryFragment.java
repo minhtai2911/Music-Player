@@ -75,4 +75,13 @@ public class LibraryFragment extends Fragment {
         });
         dialog.show();
     }
+
+    public static void staticUpdateLibrary(){
+        if(libraryAdapter==null){
+            return;
+        }
+        libraryAdapter.setLibraryList();
+        libraryAdapter.notifyDataSetChanged();
+
+    }
 }
