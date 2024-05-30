@@ -181,8 +181,8 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
                 PlaylistModel playlist = libraryList.get(position);
                 boolean isDeleted = myDB.DeletePlaylist(playlist);
                 if(isDeleted){
-                    libraryList.remove(position);
-                    notifyItemRemoved(position);
+                    libraryList = getAllPlaylist(myDB);
+                    notifyDataSetChanged();
                 }
                 alertDialogDelete.dismiss();
             };
@@ -232,8 +232,8 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
         dialog.show();
     }
 
-    public void addPlaylist(PlaylistModel playlist){
-        this.libraryList.add(playlist);
+    public void addPlaylist(){
+        this.libraryList = getAllPlaylist(myDB);
     }
 
     @Override

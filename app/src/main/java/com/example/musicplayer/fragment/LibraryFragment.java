@@ -2,6 +2,7 @@ package com.example.musicplayer.fragment;
 
 import static com.example.musicplayer.activity.MainActivity.getAllPlaylist;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,7 @@ public class LibraryFragment extends Fragment {
         });
 
         btnCreate.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onClick(View v) {
                 String playlistName = String.valueOf(eName.getText()).trim();
@@ -68,7 +70,7 @@ public class LibraryFragment extends Fragment {
                 PlaylistModel newPlaylist = new PlaylistModel(playlistName);
                 DatabaseHelper myDB = new DatabaseHelper(getActivity());
                 myDB.InsertPlaylist(newPlaylist);
-                libraryAdapter.addPlaylist(newPlaylist);
+                libraryAdapter.addPlaylist();
                 libraryAdapter.notifyDataSetChanged();
                 dialog.dismiss();
             }

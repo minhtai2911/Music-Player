@@ -691,6 +691,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
     @Override
     public void playPauseBtnClicked() {
         if (musicService.isPlaying()) {
+            MainActivity.playPause.setImageResource(R.drawable.nutpause);
             playPauseBtn.setImageResource(R.drawable.nutpause);
             musicService.pause();
             cover_img.clearAnimation();
@@ -708,6 +709,7 @@ public class PlayingActivity extends AppCompatActivity implements ActionPlaying,
             });
         }
         else {
+            MainActivity.playPause.setImageResource(R.drawable.nutplay);
             playPauseBtn.setImageResource(R.drawable.nutplay);
             musicService.start();
             cover_img.startAnimation(loadRotation());
