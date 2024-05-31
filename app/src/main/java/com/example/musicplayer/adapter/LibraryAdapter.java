@@ -222,8 +222,8 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
                 PlaylistModel updatePlaylist = new PlaylistModel(playlist.getPlaylistId(), playlistName, playlist.getListSong());
                 boolean isUpdated = myDB.UpdatePlaylist(updatePlaylist);
                 if(isUpdated){
-                    libraryList.set(position, updatePlaylist);
-                    notifyItemChanged(position);
+                    libraryList = getAllPlaylist(myDB);
+                    notifyDataSetChanged();
                 }
                 dialog.dismiss();
             }
@@ -232,9 +232,6 @@ public class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.MyViewHo
         dialog.show();
     }
 
-    public void addPlaylist(){
-        this.libraryList = getAllPlaylist(myDB);
-    }
 
     @Override
     public int getItemCount() {

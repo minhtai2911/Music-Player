@@ -70,7 +70,7 @@ public class LibraryFragment extends Fragment {
                 PlaylistModel newPlaylist = new PlaylistModel(playlistName);
                 DatabaseHelper myDB = new DatabaseHelper(getActivity());
                 myDB.InsertPlaylist(newPlaylist);
-                libraryAdapter.addPlaylist();
+                LibraryAdapter.libraryList = getAllPlaylist(myDB);
                 libraryAdapter.notifyDataSetChanged();
                 dialog.dismiss();
             }
@@ -78,6 +78,7 @@ public class LibraryFragment extends Fragment {
         dialog.show();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public static void staticUpdateLibrary(){
         if(libraryAdapter==null){
             return;
